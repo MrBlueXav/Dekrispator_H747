@@ -1,9 +1,9 @@
 /*
 ******************************************************************************
 **
+
 **  File        : LinkerScript.ld
 **
-**  Author      : STM32CubeIDE
 **
 **  Abstract    : Linker script for STM32H7 series
 **                1024Kbytes FLASH and 288Kbytes RAM
@@ -21,31 +21,36 @@
 *****************************************************************************
 ** @attention
 **
-** Copyright (c) 2023 STMicroelectronics.
+** Copyright (c) 2019 STMicroelectronics.
 ** All rights reserved.
 **
 ** This software is licensed under terms that can be found in the LICENSE file
 ** in the root directory of this software component.
 ** If no LICENSE file comes with this software, it is provided AS-IS.
 **
-****************************************************************************
+******************************************************************************
 */
 
 /* Entry Point */
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
+_estack = 0x10048000;    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
-_Min_Stack_Size = 0x400; /* required amount of stack */
+_Min_Heap_Size = 0x1000;      /* required amount of heap  */
+_Min_Stack_Size = 0x800; /* required amount of stack */
 
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)     : ORIGIN = 0x08100000, LENGTH = 1024K
+FLASH (rx)      : ORIGIN = 0x08100000, LENGTH = 1024K
 RAM (xrw)      : ORIGIN = 0x10000000, LENGTH = 288K
+OPENAMP_RSC_TAB (xrw) 	: ORIGIN = 0x38000000, LENGTH = 1K
+OPEN_AMP_SHMEM (xrw) 	: ORIGIN = 0x38000400, LENGTH = 63K
 }
+ __OPENAMP_region_start__  = ORIGIN(OPEN_AMP_SHMEM);
+ __OPENAMP_region_end__ = ORIGIN(OPEN_AMP_SHMEM) + LENGTH(OPEN_AMP_SHMEM);
+
 
 /* Define output sections */
 SECTIONS
@@ -116,20 +121,18 @@ SECTIONS
   _sidata = LOADADDR(.data);
 
   /* Initialized data sections goes into RAM, load LMA copy after code */
-  .data :
+  .data : 
   {
     . = ALIGN(4);
     _sdata = .;        /* create a global symbol at data start */
     *(.data)           /* .data sections */
     *(.data*)          /* .data* sections */
-    *(.RamFunc)        /* .RamFunc sections */
-    *(.RamFunc*)       /* .RamFunc* sections */
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
   } >RAM AT> FLASH
 
-
+  
   /* Uninitialized data section */
   . = ALIGN(4);
   .bss :
@@ -157,7 +160,11 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
-
+    .openamp_section (NOLOAD) : {
+     . = ABSOLUTE(0x38000000);
+     *(.resource_table)  
+  } >OPENAMP_RSC_TAB  AT > FLASH
+  
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

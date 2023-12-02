@@ -1960,7 +1960,7 @@ HAL_StatusTypeDef RTC_ExitInitMode(RTC_HandleTypeDef *hrtc)
 #if defined(TAMP)
   CLEAR_BIT(RTC->ICSR, RTC_ICSR_INIT);
 #else
-  CLEAR_BIT(RTC->ISR, RTC_ISR_INIT);
+  CLEAR_BIT(RTC->ISR, RTC_ISR_INITF);
 #endif /* TAMP */
 
   /* If CR_BYPSHAD bit = 0, wait for synchro */

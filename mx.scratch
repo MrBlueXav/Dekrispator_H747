@@ -1,0 +1,1656 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ScratchFile FileVersion="3.1">
+  <FileVersion>3.1</FileVersion>
+  <Workspace>
+    <WorkspaceType>Single-project</WorkspaceType>
+    <WorkspacePath>D:\STM32CubeMX\Disco747-xav\</WorkspacePath>
+    <underRoot>true</underRoot>
+    <TrustZone>0</TrustZone>
+    <HAL_Driver>C:\Users\XavSab\STM32Cube\Repository\STM32Cube_FW_H7_V1.11.1</HAL_Driver>
+    <CMSIS>Drivers/CMSIS</CMSIS>
+    <Toolchain>STM32CubeIDE</Toolchain>
+    <IocFile>Dekrispator-DK747MX.ioc</IocFile>
+    <Project>
+          
+      <ProjectName>Dekrispator-DK747MX_M4_CM4</ProjectName>
+           
+      <Excluded>false</Excluded>
+          
+      <ProjectNature>C</ProjectNature>
+       
+      <Secure/>
+            
+      <filestoremove>
+                
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hcd.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_exti.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rtc.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rtc_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_core.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_ctlreq.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_ioreq.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_pipes.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid_keybd.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid_mouse.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid_parser.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\CMSIS\Device\ST\STM32H7xx\Source\Templates\system_stm32h7xx.c</name>
+           
+        </file>
+                           
+      </filestoremove>
+      <sourceEntriesToRemove>
+            
+        <sourceEntry>    </sourceEntry>
+      </sourceEntriesToRemove>
+      <configs>
+        <config>
+          <name>Dekrispator-DK747MX_M4</name>
+          	 
+          <mainSourceRepo>CM4</mainSourceRepo>
+             
+          <sourceStructure>Advanced</sourceStructure>
+          <Context/>
+           
+          <device>STM32H747XIHx</device>
+          		         
+          <cpucore>ARM Cortex-M4</cpucore>
+                  
+          <fpu>DP</fpu>
+                
+          <memories>
+                       
+            <memory access="xrw" name="RAM_D2" size="294912" start="0x10000000"/>
+                    
+            <memory access="xrw" name="RAM_D3" size="65536" start="0x18000000"/>
+                    
+            <memory access="rx" name="FLASH" size="1048576" start="0x8100000"/>
+                    
+          </memories>
+              
+          <startup>C:\Users\XavSab\STM32Cube\Repository\STM32Cube_FW_H7_V1.11.1\Drivers\CMSIS\Device\ST\STM32H7xx\Source\Templates\gcc\startup_stm32h747xx.s</startup>
+                
+          <LinkSettings>
+            	
+            <LinkAdditionalLibs>	</LinkAdditionalLibs>
+          </LinkSettings>
+              
+          <heapSize>0x200</heapSize>
+              
+          <stackSize>0x400</stackSize>
+              
+          <cpuclock>200</cpuclock>
+               
+          <board>STM32H747I-DISCO</board>
+              
+          <optimization/>
+              
+          <Aincludes>
+                    
+            <include/>
+                    
+          </Aincludes>
+              
+          <Adefines>        </Adefines>
+                
+          <Cdefines>
+                    
+            <define>CORE_CM4</define>
+                    
+            <define>USE_HAL_DRIVER</define>
+                    
+            <define>STM32H747xx</define>
+                    
+            <define>METAL_INTERNAL</define>
+                    
+            <define>METAL_MAX_DEVICE_REGIONS=2</define>
+                    
+            <define>RPMSG_BUFFER_SIZE=512</define>
+                    
+            <define>VIRTIO_SLAVE_ONLY</define>
+                    
+            <define>NO_ATOMIC_64_SUPPORT</define>
+                    
+          </Cdefines>
+              
+          <Ldefines>        </Ldefines>
+                  
+          <Cincludes>
+            		        
+            <include>CM4\Core\Inc</include>
+                    
+            <include>CM4\OPENAMP</include>
+                    
+            <include>CM4\USB_HOST\App</include>
+                    
+            <include>CM4\USB_HOST\Target</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc\Legacy</include>
+                    
+            <include>Middlewares\ST\STM32_USB_Host_Library\Core\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Inc</include>
+                    
+            <include>Drivers\CMSIS\Device\ST\STM32H7xx\Include</include>
+                    
+            <include>Drivers\CMSIS\Include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc\Legacy</include>
+                    
+            <include>Middlewares\ST\STM32_USB_Host_Library\Core\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Inc</include>
+                    
+            <include>Drivers\CMSIS\Device\ST\STM32H7xx\Include</include>
+                    
+            <include>Drivers\CMSIS\Include</include>
+                    
+          </Cincludes>
+              
+          <definestoremove>
+                    
+            <Adefines>            </Adefines>
+                    
+            <Cdefines>            </Cdefines>
+                     
+            <Ldefines>            </Ldefines>
+                     
+          </definestoremove>
+              
+          <inctoremove>
+                    
+            <Aincludes>
+                          
+              <include/>
+                          
+            </Aincludes>
+                    
+            <Cincludes>
+                          
+              <include>CM7\Core\Inc</include>
+                          
+            </Cincludes>
+                    
+          </inctoremove>
+                 
+        </config>
+      </configs>
+       
+      <copyAsReference>false</copyAsReference>
+           
+      <sourceEntries>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        <sourceEntry>
+                                  
+          <name>CM4\Core\Src</name>
+                                  
+        </sourceEntry>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+        <sourceEntry>
+                                  
+          <name>CM4\USB_HOST</name>
+                                  
+        </sourceEntry>
+                                
+        <sourceEntry>
+                                  
+          <name>CM4\OPENAMP</name>
+                                  
+        </sourceEntry>
+                        
+        <sourceEntry>
+                      
+          <name>Common</name>
+                      
+        </sourceEntry>
+                 
+        <sourceEntry>
+                      
+          <name>Drivers</name>
+                  
+        </sourceEntry>
+                                        
+        <sourceEntry>
+                                 
+          <name>Middlewares</name>
+                              
+        </sourceEntry>
+                                   	 	          
+      </sourceEntries>
+      <Groups>      </Groups>
+    </Project>
+    <Project>
+          
+      <ProjectName>Dekrispator-DK747MX_M7_CM7</ProjectName>
+           
+      <Excluded>false</Excluded>
+          
+      <ProjectNature>C</ProjectNature>
+       
+      <Secure/>
+            
+      <filestoremove>
+                
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rng.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rng_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_exti.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Drivers\CMSIS\Device\ST\STM32H7xx\Source\Templates\system_stm32h7xx.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_core.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_ctlreq.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_ioreq.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Core\Src\usbh_pipes.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid_keybd.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid_mouse.c</name>
+           
+        </file>
+        <file>
+                      
+          <name>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Src\usbh_hid_parser.c</name>
+           
+        </file>
+                           
+      </filestoremove>
+      <sourceEntriesToRemove>
+            
+        <sourceEntry>    </sourceEntry>
+      </sourceEntriesToRemove>
+      <configs>
+        <config>
+          <name>Dekrispator-DK747MX_M7</name>
+          	 
+          <mainSourceRepo>CM7</mainSourceRepo>
+             
+          <sourceStructure>Advanced</sourceStructure>
+          <Context/>
+           
+          <device>STM32H747XIHx</device>
+          		         
+          <cpucore>ARM Cortex-M7</cpucore>
+                  
+          <fpu>DP</fpu>
+                
+          <memories>
+                       
+            <memory access="xrw" name="DTCMRAM" size="131072" start="0x20000000"/>
+                    
+            <memory access="xrw" name="ITCMRAM" size="65536" start="0x00000000"/>
+                    
+            <memory access="xrw" name="RAM_D1" size="524288" start="0x24000000"/>
+                    
+            <memory access="rx" name="FLASH" size="1048576" start="0x8000000"/>
+                    
+          </memories>
+              
+          <startup>C:\Users\XavSab\STM32Cube\Repository\STM32Cube_FW_H7_V1.11.1\Drivers\CMSIS\Device\ST\STM32H7xx\Source\Templates\gcc\startup_stm32h747xx.s</startup>
+                
+          <LinkSettings>
+            	
+            <LinkAdditionalLibs>	</LinkAdditionalLibs>
+          </LinkSettings>
+              
+          <heapSize>0x200</heapSize>
+              
+          <stackSize>0x400</stackSize>
+              
+          <cpuclock>200</cpuclock>
+               
+          <board>STM32H747I-DISCO</board>
+              
+          <optimization/>
+              
+          <Aincludes>
+                    
+            <include/>
+                    
+          </Aincludes>
+              
+          <Adefines>        </Adefines>
+                
+          <Cdefines>
+                    
+            <define>CORE_CM7</define>
+                    
+            <define>USE_HAL_DRIVER</define>
+                    
+            <define>STM32H747xx</define>
+                    
+            <define>METAL_INTERNAL</define>
+                    
+            <define>METAL_MAX_DEVICE_REGIONS=2</define>
+                    
+            <define>RPMSG_BUFFER_SIZE=512</define>
+                    
+            <define>VIRTIO_MASTER_ONLY</define>
+                    
+            <define>NO_ATOMIC_64_SUPPORT</define>
+                    
+          </Cdefines>
+              
+          <Ldefines>        </Ldefines>
+                  
+          <Cincludes>
+            		        
+            <include>CM7\Core\Inc</include>
+                    
+            <include>CM7\OPENAMP</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc\Legacy</include>
+                    
+            <include>Drivers\CMSIS\Device\ST\STM32H7xx\Include</include>
+                    
+            <include>Drivers\CMSIS\Include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\libmetal\lib\include\metal\compiler\gcc</include>
+                    
+            <include>Middlewares\Third_Party\OpenAMP\open-amp\lib\rpmsg</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc</include>
+                    
+            <include>Drivers\STM32H7xx_HAL_Driver\Inc\Legacy</include>
+                    
+            <include>Drivers\CMSIS\Device\ST\STM32H7xx\Include</include>
+                    
+            <include>Drivers\CMSIS\Include</include>
+                    
+          </Cincludes>
+              
+          <definestoremove>
+                    
+            <Adefines>            </Adefines>
+                    
+            <Cdefines>            </Cdefines>
+                     
+            <Ldefines>            </Ldefines>
+                     
+          </definestoremove>
+              
+          <inctoremove>
+                    
+            <Aincludes>
+                          
+              <include/>
+                          
+            </Aincludes>
+                    
+            <Cincludes>
+                          
+              <include>Middlewares\ST\STM32_USB_Host_Library\Core\Inc</include>
+                          
+              <include>Middlewares\ST\STM32_USB_Host_Library\Class\HID\Inc</include>
+                          
+              <include>CM4\Core\Inc</include>
+                          
+              <include>CM4\USB_HOST\App</include>
+                          
+              <include>CM4\USB_HOST\Target</include>
+                          
+            </Cincludes>
+                    
+          </inctoremove>
+                 
+        </config>
+      </configs>
+       
+      <copyAsReference>false</copyAsReference>
+           
+      <sourceEntries>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        <sourceEntry>
+                                  
+          <name>CM7\Core\Src</name>
+                                  
+        </sourceEntry>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+        <sourceEntry>
+                                  
+          <name>CM7\OPENAMP</name>
+                                  
+        </sourceEntry>
+                        
+        <sourceEntry>
+                      
+          <name>Common</name>
+                      
+        </sourceEntry>
+                 
+        <sourceEntry>
+                      
+          <name>Drivers</name>
+                  
+        </sourceEntry>
+                                        
+        <sourceEntry>
+                                 
+          <name>Middlewares</name>
+                              
+        </sourceEntry>
+                                   	 	          
+      </sourceEntries>
+      <Groups>      </Groups>
+    </Project>
+  </Workspace>
+</ScratchFile>

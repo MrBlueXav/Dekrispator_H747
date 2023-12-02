@@ -33,7 +33,6 @@ Drivers/BSP/Components/nt35510 \
 Drivers/BSP/Components/otm8009a \
 Drivers/BSP/Components/wm8994 \
 Drivers/BSP \
-Drivers/STM32H7xx_HAL_Driver/Src/Legacy \
 Drivers/STM32H7xx_HAL_Driver/Src \
 Synth/Src \
 
