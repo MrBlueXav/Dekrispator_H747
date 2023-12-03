@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 //#include "lcd_trace.h"
-#include "main.h"
+#include "main_cm4.h"
 #include "usbh_midi_XH.h"
 #include "usb_host.h"
 #include "stm32h747i_discovery.h"

@@ -1,7 +1,7 @@
 "./Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.o"
 "./Core/Src/audio_play.o"
 "./Core/Src/gpio.o"
-"./Core/Src/main.o"
+"./Core/Src/main_cm7.o"
 "./Core/Src/rng.o"
 "./Core/Src/stm32h7xx_hal_msp.o"
 "./Core/Src/stm32h7xx_it.o"

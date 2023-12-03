@@ -1,7 +1,7 @@
 "./Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.o"
 "./Core/Src/gpio.o"
 "./Core/Src/interface.o"
-"./Core/Src/main.o"
+"./Core/Src/main_cm4.o"
 "./Core/Src/rtc.o"
 "./Core/Src/stm32h747i_discovery.o"
 "./Core/Src/stm32h7xx_hal_msp.o"

@@ -78,7 +78,7 @@ static USBH_StatusTypeDef USBH_MIDI_InterfaceInit (USBH_HandleTypeDef *phost)
 
 	if(interface == 0xFF) /* No Valid Interface */
 	{
-		USBH_DbgLog ("Cannot Find the interface for MIDI Interface Class.", phost->pActiveClass->Name);
+		USBH_DbgLog ("Cannot Find the interface for MIDI Interface Class.");
 		status = USBH_FAIL;
 	}
 	else
