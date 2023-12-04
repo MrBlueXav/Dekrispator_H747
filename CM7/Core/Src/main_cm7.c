@@ -22,40 +22,17 @@
 #include "rng.h"
 #include "gpio.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
 extern float samplerate;
 bool demoMode = true;
 bool freeze = false;
 bool sequencerIsOn = true;
 
 /* Private macro -------------------------------------------------------------*/
-#define RPMSG_CHAN_NAME              "openamp_pingpong_demo"
+#define RPMSG_CHAN_NAME              "midi_communication"
 
 /* Private variables ---------------------------------------------------------*/
 static uint32_t message = 0;
@@ -64,17 +41,10 @@ static volatile int service_created;
 static volatile midi_package_t received_data;
 static struct rpmsg_endpoint rp_endpoint;
 
-/* USER CODE END PV */
-
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MPU_Config(void);
-/* USER CODE BEGIN PFP */
 
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
 /* Private functions ---------------------------------------------------------*/
 
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
@@ -100,7 +70,6 @@ void new_service_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest)
 	service_created = 1;
 }
 
-/* USER CODE END 0 */
 
 /**
  * @brief  The application entry point.
@@ -108,12 +77,8 @@ void new_service_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest)
  */
 int main(void)
 {
-	/* USER CODE BEGIN 1 */
 	int32_t status;
-	/* USER CODE END 1 */
-	/* USER CODE BEGIN Boot_Mode_Sequence_0 */
 	int32_t timeout;
-	/* USER CODE END Boot_Mode_Sequence_0 */
 
 	/* MPU Configuration--------------------------------------------------------*/
 	MPU_Config();
@@ -140,10 +105,6 @@ int main(void)
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 
-	/* USER CODE BEGIN Init */
-
-	/* USER CODE END Init */
-
 	/* Configure the system clock */
 	SystemClock_Config();
 	/* USER CODE BEGIN Boot_Mode_Sequence_2 */
@@ -165,7 +126,6 @@ int main(void)
 	}
 	/* USER CODE END Boot_Mode_Sequence_2 */
 
-	/* USER CODE BEGIN SysInit */
 	/* Initialize the mailbox use notify the other core on new message */
 	MAILBOX_Init();
 
@@ -185,13 +145,10 @@ int main(void)
 
 	/* Send the massage to the remote CPU */
 	status = OPENAMP_send(&rp_endpoint, &message, sizeof(message));
-
 	if (status < 0)
 	{
 		Error_Handler();
 	}
-
-	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
@@ -203,10 +160,6 @@ int main(void)
 	Synth_Init();
 	AudioInit();
 
-	/* USER CODE END 2 */
-
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
 		if (message_received == 0 && service_created == 1)
@@ -219,11 +172,7 @@ int main(void)
 			message_received = 0;
 		}
 		Application();
-		/* USER CODE END WHILE */
-
-		/* USER CODE BEGIN 3 */
 	}
-	/* USER CODE END 3 */
 }
 
 /**
@@ -296,10 +245,6 @@ void SystemClock_Config(void)
 	 */
 	HAL_RCC_EnableCSS();
 }
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
 
 /* MPU Configuration */
 

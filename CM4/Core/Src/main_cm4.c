@@ -30,42 +30,12 @@
 #include "stm32h747i_discovery.h"
 #include "interface.h"
 
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-/* USER CODE END PD */
-
 /* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-/* Private macro -------------------------------------------------------------*/
-#define RPMSG_SERVICE_NAME              "openamp_pingpong_demo"
+#define RPMSG_SERVICE_NAME              "midi_communication"
 
 /* Private variables ---------------------------------------------------------*/
 static volatile int message_received;
@@ -77,7 +47,6 @@ static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t le
 {
 	received_data = *((midi_package_t*) data);
 	message_received = 1;
-
 	return 0;
 }
 
@@ -91,19 +60,14 @@ void midipacket_sendToCM7(midi_package_t packet)
 	}
 }
 
-/* USER CODE END 0 */
-
 /**
  * @brief  The application entry point.
  * @retval int
  */
 int main(void)
 {
-	/* USER CODE BEGIN 1 */
 	int32_t status = 0;
-	/* USER CODE END 1 */
 
-	/* USER CODE BEGIN Boot_Mode_Sequence_1 */
 	/*HW semaphore Clock enable*/
 	__HAL_RCC_HSEM_CLK_ENABLE();
 	/* Activate HSEM notification for Cortex-M4*/
@@ -117,17 +81,11 @@ int main(void)
 	/* Clear HSEM flag */
 	__HAL_HSEM_CLEAR_FLAG(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
 
-	/* USER CODE END Boot_Mode_Sequence_1 */
 	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 
-	/* USER CODE BEGIN Init */
-
-	/* USER CODE END Init */
-
-	/* USER CODE BEGIN SysInit */
 	/* Inilitize the mailbox use notify the other core on new message */
 	MAILBOX_Init();
 
@@ -142,7 +100,7 @@ int main(void)
 	{
 		Error_Handler();
 	}
-	/* USER CODE END SysInit */
+
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
@@ -166,10 +124,7 @@ int main(void)
 	BSP_LED_Off(LED4);
 
 	printf("Hello again !\n");
-	/* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
 		MX_USB_HOST_Process();
@@ -182,17 +137,9 @@ int main(void)
 			message_received = 0;
 		}
 		Application_Process();
-		/* USER CODE END WHILE */
-
-		/* USER CODE BEGIN 3 */
-
 	}
-	/* USER CODE END 3 */
+
 }
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
 
 /**
  * @brief  This function is executed in case of error occurrence.
