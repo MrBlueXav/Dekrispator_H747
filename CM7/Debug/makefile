@@ -9,7 +9,14 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Third_Party/OpenAMP/open-amp/lib/virtio/subdir.mk
+-include Third_Party/OpenAMP/open-amp/lib/rpmsg/subdir.mk
+-include Third_Party/OpenAMP/open-amp/lib/remoteproc/subdir.mk
+-include Third_Party/OpenAMP/libmetal/lib/system/generic/cortexm/subdir.mk
+-include Third_Party/OpenAMP/libmetal/lib/system/generic/subdir.mk
+-include Third_Party/OpenAMP/libmetal/lib/subdir.mk
 -include Synth/Src/subdir.mk
+-include OPENAMP/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Drivers/BSP/Components/wm8994/subdir.mk
 -include Drivers/BSP/Components/otm8009a/subdir.mk

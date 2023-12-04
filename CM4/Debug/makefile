@@ -11,6 +11,7 @@ RM := rm -rf
 -include sources.mk
 -include USB_HOST/Target/subdir.mk
 -include USB_HOST/App/subdir.mk
+-include OPENAMP/subdir.mk
 -include Middlewares/Third_Party/OpenAMP/open-amp/lib/virtio/subdir.mk
 -include Middlewares/Third_Party/OpenAMP/open-amp/lib/rpmsg/subdir.mk
 -include Middlewares/Third_Party/OpenAMP/open-amp/lib/remoteproc/subdir.mk

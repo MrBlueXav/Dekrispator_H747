@@ -33,6 +33,7 @@ Middlewares/Third_Party/OpenAMP/libmetal/lib/system/generic/cortexm \
 Middlewares/Third_Party/OpenAMP/open-amp/lib/remoteproc \
 Middlewares/Third_Party/OpenAMP/open-amp/lib/rpmsg \
 Middlewares/Third_Party/OpenAMP/open-amp/lib/virtio \
+OPENAMP \
 USB_HOST/App \
 USB_HOST/Target \
 

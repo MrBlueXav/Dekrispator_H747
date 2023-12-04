@@ -67,5 +67,8 @@
 "./Middlewares/Third_Party/OpenAMP/open-amp/lib/rpmsg/rpmsg_virtio.o"
 "./Middlewares/Third_Party/OpenAMP/open-amp/lib/virtio/virtio.o"
 "./Middlewares/Third_Party/OpenAMP/open-amp/lib/virtio/virtqueue.o"
+"./OPENAMP/mbox_hsem.o"
+"./OPENAMP/openamp.o"
+"./OPENAMP/rsc_table.o"
 "./USB_HOST/App/usb_host.o"
 "./USB_HOST/Target/usbh_conf.o"

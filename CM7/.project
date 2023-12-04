@@ -3,6 +3,7 @@
 	<name>Disco747-xav_CM7</name>
 	<comment></comment>
 	<projects>
+		<project>Dekrispator-DK747MX</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

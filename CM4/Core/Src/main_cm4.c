@@ -64,20 +64,46 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/* Private macro -------------------------------------------------------------*/
+#define RPMSG_SERVICE_NAME              "openamp_pingpong_demo"
+
+/* Private variables ---------------------------------------------------------*/
+static volatile int message_received;
+static volatile midi_package_t received_data;
+static struct rpmsg_endpoint rp_endpoint;
+HSEM_TypeDef *HSEM_DEBUG = HSEM;
+
+static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
+{
+	received_data = *((midi_package_t*) data);
+	message_received = 1;
+
+	return 0;
+}
+
+void midipacket_sendToCM7(midi_package_t packet)
+{
+	int32_t status = 0;
+	status = OPENAMP_send(&rp_endpoint, &packet, sizeof(packet));
+	if (status < 0)
+	{
+		Error_Handler();
+	}
+}
 
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
+	int32_t status = 0;
+	/* USER CODE END 1 */
 
-  /* USER CODE END 1 */
-
-/* USER CODE BEGIN Boot_Mode_Sequence_1 */
+	/* USER CODE BEGIN Boot_Mode_Sequence_1 */
 	/*HW semaphore Clock enable*/
 	__HAL_RCC_HSEM_CLK_ENABLE();
 	/* Activate HSEM notification for Cortex-M4*/
@@ -91,26 +117,39 @@ int main(void)
 	/* Clear HSEM flag */
 	__HAL_HSEM_CLEAR_FLAG(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
 
-/* USER CODE END Boot_Mode_Sequence_1 */
-  /* MCU Configuration--------------------------------------------------------*/
+	/* USER CODE END Boot_Mode_Sequence_1 */
+	/* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
+	/* Inilitize the mailbox use notify the other core on new message */
+	MAILBOX_Init();
 
-  /* USER CODE END SysInit */
+	/* Inilitize OpenAmp and libmetal libraries */
+	if (MX_OPENAMP_Init(RPMSG_REMOTE, NULL) != HAL_OK)
+		Error_Handler();
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_RTC_Init();
-  MX_USART1_UART_Init();
-  MX_USB_HOST_Init();
-  /* USER CODE BEGIN 2 */
+	/* create a endpoint for rmpsg communication */
+	status = OPENAMP_create_endpoint(&rp_endpoint, RPMSG_SERVICE_NAME,
+	RPMSG_ADDR_ANY, rpmsg_recv_callback, NULL);
+	if (status < 0)
+	{
+		Error_Handler();
+	}
+	/* USER CODE END SysInit */
+
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_RTC_Init();
+	MX_USART1_UART_Init();
+	MX_USB_HOST_Init();
+	/* USER CODE BEGIN 2 */
 	BSP_LED_Init(LED1);
 	BSP_LED_Init(LED2);
 	BSP_LED_Init(LED3);
@@ -127,20 +166,28 @@ int main(void)
 	BSP_LED_Off(LED4);
 
 	printf("Hello again !\n");
-  /* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
 		MX_USB_HOST_Process();
+		if (message_received == 0)
+		{
+			OPENAMP_check_for_message();
+		}
+		if (message_received)
+		{
+			message_received = 0;
+		}
 		Application_Process();
-    /* USER CODE END WHILE */
+		/* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+		/* USER CODE BEGIN 3 */
 
 	}
-  /* USER CODE END 3 */
+	/* USER CODE END 3 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -148,18 +195,18 @@ int main(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
+	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	__disable_irq();
 	while (1)
 	{
 	}
-  /* USER CODE END Error_Handler_Debug */
+	/* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT

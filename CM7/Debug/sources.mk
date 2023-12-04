@@ -34,5 +34,12 @@ Drivers/BSP/Components/otm8009a \
 Drivers/BSP/Components/wm8994 \
 Drivers/BSP \
 Drivers/STM32H7xx_HAL_Driver/Src \
+OPENAMP \
 Synth/Src \
+Third_Party/OpenAMP/libmetal/lib \
+Third_Party/OpenAMP/libmetal/lib/system/generic \
+Third_Party/OpenAMP/libmetal/lib/system/generic/cortexm \
+Third_Party/OpenAMP/open-amp/lib/remoteproc \
+Third_Party/OpenAMP/open-amp/lib/rpmsg \
+Third_Party/OpenAMP/open-amp/lib/virtio \
 
