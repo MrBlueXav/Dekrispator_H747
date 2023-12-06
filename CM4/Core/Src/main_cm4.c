@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main_cm4.h"
-//#include "openamp.h"
 #include "rtc.h"
 #include "usart.h"
 #include "usb_host.h"

@@ -9,7 +9,6 @@
 "./Core/Src/syscalls.o"
 "./Core/Src/sysmem.o"
 "./Core/Src/usart.o"
-"./Core/Src/usbh_midi_XH.o"
 "./Core/Startup/startup_stm32h747xihx.o"
 "./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o"
 "./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.o"
@@ -71,4 +70,5 @@
 "./OPENAMP/openamp.o"
 "./OPENAMP/rsc_table.o"
 "./USB_HOST/App/usb_host.o"
+"./USB_HOST/App/usbh_midi_XH.o"
 "./USB_HOST/Target/usbh_conf.o"

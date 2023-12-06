@@ -5,13 +5,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../USB_HOST/App/usb_host.c 
+../USB_HOST/App/usb_host.c \
+../USB_HOST/App/usbh_midi_XH.c 
 
 OBJS += \
-./USB_HOST/App/usb_host.o 
+./USB_HOST/App/usb_host.o \
+./USB_HOST/App/usbh_midi_XH.o 
 
 C_DEPS += \
-./USB_HOST/App/usb_host.d 
+./USB_HOST/App/usb_host.d \
+./USB_HOST/App/usbh_midi_XH.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +24,7 @@ USB_HOST/App/%.o USB_HOST/App/%.su USB_HOST/App/%.cyclo: ../USB_HOST/App/%.c USB
 clean: clean-USB_HOST-2f-App
 
 clean-USB_HOST-2f-App:
-	-$(RM) ./USB_HOST/App/usb_host.cyclo ./USB_HOST/App/usb_host.d ./USB_HOST/App/usb_host.o ./USB_HOST/App/usb_host.su
+	-$(RM) ./USB_HOST/App/usb_host.cyclo ./USB_HOST/App/usb_host.d ./USB_HOST/App/usb_host.o ./USB_HOST/App/usb_host.su ./USB_HOST/App/usbh_midi_XH.cyclo ./USB_HOST/App/usbh_midi_XH.d ./USB_HOST/App/usbh_midi_XH.o ./USB_HOST/App/usbh_midi_XH.su
 
 .PHONY: clean-USB_HOST-2f-App
 

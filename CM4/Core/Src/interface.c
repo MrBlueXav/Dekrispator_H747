@@ -16,7 +16,6 @@ uint32_t oldtick, newtick;
 
 /*------------------------------------------------------------------------------------------------------------------*/
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv);
-static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv);
 void ProcessReceivedMidiDatas(void);
 
 /* Private macro -------------------------------------------------------------*/
@@ -113,28 +112,6 @@ void USBH_MIDI_ReceiveCallback(USBH_HandleTypeDef *phost)
 	BSP_LED_Off(LED_BLUE);
 }
 
-/* Process MIDI packets and change the note according to key pressed
- on digital piano */
-//void usbh_midi_rx_callback(USBH_HandleTypeDef *phost) {
-//	MIDI_Packet *packet_p = (MIDI_Packet*) &midi_rx_buffer[0];
-//	uint16_t num_of_packets;
-//
-//
-//	num_of_packets = usbh_midi_last_rx_size(phost) / 4;
-//
-//	while (num_of_packets--) {
-//		/* Check if MIDI message is a CC event */
-//		if (GET_CIN(packet_p->header) == CONTROL_CHANGE) {
-//			LCD_UsrLog("%d  :  %d, %d, %d, %d   \n", num_of_packets,
-//					packet_p->header, packet_p->byte1, packet_p->byte2,
-//					packet_p->byte3);
-//		}
-//
-//		++packet_p;
-//	}
-//	/* Refill MIDI RX buffer */
-//	usbh_midi_receive(phost, &midi_rx_buffer[0], RX_BUFFER_SIZE);
-//}
 /*-----------------------------------------------------------------------------*/
 void ProcessReceivedMidiDatas(void)
 {

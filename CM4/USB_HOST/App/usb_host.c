@@ -23,43 +23,14 @@
 #include "usb_host.h"
 #include "usbh_core.h"
 
-
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE END PV */
-
-/* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
-
-/* USER CODE END PFP */
-
 /* USB Host core handle declaration */
 USBH_HandleTypeDef hUsbHostHS;
 ApplicationTypeDef Appli_state = APPLICATION_IDLE;
 
 /*
- * -- Insert your variables declaration here --
- */
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/*
  * user callback declaration
  */
 static void USBH_UserProcess(USBH_HandleTypeDef *phost, uint8_t id);
-
-/*
- * -- Insert your external function declaration here --
- */
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
 
 /**
   * Init USB host library, add supported class and start the library
@@ -67,9 +38,6 @@ static void USBH_UserProcess(USBH_HandleTypeDef *phost, uint8_t id);
   */
 void MX_USB_HOST_Init(void)
 {
-  /* USER CODE BEGIN USB_HOST_Init_PreTreatment */
-
-  /* USER CODE END USB_HOST_Init_PreTreatment */
 
   /* Init host Library, add supported class and start the library. */
   if (USBH_Init(&hUsbHostHS, USBH_UserProcess, HOST_HS) != USBH_OK)
@@ -84,9 +52,7 @@ void MX_USB_HOST_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USB_HOST_Init_PostTreatment */
 
-  /* USER CODE END USB_HOST_Init_PostTreatment */
 }
 
 /*
@@ -125,12 +91,4 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
   }
   /* USER CODE END CALL_BACK_1 */
 }
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 

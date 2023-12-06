@@ -2,6 +2,7 @@
 "./Core/Src/audio_play.o"
 "./Core/Src/gpio.o"
 "./Core/Src/main_cm7.o"
+"./Core/Src/openamp_interface.o"
 "./Core/Src/rng.o"
 "./Core/Src/stm32h7xx_hal_msp.o"
 "./Core/Src/stm32h7xx_it.o"

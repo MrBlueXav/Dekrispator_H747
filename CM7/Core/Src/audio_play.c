@@ -86,7 +86,7 @@ void AudioInit(void)
 {
 
 	AudioFreq_ptr = AudioFreq + 6; /*AF_48K*/
-	uwVolume = 40;
+	uwVolume = 60;
 
 	//sound_generator_init0();
 

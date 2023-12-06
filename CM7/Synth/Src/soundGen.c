@@ -34,10 +34,9 @@ extern float samplerate;
 //#define MAX_SOUNDS			14 // number - 1 of different sounds (starts at 0)
 
 /*-------------------------------------------------------*/
-
-extern bool demoMode;
-extern bool freeze;
-extern bool sequencerIsOn;
+bool demoMode = true;
+bool freeze = false;
+bool sequencerIsOn = true;
 
 extern Sequencer_t seq;
 extern NoteGenerator_t noteGen;

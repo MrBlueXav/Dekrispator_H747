@@ -66,6 +66,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/OPENAMP}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Dekrispator-DK747MX/Middlewares/Third_Party/OpenAMP/open-amp/lib/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Dekrispator-DK747MX/Middlewares/Third_Party/OpenAMP/libmetal/lib/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Dekrispator-DK747MX/Middlewares/ST/STM32_USB_Host_Library/Core/Inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Disco747-xav_CM4/USB_HOST/App}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1697306063" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
@@ -160,6 +162,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/OPENAMP}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Dekrispator-DK747MX/Middlewares/Third_Party/OpenAMP/open-amp/lib/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Dekrispator-DK747MX/Middlewares/Third_Party/OpenAMP/libmetal/lib/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Dekrispator-DK747MX/Middlewares/ST/STM32_USB_Host_Library/Core/Inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Dekrispator-DK747MX/CM4/USB_HOST/Target}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Disco747-xav_CM4/USB_HOST/App}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1746364851" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
