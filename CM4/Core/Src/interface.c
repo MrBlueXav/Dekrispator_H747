@@ -110,7 +110,6 @@ void USBH_MIDI_ReceiveCallback(USBH_HandleTypeDef *phost)
 {
 	BSP_LED_On(LED_BLUE);
 	ProcessReceivedMidiDatas();
-	//USBH_MIDI_Receive(&hUSBHost, MIDI_RX_Buffer, RX_BUFF_SIZE); // start a new reception
 	BSP_LED_Off(LED_BLUE);
 }
 
@@ -159,7 +158,7 @@ void ProcessReceivedMidiDatas(void)
 
 		if (pack.cin_cable != 0) // if incoming midi message...
 		{
-			//midipacket_sendToCM7(pack);
+			midipacket_sendToCM7(pack);
 			//start_LED_On(LED_Blue, 8);
 			printf("%d  :  %d, %d, %d, %d   \n",
 			RX_BUFF_SIZE / 4 - numberOfPackets, pack.cin_cable, pack.evnt0, pack.evnt1, pack.evnt2);

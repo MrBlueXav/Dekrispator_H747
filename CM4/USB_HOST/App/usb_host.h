@@ -34,42 +34,19 @@
 #include "usbh_midi_XH.h"
 /* USER CODE END INCLUDE */
 
-/** @addtogroup USBH_OTG_DRIVER
-  * @{
-  */
-
-/** @defgroup USBH_HOST USBH_HOST
-  * @brief Host file for Usb otg low level driver.
-  * @{
-  */
-
-/** @defgroup USBH_HOST_Exported_Variables USBH_HOST_Exported_Variables
-  * @brief Public variables.
-  * @{
-  */
-
-/**
-  * @}
-  */
-
 /** Status of the application. */
 typedef enum {
   APPLICATION_IDLE = 0,
   APPLICATION_START,
   APPLICATION_READY,
   APPLICATION_DISCONNECT
-}ApplicationTypeDef;
 
-/** @defgroup USBH_HOST_Exported_FunctionsPrototype USBH_HOST_Exported_FunctionsPrototype
-  * @brief Declaration of public functions for Usb host.
-  * @{
-  */
+}ApplicationTypeDef;
 
 /* Exported functions -------------------------------------------------------*/
 
 /** @brief USB Host initialization function. */
 void MX_USB_HOST_Init(void);
-
 void MX_USB_HOST_Process(void);
 
 /**

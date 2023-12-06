@@ -31,32 +31,6 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-///* Private macro -------------------------------------------------------------*/
-//#define RPMSG_SERVICE_NAME              "midi_communication"
-//
-///* Private variables ---------------------------------------------------------*/
-//static volatile int message_received;
-//static volatile midi_package_t received_data;
-//static struct rpmsg_endpoint rp_endpoint;
-//HSEM_TypeDef *HSEM_DEBUG = HSEM;
-//
-//static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
-//{
-//	received_data = *((midi_package_t*) data);
-//	message_received = 1;
-//	return 0;
-//}
-//
-//void midipacket_sendToCM7(midi_package_t packet)
-//{
-//	int32_t status = 0;
-//	status = OPENAMP_send(&rp_endpoint, &packet, sizeof(packet));
-//	if (status < 0)
-//	{
-//		Error_Handler();
-//	}
-//}
-
 /**
  * @brief  The application entry point.
  * @retval int
@@ -88,7 +62,7 @@ int main(void)
 	MX_RTC_Init();
 	MX_USART1_UART_Init();
 	MX_USB_HOST_Init();
-	/* USER CODE BEGIN 2 */
+
 	BSP_LED_Init(LED1);
 	BSP_LED_Init(LED2);
 	BSP_LED_Init(LED3);
@@ -109,17 +83,8 @@ int main(void)
 	while (1)
 	{
 		MX_USB_HOST_Process();
-//		if (message_received == 0)
-//		{
-//			OPENAMP_check_for_message();
-//		}
-//		if (message_received)
-//		{
-//			message_received = 0;
-//		}
 		Application_Process();
 	}
-
 }
 
 /**
@@ -131,6 +96,7 @@ void Error_Handler(void)
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	__disable_irq();
+	BSP_LED_On(LED_RED);
 	while (1)
 	{
 	}

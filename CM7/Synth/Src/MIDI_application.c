@@ -34,7 +34,7 @@ extern bool sequencerIsOn;
  */
 void MIDI_Application(void) {
 	if (Appli_state == APPLICATION_READY) {
-		//USBH_MIDI_Receive(&hUSBHost, MIDI_RX_Buffer, RX_BUFF_SIZE); // just once at the beginning, start the first reception
+
 		Appli_state = APPLICATION_RUNNING;
 	}
 	if (Appli_state == APPLICATION_RUNNING) {
@@ -43,21 +43,10 @@ void MIDI_Application(void) {
 
 	if (Appli_state == APPLICATION_DISCONNECT) {
 		Appli_state = APPLICATION_IDLE;
-		//USBH_MIDI_Stop(&hUSBHost);
+
 	}
 }
 
-/*-----------------------------------------------------------------------------*/
-/**
- * @brief  MIDI data receive callback.
- * @param  phost: Host handle
- * @retval None
- */
-//void USBH_MIDI_ReceiveCallback(USBH_HandleTypeDef *phost)
-//{
-//	ProcessReceivedMidiDatas();
-//	USBH_MIDI_Receive(&hUSBHost, MIDI_RX_Buffer, USB_MIDI_RX_BUFFER_SIZE); // start a new reception
-//}
 /*-----------------------------------------------------------------------------*/
 void MagicFX(uint8_t val) /* random effects parameters */
 {
@@ -374,8 +363,7 @@ void ProcessReceivedMidiDatas(midi_package_t pack) {
 
 		case 26:
 			seq_switchMovingSeq(val);
-			break; // toggle sequence mode
-				   //case 24 :	seq_switchGlide(val);		break; 	// toggle glissando
+			break;
 		case 25:
 			seq_switchMute(val);
 			break; // toggle muted notes

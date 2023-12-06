@@ -26,7 +26,6 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-//extern float samplerate;
 bool demoMode = true;
 bool freeze = false;
 bool sequencerIsOn = true;
@@ -153,7 +152,6 @@ int main(void)
 	MX_GPIO_Init();
 	MX_RNG_Init();
 	BSP_LED_Init(LED_RED);
-	//samplerate = 48000.0f;
 	Synth_Init();
 	AudioInit();
 
