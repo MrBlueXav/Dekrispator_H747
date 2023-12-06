@@ -20,17 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "audio_play.h"
 
-/** @addtogroup STM32H7xx_HAL_Examples
- * @{
- */
-
-/** @addtogroup BSP
- * @{
- */
-
-float samplerate;
-
-/* Private typedef -----------------------------------------------------------*/
+float samplerate ;
 
 /* Private define ------------------------------------------------------------*/
 
@@ -48,11 +38,13 @@ float samplerate;
 typedef enum
 {
 	AUDIO_STATE_IDLE = 0, AUDIO_STATE_INIT, AUDIO_STATE_PLAYING, AUDIO_STATE_PAUSE
+
 } AUDIO_PLAYBACK_StateTypeDef;
 
 typedef enum
 {
 	BUFFER_OFFSET_NONE = 0, BUFFER_OFFSET_HALF, BUFFER_OFFSET_FULL,
+
 } BUFFER_StateTypeDef;
 
 typedef struct
@@ -62,6 +54,7 @@ typedef struct
 	BUFFER_StateTypeDef state;
 	uint32_t AudioFileSize;
 	uint32_t *SrcAddress;
+
 } AUDIO_BufferTypeDef;
 
 /* Private variables ---------------------------------------------------------*/
@@ -93,14 +86,13 @@ void AudioInit(void)
 {
 
 	AudioFreq_ptr = AudioFreq + 6; /*AF_48K*/
-	samplerate = 48000.0f;
 	uwVolume = 40;
 
 	//sound_generator_init0();
 
 	AudioPlayInit->Device = AUDIO_OUT_DEVICE_HEADPHONE;
 	AudioPlayInit->ChannelsNbr = 2;
-	AudioPlayInit->SampleRate = 48000;
+	AudioPlayInit->SampleRate = SAMPLERATE;
 	AudioPlayInit->BitsPerSample = AUDIO_RESOLUTION_16B;
 	AudioPlayInit->Volume = uwVolume;
 
@@ -108,7 +100,6 @@ void AudioInit(void)
 	{
 		Error_Handler();
 	}
-
 	HAL_Delay(500);
 
 	/*
@@ -129,7 +120,6 @@ void Application(void) /*   called in main loop   */
 /*----------------------------------------------------------------------------------------------------*/
 uint8_t AUDIO_Process(void)
 {
-
 	AUDIO_ErrorTypeDef error_state = AUDIO_ERROR_NONE;
 
 	switch (audio_state)
@@ -164,7 +154,6 @@ uint8_t AUDIO_Process(void)
 	default:
 		error_state = AUDIO_ERROR_NOTREADY;
 		break;
-
 	}
 	return (uint8_t) error_state;
 }
@@ -211,15 +200,5 @@ void BSP_AUDIO_OUT_HalfTransfer_CallBack(uint32_t Instance)
 void BSP_AUDIO_OUT_Error_CallBack(uint32_t Instance)
 {
 	BSP_LED_On(LED_RED);
-//  /* Display message on the LCD screen */
-//  UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_RED);
-//  UTIL_LCD_DisplayStringAt(0, LINE(14), (uint8_t *)"       DMA  ERROR     ", CENTER_MODE);
-//  UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-//
-//  /* Stop the program with an infinite loop */
-//  while (BSP_PB_GetState(BUTTON_WAKEUP) != RESET)
-//  {
-//    return;
-//  }
 }
 /*-------------------------------- END OF FILE ---------------------------------------*/

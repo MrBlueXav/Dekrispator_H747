@@ -396,6 +396,8 @@ void FM_OP4_freqMul_dec(uint8_t val) {
 
 void Synth_Init(void) {
 
+	samplerate = (float) SAMPLERATE;
+	sequencerIsOn = true;
 	vol = env = 1;
 	sound = MORPH_SAW;
 	autoFilterON = false;

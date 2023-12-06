@@ -18,14 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main_cm4.h"
-#include "openamp.h"
+//#include "openamp.h"
 #include "rtc.h"
 #include "usart.h"
 #include "usb_host.h"
 #include "gpio.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "stm32h747i_discovery.h"
 #include "interface.h"
@@ -34,31 +31,31 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-/* Private macro -------------------------------------------------------------*/
-#define RPMSG_SERVICE_NAME              "midi_communication"
-
-/* Private variables ---------------------------------------------------------*/
-static volatile int message_received;
-static volatile midi_package_t received_data;
-static struct rpmsg_endpoint rp_endpoint;
-HSEM_TypeDef *HSEM_DEBUG = HSEM;
-
-static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
-{
-	received_data = *((midi_package_t*) data);
-	message_received = 1;
-	return 0;
-}
-
-void midipacket_sendToCM7(midi_package_t packet)
-{
-	int32_t status = 0;
-	status = OPENAMP_send(&rp_endpoint, &packet, sizeof(packet));
-	if (status < 0)
-	{
-		Error_Handler();
-	}
-}
+///* Private macro -------------------------------------------------------------*/
+//#define RPMSG_SERVICE_NAME              "midi_communication"
+//
+///* Private variables ---------------------------------------------------------*/
+//static volatile int message_received;
+//static volatile midi_package_t received_data;
+//static struct rpmsg_endpoint rp_endpoint;
+//HSEM_TypeDef *HSEM_DEBUG = HSEM;
+//
+//static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
+//{
+//	received_data = *((midi_package_t*) data);
+//	message_received = 1;
+//	return 0;
+//}
+//
+//void midipacket_sendToCM7(midi_package_t packet)
+//{
+//	int32_t status = 0;
+//	status = OPENAMP_send(&rp_endpoint, &packet, sizeof(packet));
+//	if (status < 0)
+//	{
+//		Error_Handler();
+//	}
+//}
 
 /**
  * @brief  The application entry point.
@@ -66,8 +63,6 @@ void midipacket_sendToCM7(midi_package_t packet)
  */
 int main(void)
 {
-	int32_t status = 0;
-
 	/*HW semaphore Clock enable*/
 	__HAL_RCC_HSEM_CLK_ENABLE();
 	/* Activate HSEM notification for Cortex-M4*/
@@ -86,21 +81,7 @@ int main(void)
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 
-	/* Inilitize the mailbox use notify the other core on new message */
-	MAILBOX_Init();
-
-	/* Inilitize OpenAmp and libmetal libraries */
-	if (MX_OPENAMP_Init(RPMSG_REMOTE, NULL) != HAL_OK)
-		Error_Handler();
-
-	/* create a endpoint for rmpsg communication */
-	status = OPENAMP_create_endpoint(&rp_endpoint, RPMSG_SERVICE_NAME,
-	RPMSG_ADDR_ANY, rpmsg_recv_callback, NULL);
-	if (status < 0)
-	{
-		Error_Handler();
-	}
-
+	openamp_init();
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
@@ -128,14 +109,14 @@ int main(void)
 	while (1)
 	{
 		MX_USB_HOST_Process();
-		if (message_received == 0)
-		{
-			OPENAMP_check_for_message();
-		}
-		if (message_received)
-		{
-			message_received = 0;
-		}
+//		if (message_received == 0)
+//		{
+//			OPENAMP_check_for_message();
+//		}
+//		if (message_received)
+//		{
+//			message_received = 0;
+//		}
 		Application_Process();
 	}
 

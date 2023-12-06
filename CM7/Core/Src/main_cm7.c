@@ -26,7 +26,7 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-extern float samplerate;
+//extern float samplerate;
 bool demoMode = true;
 bool freeze = false;
 bool sequencerIsOn = true;
@@ -90,7 +90,6 @@ int main(void)
 	/* Enable D-Cache---------------------------------------------------------*/
 	SCB_EnableDCache();
 
-	/* USER CODE BEGIN Boot_Mode_Sequence_1 */
 	/* Wait until CPU2 boots and enters in stop mode or timeout*/
 	timeout = 0xFFFF;
 	while ((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0))
@@ -99,7 +98,7 @@ int main(void)
 	{
 		Error_Handler();
 	}
-	/* USER CODE END Boot_Mode_Sequence_1 */
+
 	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -107,7 +106,7 @@ int main(void)
 
 	/* Configure the system clock */
 	SystemClock_Config();
-	/* USER CODE BEGIN Boot_Mode_Sequence_2 */
+
 	/* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
 	 HSEM notification */
 	/*HW semaphore Clock enable*/
@@ -124,8 +123,7 @@ int main(void)
 	{
 		Error_Handler();
 	}
-	/* USER CODE END Boot_Mode_Sequence_2 */
-
+	/*-------------------------------------------------------------------------------------*/
 	/* Initialize the mailbox use notify the other core on new message */
 	MAILBOX_Init();
 
@@ -149,14 +147,13 @@ int main(void)
 	{
 		Error_Handler();
 	}
+	/*-------------------------------------------------------------------------------------*/
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_RNG_Init();
-	/* USER CODE BEGIN 2 */
 	BSP_LED_Init(LED_RED);
-	samplerate = 48000.0f;
-	//sequencerIsOn = true;
+	//samplerate = 48000.0f;
 	Synth_Init();
 	AudioInit();
 

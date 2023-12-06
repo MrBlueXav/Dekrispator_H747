@@ -11,13 +11,15 @@
 
 #include <stdint.h>
 //#include "lcd_trace.h"
-#include "main_cm4.h"
+//#include "main_cm4.h"
 #include "usbh_midi_XH.h"
 #include "usb_host.h"
 #include "stm32h747i_discovery.h"
+#include "openamp.h"
 
 /*-----------------------------------------------------------------------------------------------------------------*/
 
+void openamp_init(void);
 void Application_Process(void);
 
 /*-----------------------------------------------------------------------------------------------------------------*/
