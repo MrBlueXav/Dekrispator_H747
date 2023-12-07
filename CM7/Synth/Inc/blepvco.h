@@ -36,7 +36,7 @@
 
 #include <stdbool.h>
 #include "minblep_tables.h"
-#include "CONSTANTS.h"
+#include "constants.h"
 
 //----------------------------------------------------------------------------------------------------------
 

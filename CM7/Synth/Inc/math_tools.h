@@ -14,7 +14,7 @@
 
 #include <math.h>
 #include <stdint.h>
-#include "CONSTANTS.h"
+#include "constants.h"
 
 /*-------------------------------------------------------*/
 float 	approx_exp(float x);

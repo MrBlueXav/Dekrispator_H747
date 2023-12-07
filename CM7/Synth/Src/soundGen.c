@@ -31,7 +31,6 @@ extern float samplerate;
 /*-------------------------------------------------------*/
 
 #define EPSI				.00002f
-//#define MAX_SOUNDS			14 // number - 1 of different sounds (starts at 0)
 
 /*-------------------------------------------------------*/
 bool demoMode = true;
@@ -420,7 +419,7 @@ void Synth_Init(void) {
 	osc_init(&op2, 0.8f, 587.f);
 	osc_init(&op3, 0.8f, 587.f);
 	osc_init(&op4, 0.8f, 587.f);
-	osc_init(&vibr_lfo, 0.1f, VIBRATO_FREQ);
+	osc_init(&vibr_lfo, 0.0f, VIBRATO_FREQ);
 	osc_init(&filt_lfo, 0, 0);
 	osc_init(&filt2_lfo, 0, 0);
 	osc_init(&amp_lfo, 0, 0);

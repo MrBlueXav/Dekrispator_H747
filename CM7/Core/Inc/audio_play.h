@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "stm32h7xx_hal.h"
-//#include "stm32h7xx_hal_def.h"
 #include "stm32h747i_discovery_audio.h"
 #include "soundGen.h"
 
@@ -25,15 +24,9 @@ typedef enum {
 
 }AUDIO_ErrorTypeDef;
 
-/* Exported constants --------------------------------------------------------*/
-/* The Audio file is flashed with ST-Link Utility @ flash address =  AUDIO_SRC_FILE_ADDRESS */
-#define AUDIO_SRC_FILE_ADDRESS       0x08080000   /* Audio file address in flash */
-#define AUDIO_FILE_SIZE              524288
-
 /* Exported functions ------------------------------------------------------- */
 
 void AudioInit (void);
-void Application(void);
 uint8_t AUDIO_Process(void);
 void Error_Handler(void);
 

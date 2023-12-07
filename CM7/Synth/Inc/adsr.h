@@ -31,7 +31,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "CONSTANTS.h"
+#include "constants.h"
 
 /* Exported types ------------------------------------------------------------*/
 

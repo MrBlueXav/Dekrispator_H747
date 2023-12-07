@@ -34,7 +34,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include "CONSTANTS.h"
+#include "constants.h"
 #include "random.h"
 #include "notesTables.h"
 

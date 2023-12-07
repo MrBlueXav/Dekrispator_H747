@@ -10,11 +10,7 @@
 #include "MIDI_application.h"
 #include "adsr.h"
 
-/* Private define ------------------------------------------------------------*/
-
-#define RX_BUFF_SIZE 64 /* USB MIDI buffer : max received data 64 bytes */
-
-//uint8_t MIDI_RX_Buffer[USB_MIDI_RX_BUFFER_SIZE] _DTCMRAM_ ; // MIDI reception buffer
+/*-----------------------------------------------------------------------------*/
 
 int8_t currentNote _DTCMRAM_;
 int8_t velocity _DTCMRAM_;
@@ -22,30 +18,6 @@ uint8_t notes_On[128] _DTCMRAM_; /*= {0};*/
 int8_t notesCount = 0; // number of notes on (keys pressed)
 extern ADSR_t adsr;
 extern bool sequencerIsOn;
-
-/* Private function prototypes -----------------------------------------------*/
-
-
-/*-----------------------------------------------------------------------------*/
-/**
- * @brief  Main routine for MIDI application, looped in main.c
- * @param  None
- * @retval none
- */
-void MIDI_Application(void) {
-	if (Appli_state == APPLICATION_READY) {
-
-		Appli_state = APPLICATION_RUNNING;
-	}
-	if (Appli_state == APPLICATION_RUNNING) {
-		//....pffff......grrrrr......
-	}
-
-	if (Appli_state == APPLICATION_DISCONNECT) {
-		Appli_state = APPLICATION_IDLE;
-
-	}
-}
 
 /*-----------------------------------------------------------------------------*/
 void MagicFX(uint8_t val) /* random effects parameters */

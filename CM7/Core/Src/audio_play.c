@@ -62,8 +62,6 @@ ALIGN_32BYTES(static AUDIO_BufferTypeDef buffer_ctl);
 static AUDIO_PLAYBACK_StateTypeDef audio_state;
 
 __IO uint32_t uwVolume = 20;
-__IO uint32_t uwPauseEnabledStatus = 0;
-
 static uint32_t *AudioFreq_ptr;
 static uint32_t AudioFreq[9] =
 { 8000, 11025, 16000, 22050, 32000, 44100, 48000, 96000, 192000 };
@@ -112,11 +110,7 @@ void AudioInit(void)
 	BSP_AUDIO_OUT_Play(0, (uint8_t*) &buffer_ctl.buff[0], AUDIO_BUFFER_SIZE);
 	audio_state = AUDIO_STATE_PLAYING;
 }
-/*----------------------------------------------------------------------------------------------------*/
-void Application(void) /*   called in main loop   */
-{
-	AUDIO_Process(); /* fill a half audio buffer  */
-}
+
 /*----------------------------------------------------------------------------------------------------*/
 uint8_t AUDIO_Process(void)
 {

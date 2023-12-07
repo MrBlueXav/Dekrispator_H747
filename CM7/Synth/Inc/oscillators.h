@@ -17,7 +17,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "CONSTANTS.h"
+#include "constants.h"
 #include "math_tools.h"
 #include "random.h"
 #include "drifter.h"

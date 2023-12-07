@@ -25,7 +25,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "CONSTANTS.h"
+#include "constants.h"
 #include "MIDI_application.h"
 #include "math_tools.h"
 #include "random.h"
@@ -36,7 +36,6 @@
 #include "phaser.h"
 #include "sinetable.h"
 #include "notesTables.h"
-#include "timers.h"
 #include "resonantFilter.h"
 #include "adsr.h"
 #include "blepvco.h"

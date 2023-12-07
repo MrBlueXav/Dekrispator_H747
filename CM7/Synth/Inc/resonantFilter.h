@@ -48,7 +48,7 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "CONSTANTS.h"
+#include "constants.h"
 #include "math_tools.h"
 
 //----------------------------------------------------

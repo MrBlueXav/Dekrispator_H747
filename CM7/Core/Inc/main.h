@@ -30,31 +30,16 @@ extern "C" {
 #include "stm32h7xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+
 #include "stm32h747i_discovery.h"
 #include "stm32h747i_discovery_audio.h"
 
-//#include "test_sound_generator.h"
 #include "audio_play.h"
-#include "random.h"
 #include "MIDI_application.h"
-#include "timers.h"
 #include "soundGen.h"
-#include "audio_conf.h"
-#include "delay.h"
-#include "chorusFD.h"
-#include "constants.h"
-#include "drifter.h"
-#include "resonantFilter.h"
-#include "adsr.h"
-#include "sequencer.h"
-/* USER CODE END Includes */
-
-
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-
 
 /* Private defines -----------------------------------------------------------*/
 #define OSC32_OUT_Pin GPIO_PIN_15
@@ -67,7 +52,6 @@ void Error_Handler(void);
 #define OSC_OUT_GPIO_Port GPIOH
 #define OSC_IN_Pin GPIO_PIN_0
 #define OSC_IN_GPIO_Port GPIOH
-
 
 #ifdef __cplusplus
 }

@@ -22,14 +22,6 @@
 #include "soundGen.h"
 #include "main.h"
 
-/* Exported types ------------------------------------------------------------*/
-//typedef enum
-//{
-//  BUFFER_OFFSET_NONE = 0,
-//  BUFFER_OFFSET_HALF,
-//  BUFFER_OFFSET_FULL,
-//}BUFFER_StateTypeDef;
-
 /* Exported functions ------------------------------------------------------- */
 //void audio_init(void);
 void toggleSound(void);

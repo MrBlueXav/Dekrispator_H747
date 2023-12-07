@@ -79,7 +79,6 @@
 "./Synth/Src/sequencer.o"
 "./Synth/Src/sinetable.o"
 "./Synth/Src/soundGen.o"
-"./Synth/Src/timers.o"
 "./Third_Party/OpenAMP/libmetal/lib/device.o"
 "./Third_Party/OpenAMP/libmetal/lib/init.o"
 "./Third_Party/OpenAMP/libmetal/lib/io.o"
