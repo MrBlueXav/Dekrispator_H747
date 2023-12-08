@@ -17,6 +17,7 @@ uint32_t oldtick, newtick;
 /*------------------------------------------------------------------------------------------------------------------*/
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv);
 void ProcessReceivedMidiDatas(void);
+void midipacket_print(midi_package_t pack);
 
 /* Private macro -------------------------------------------------------------*/
 #define RPMSG_SERVICE_NAME              "midi_communication"
@@ -120,7 +121,6 @@ void ProcessReceivedMidiDatas(void)
 	midi_package_t pack;
 
 	numberOfPackets = USBH_MIDI_GetLastReceivedDataSize(&hUsbHostHS) / 4; //each USB midi package is 4 bytes long
-	//LCD_UsrTrace("Nombre de paquets reçus : %d   \n", numberOfPackets);
 
 	while (numberOfPackets--)
 	{
@@ -136,9 +136,133 @@ void ProcessReceivedMidiDatas(void)
 		if (pack.cin_cable != 0) // if incoming midi message...
 		{
 			midipacket_sendToCM7(pack);
-			//start_LED_On(LED_Blue, 8);
-			printf("%d  :  %d, %d, %d, %d   \n",
-			RX_BUFF_SIZE / 4 - numberOfPackets, pack.cin_cable, pack.evnt0, pack.evnt1, pack.evnt2);
+			midipacket_print(pack);
+			//printf("MIDI event :   %x, %d, %d   \n", pack.evnt0, pack.evnt1, pack.evnt2);
 		}
+	}
+}
+/*------------------------------------------------------------------------------------------------*/
+void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
+{
+	uint8_t type = (pack.cin_cable) & 0x0F;
+	uint8_t channel = 1 + ((pack.evnt0) & 0x0F);
+	uint8_t data1 = pack.evnt1;
+	uint8_t data2 = pack.evnt2;
+
+	switch (type)
+	{
+	case NoteOff: // 0x80
+		printf("Note Off, ch= %d", channel);
+		printf(", note= %d", data1);
+		printf(", velocity= %d", data2);
+		printf("\n");
+		break;
+
+	case NoteOn: // 0x90
+		printf("Note Off, ch= %d", channel);
+		printf(", note= %d", data1);
+		printf(", velocity= %d", data2);
+		printf("\n");
+		break;
+
+	case ControlChange: // 0xB0
+		printf("Control Change, ch= %d", channel);
+		printf(", control= %d", data1);
+		printf(", value= %d", data2);
+		printf("\n");
+		break;
+
+	case ProgramChange: // 0xC0
+		printf("Program Change, ch= %d", channel);
+		printf(", program= %d", data1);
+		printf("\n");
+		break;
+
+	case Aftertouch: // 0xD0
+		printf("AfterTouch, ch= %d", channel);
+		printf(", pressure= %d", data1);
+		printf("\n");
+		break;
+
+	case PitchBend: // 0xE0
+		printf("PitchBend, ch= %d", channel);
+		printf(", pitch= %d", data1 + data2 * 128);
+		printf("\n");
+		break;
+
+	case PolyPressure: // 0xA0
+		printf("PolyKeyPress, ch= %d", channel);
+		printf(", note= %d", data1);
+		printf(", velocity= %d", data2);
+		printf("\n");
+		break;
+//
+//	case midi_SystemExclusive: // 0xF0
+//		// Messages larger than usbMIDI's internal buffer are truncated.
+//		// To receive large messages, you *must* use the 3-input function
+//		// handler.  See InputFunctionsComplete for details.
+//		print("SysEx Message // 0xF0: ");
+//		printBytes(MIDI1.getSysExArray(), data1 + data2 * 256);
+//		printf("\n");
+//		break;
+//
+//	case midi_TimeCodeQuarterFrame: // 0xF1
+//		printf("TimeCode // 0xF1, index=");
+//		printf(data1 >> 4, DEC);
+//		printf(", digit=");
+//		printf(data1 & 15, DEC);
+//		printf("\n");
+//		break;
+//
+//	case midi_SongPosition: // 0xF2
+//		printf("Song Position // 0xF2, beat=");
+//		printf(data1 + data2 * 128);
+//		printf("\n");
+//		break;
+//
+//	case midi_SongSelect: // 0xF3
+//		printf("Sond Select // 0xF3, song=");
+//		printf(data1, DEC);
+//		printf("\n");
+//		break;
+//
+//	case midi_TuneRequest: // 0xF6
+//		println("Tune Request // 0xF6");
+//		printf("\n");
+//		break;
+//
+//	case midi_Clock: // 0xF8
+//		printf("Clock // 0xF8");
+//		printf("\n");
+//		break;
+//
+//	case midi_Start: // 0xFA
+//		printf("Start // 0xFA");
+//		printf("\n");
+//		break;
+//
+//	case midi_Continue: // 0xFB
+//		printf("Continue // 0xFB");
+//		printf("\n");
+//		break;
+//
+//	case midi_Stop: // 0xFC
+//		printf("Stop // 0xFC");
+//		printf("\n");
+//		break;
+//
+//	case midi_ActiveSensing: // 0xFE
+//		printf("Actvice Sensing // 0xFE");
+//		printf("\n");
+//		break;
+//
+//	case midi_SystemReset: // 0xFF
+//		printf("System Reset // 0xFF");
+//		printf("\n");
+//		break;
+
+	default:
+		printf("Opps, an unknown MIDI message type!");
+		printf("\n");
 	}
 }

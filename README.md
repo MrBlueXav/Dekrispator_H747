@@ -21,7 +21,7 @@ I encountered endless issues to make this project work and suffered a lot... I h
 
 It was first a STM32CubeMX project (the only way I found to reach that point) but can't be regenerated now, be careful !
 
-You should be able to import the project in STM32CubeIDE, I think all necessary files are in the repositary.
+You should be able to import the project in STM32CubeIDE, I think all necessary files are in the repository.
 
 If not, makefiles are in Debug and Release folders with also binaries for direct flashing.
 

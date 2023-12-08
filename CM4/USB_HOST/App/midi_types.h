@@ -12,7 +12,7 @@
 
 typedef enum
 {
-	NoteOff = 0x8, NoteOn = 0x9, PolyPressure = 0xa, CC = 0xb, ProgramChange = 0xc, Aftertouch = 0xd, PitchBend = 0xe
+	NoteOff = 0x8, NoteOn = 0x9, PolyPressure = 0xA, ControlChange = 0xB, ProgramChange = 0xC, Aftertouch = 0xD, PitchBend = 0xE
 } midi_event_t;
 
 /* MIDI Code Index Numbers (CIN) */

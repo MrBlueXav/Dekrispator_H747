@@ -66,7 +66,7 @@ void MX_USART1_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART1_Init 2 */
-  HAL_UART_Transmit (&huart1, (uint8_t *) &"Hello boys !\n", 13, 1000);
+  //HAL_UART_Transmit (&huart1, (uint8_t *) &"Hello boys !\n", 13, 1000);
   /* USER CODE END USART1_Init 2 */
 
 }

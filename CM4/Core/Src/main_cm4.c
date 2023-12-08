@@ -30,6 +30,10 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
+/*---------------------------------------------------------------------------------------------*/
+void BSP_LED_Initialize(void);
+void Welcome_message(void);
+/*---------------------------------------------------------------------------------------------*/
 /**
  * @brief  The application entry point.
  * @retval int
@@ -61,12 +65,22 @@ int main(void)
 	MX_RTC_Init();
 	MX_USART1_UART_Init();
 	MX_USB_HOST_Init();
+	BSP_LED_Initialize();
+	Welcome_message();
 
+	while (1)
+	{
+		MX_USB_HOST_Process();
+		Application_Process();
+	}
+}
+/*********************************************************************************************/
+void BSP_LED_Initialize(void)
+{
 	BSP_LED_Init(LED1);
 	BSP_LED_Init(LED2);
 	BSP_LED_Init(LED3);
 	BSP_LED_Init(LED4);
-
 	BSP_LED_On(LED1);
 	BSP_LED_On(LED2);
 	BSP_LED_On(LED3);
@@ -76,16 +90,17 @@ int main(void)
 	BSP_LED_Off(LED2);
 	BSP_LED_Off(LED3);
 	BSP_LED_Off(LED4);
-
-	printf("Hello again !\n");
-
-	while (1)
-	{
-		MX_USB_HOST_Process();
-		Application_Process();
-	}
 }
-
+/*--------------------------------------------------------------------------------------*/
+void Welcome_message(void)
+{
+	printf("\n");
+	printf("-----------------------------------------\n");
+	printf("**** This is Dekrispator H747 ! ****\n");
+	printf("Waiting for USB MIDI controller device...\n");
+	printf("-----------------------------------------\n");
+	printf("\n");
+}
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
