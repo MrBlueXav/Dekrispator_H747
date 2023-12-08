@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Disco747-xav_CM4</name>
+	<name>Dekrispator_H747_CM4</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -32,17 +32,23 @@
 		<link>
 			<name>Common</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Common</locationURI>
+			<locationURI>copy_PARENT/Common</locationURI>
 		</link>
 		<link>
 			<name>Drivers</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers</locationURI>
+			<locationURI>copy_PARENT/Drivers</locationURI>
 		</link>
 		<link>
 			<name>Middlewares</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Middlewares</locationURI>
+			<locationURI>copy_PARENT/Middlewares</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-3-PROJECT_LOC%7D/STM32CubeMX/Disco747-xav</value>
+		</variable>
+	</variableList>
 </projectDescription>
