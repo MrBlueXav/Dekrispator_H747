@@ -133,11 +133,11 @@ void ProcessReceivedMidiDatas(void)
 		pack.evnt2 = *ptr;
 		ptr++;
 
-		if (pack.cin_cable != 0) // if incoming midi message...
+		//if (pack.cin_cable != 0) // if incoming midi message...
+		if (pack.ALL != 0) // if incoming midi message...
 		{
 			midipacket_sendToCM7(pack);
 			midipacket_print(pack);
-			//printf("MIDI event :   %x, %d, %d   \n", pack.evnt0, pack.evnt1, pack.evnt2);
 		}
 	}
 }
@@ -151,46 +151,46 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 
 	switch (type)
 	{
-	case NoteOff: // 0x80
+	case NoteOff: // 0x8
 		printf("Note Off, ch= %d", channel);
 		printf(", note= %d", data1);
 		printf(", velocity= %d", data2);
 		printf("\n");
 		break;
 
-	case NoteOn: // 0x90
+	case NoteOn: // 0x9
 		printf("Note Off, ch= %d", channel);
 		printf(", note= %d", data1);
 		printf(", velocity= %d", data2);
 		printf("\n");
 		break;
 
-	case ControlChange: // 0xB0
+	case ControlChange: // 0xB
 		printf("Control Change, ch= %d", channel);
 		printf(", control= %d", data1);
 		printf(", value= %d", data2);
 		printf("\n");
 		break;
 
-	case ProgramChange: // 0xC0
+	case ProgramChange: // 0xC
 		printf("Program Change, ch= %d", channel);
 		printf(", program= %d", data1);
 		printf("\n");
 		break;
 
-	case Aftertouch: // 0xD0
+	case Aftertouch: // 0xD
 		printf("AfterTouch, ch= %d", channel);
 		printf(", pressure= %d", data1);
 		printf("\n");
 		break;
 
-	case PitchBend: // 0xE0
+	case PitchBend: // 0xE
 		printf("PitchBend, ch= %d", channel);
 		printf(", pitch= %d", data1 + data2 * 128);
 		printf("\n");
 		break;
 
-	case PolyPressure: // 0xA0
+	case PolyPressure: // 0xA
 		printf("PolyKeyPress, ch= %d", channel);
 		printf(", note= %d", data1);
 		printf(", velocity= %d", data2);
@@ -262,7 +262,7 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 //		break;
 
 	default:
-		printf("Opps, an unknown MIDI message type!");
-		printf("\n");
+		printf("Other MIDI packet : %X, %X, %d, %d   \n", pack.cin_cable, pack.evnt0, pack.evnt1, pack.evnt2);
+
 	}
 }

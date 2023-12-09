@@ -64,8 +64,9 @@ int main(void)
 	MX_GPIO_Init();
 	MX_RTC_Init();
 	MX_USART1_UART_Init();
-	MX_USB_HOST_Init();
 	BSP_LED_Initialize();
+
+	MX_USB_HOST_Init();
 	Welcome_message();
 
 	while (1)

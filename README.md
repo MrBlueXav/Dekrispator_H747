@@ -17,6 +17,13 @@ More info on this synth here (project started in 2012) : https://github.com/MrBl
 
 * Debug messages with virtual com port from STlink (USART1).
 
+- PC Terminal configuration is as follows:
+      - BaudRate = 115200 baud
+      - Word Length = 8 Bits
+      - Stop Bit = 1
+      - Parity = None
+      - Flow control = None
+
 I encountered endless issues to make this project work and suffered a lot... ;-)) I hope some people will find it useful and could use it as an audio synth platform !
 
 It was first a STM32CubeMX project (the only way I found to reach that point) but can't be regenerated now, be careful ! I left the .ioc file for info only.

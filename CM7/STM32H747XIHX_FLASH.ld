@@ -2,11 +2,11 @@
 ******************************************************************************
 **
 
-**  File        : LinkerScript.ld
+**  File        : Linker Script for CM7 core
 **
 **
 **  Abstract    : Linker script for STM32H7 series
-**                1024Kbytes FLASH and 192Kbytes RAM
+**                
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.

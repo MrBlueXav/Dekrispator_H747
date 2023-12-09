@@ -2,7 +2,7 @@
 ******************************************************************************
 **
 
-**  File        : LinkerScript.ld
+**  File        : Linker Script for CM4 core
 **
 **
 **  Abstract    : Linker script for STM32H7 series
