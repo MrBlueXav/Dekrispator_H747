@@ -144,13 +144,12 @@ void ProcessReceivedMidiDatas(void)
 /*------------------------------------------------------------------------------------------------*/
 void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 {
-	uint8_t type = (pack.cin_cable) & 0x0F;
-	uint8_t channel = 1 + ((pack.evnt0) & 0x0F);
+	uint8_t type = pack.cin;
+	uint8_t channel = 1 + pack.chn;
 	uint8_t data1 = pack.evnt1;
 	uint8_t data2 = pack.evnt2;
 
-	switch (type)
-	{
+	switch (type)	{
 	case NoteOff: // 0x8
 		printf("Note Off, ch= %d", channel);
 		printf(", note= %d", data1);

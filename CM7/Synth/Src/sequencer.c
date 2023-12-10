@@ -36,12 +36,47 @@ NoteGenerator_t noteGen _DTCMRAM_;
 void seq_tempo_set(uint8_t val) {
 	seq.tempo = (float) (800.f * val / MIDI_MAX + 20); // unit : bpm
 	seq.steptime = lrintf(samplerate * 60 / seq.tempo);
-	//seq.smp_count = seq.steptime;
 }
 /*-------------------------------------------------------*/
 void seq_gateTime_set(uint8_t val) // val is a number of samples
 {
 	seq.gateTime = seq.steptime * ((0.9f - 0.1f) * val / MIDI_MAX + 0.1f); // from 10% to 90% of each step duration
+}
+/*-------------------------------------------------------*/
+void seq_transpP2(uint8_t val) // one tone up
+{
+	if (val == MIDI_MAXi) {
+		if (noteGen.rootNote < (MAX_NOTE_INDEX - 12)) {
+			noteGen.transpose = 2;
+		}
+	}
+}
+/*-------------------------------------------------------*/
+void seq_transpP7(uint8_t val) //
+{
+	if (val == MIDI_MAXi) {
+		if (noteGen.rootNote < (MAX_NOTE_INDEX - 12)) {
+			noteGen.transpose = 7;
+		}
+	}
+}
+/*-------------------------------------------------------*/
+void seq_transpM2(uint8_t val) // one tone down
+{
+	if (val == MIDI_MAXi) {
+		if (noteGen.rootNote > LOWEST_NOTE) {
+			noteGen.transpose = -2;
+		}
+	}
+}
+/*-------------------------------------------------------*/
+void seq_transpM7(uint8_t val) //
+{
+	if (val == MIDI_MAXi) {
+		if (noteGen.rootNote > LOWEST_NOTE) {
+			noteGen.transpose = -7;
+		}
+	}
 }
 /*-------------------------------------------------------*/
 void seq_transpUp(void) // one tone up
@@ -63,7 +98,6 @@ void seq_transpDown(void) // one tone down
 		noteGen.transpose = -2;
 	}
 }
-
 /*-------------------------------------------------------*/
 void seq_chooseScale(int16_t idx) {
 	uint8_t *currentScale;

@@ -18,6 +18,7 @@
 #include "main.h"
 #include "constants.h"
 #include "random.h"
+#include "adsr.h"
 #include "drifter.h"
 #include "sinetable.h"
 #include "notesTables.h"

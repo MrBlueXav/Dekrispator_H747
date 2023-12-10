@@ -83,6 +83,10 @@ void sequencer_init(float sample_rate);
 void seq_tempo_set(uint8_t val);
 void sequencer_process(void);
 void seq_sequence_new(void);
+void seq_transpP2(uint8_t val);
+void seq_transpP7(uint8_t val);
+void seq_transpM2(uint8_t val);
+void seq_transpM7(uint8_t val);
 void seq_transpose(void);
 void seq_transpUp(void); // one tone up
 void seq_transpDown(void); // one tone down
