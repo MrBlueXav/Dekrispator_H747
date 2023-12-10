@@ -93,7 +93,7 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	DemoMode_toggle,
 	Synth_reset,
 	Sequencer_toggle,
-	Do_____nothing,				/* 70 */
+	Freeze_toggle,				/* 70 */
 	Do_____nothing,
 	Do_____nothing,
 	Do_____nothing,

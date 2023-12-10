@@ -125,6 +125,12 @@ void Sequencer_toggle(uint8_t val) { // run or stop sequencer
 	}
 }
 /*---------------------------------------------------------*/
+void Freeze_toggle(uint8_t val) {
+	if (val == MIDI_MAXi) {
+		freeze = !freeze;
+	}
+}
+/*---------------------------------------------------------*/
 void Synth_reset(uint8_t val) {
 	if (val == MIDI_MAXi) {
 		demoMode = false;
