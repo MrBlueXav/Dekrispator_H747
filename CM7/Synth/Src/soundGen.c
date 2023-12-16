@@ -499,7 +499,7 @@ void sequencer_newSequence_action(void) // User callback function called by sequ
 }
 /*===============================================================================================================*/
 /*
-		length is the number of frames. A frame is a 4 bytes data = left sample + right sample
+		length is the number of frames. A frame is a 4 bytes data = left 16 bits sample + right 16 bits sample
  */
 void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the Sequencer
 {

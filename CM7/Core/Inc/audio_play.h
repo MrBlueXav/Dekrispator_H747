@@ -26,8 +26,8 @@ typedef enum {
 
 /* Exported functions ------------------------------------------------------- */
 
-void AudioInit (void);
+void 	AudioInit (void);
 uint8_t AUDIO_Process(void);
-void Error_Handler(void);
+void 	Error_Handler(void);
 
 #endif /* APPLICATION_USER_CM7_INC_AUDIO_PLAY_H_ */

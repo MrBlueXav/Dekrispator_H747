@@ -24,14 +24,11 @@ float samplerate ;
 
 /* Private define ------------------------------------------------------------*/
 
+#define AUDIO_DEFAULT_VOLUME    70
+
 /*Since SysTick is set to 1ms (unless to set it quicker) */
 /* to run up to 48khz, a buffer around 1000 (or more) is requested*/
 /* to run up to 96khz, a buffer around 2000 (or more) is requested*/
-#define AUDIO_DEFAULT_VOLUME    70
-
-/* Audio file size and start address are defined here since the audio file is
- stored in Flash memory as a constant table of 16-bit data */
-#define AUDIO_START_OFFSET_ADDRESS    0            /* Offset relative to audio file header size */
 #define AUDIO_BUFFER_SIZE            2048
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,10 +47,7 @@ typedef enum
 typedef struct
 {
 	uint8_t buff[AUDIO_BUFFER_SIZE];
-	uint32_t fptr;
 	BUFFER_StateTypeDef state;
-	uint32_t AudioFileSize;
-	uint32_t *SrcAddress;
 
 } AUDIO_BufferTypeDef;
 
@@ -68,11 +62,6 @@ static uint32_t AudioFreq[9] =
 
 BSP_AUDIO_Init_t *AudioPlayInit;
 
-/* Private function prototypes -----------------------------------------------*/
-
-AUDIO_ErrorTypeDef AUDIO_Start(uint32_t *psrc_address, uint32_t file_size);
-AUDIO_ErrorTypeDef AUDIO_Stop(void);
-
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -82,7 +71,6 @@ AUDIO_ErrorTypeDef AUDIO_Stop(void);
  */
 void AudioInit(void)
 {
-
 	AudioFreq_ptr = AudioFreq + 6; /*AF_48K*/
 	uwVolume = 60;
 
