@@ -5,17 +5,21 @@ Hello ! I'm happy (maybe proud ;-)) to share this project with you.
 
 It's once again the Dekrispator infamous synth ported on a powerful dual core mcu development board : Discovery Kit STM32H747I-DISCO from STMicroelectronics.
 
+It's an expensive board but I had the opportunity to get one for free, so I could work on a version which would clearly separate USB and audio with the two embedded cores. 
+
+Of course, at that cost (about 100€), we can wonder if a raspberry Pi would be a better option (less hassle with hardware configuration) but it's another universe !
+
 More info on this synth here (project started in 2012) : https://github.com/MrBlueXav/Dekrispator_v2/tree/dekrispatorV3
 
 * M4 core (at 200 MHz) manages MIDI USB Host function (stable with my old Korg NanoKontrol !). Use CN1 to connect your midi device.
 
 * M7 core (at 400 MHz) computes sound. Samplerate is 48kHz.
 
-* Each core communicates through OPENAMP infrastructure.
+* Each core communicates through OPENAMP infrastructure. (M4 core just sends midi packets to M7 core.)
 
 * No LCD at the moment.
 
-* Debug messages with virtual com port from STlink (USART1).
+* Debug messages sent with virtual com port from STlink (USART1 --> USB CN2).
 
 - PC Terminal configuration is as follows:
       - BaudRate = 115200 baud
