@@ -28,14 +28,22 @@
 #include "sequencer.h"
 
 /*--------------------------------------------------------------------------------------------*/
-extern float samplerate;
+
 Sequencer_t seq _DTCMRAM_;
 NoteGenerator_t noteGen _DTCMRAM_;
+
+void Sequencer_params_set(const SequencerParams_t *params) {
+
+}
+
+void Sequencer_params_save(SequencerParams_t *params) {
+
+}
 
 /*--------------------------------------------------------------------------------------------*/
 void seq_tempo_set(uint8_t val) {
 	seq.tempo = (float) (800.f * val / MIDI_MAX + 20); // unit : bpm
-	seq.steptime = lrintf(samplerate * 60 / seq.tempo);
+	seq.steptime = lrintf(seq.samplerate * 60 / seq.tempo);
 }
 /*-------------------------------------------------------*/
 void seq_gateTime_set(uint8_t val) // val is a number of samples
@@ -254,7 +262,6 @@ void seq_decMaxFreq(void) {
 	if (noteGen.octaveSpread > 0) {
 		noteGen.octaveSpread--;
 		noteGen.chRequested = true;
-		//pitchGenChangePoints();
 	}
 }
 /*-------------------------------------------------------*/

@@ -58,6 +58,15 @@ void ADSR_init(ADSR_t *env)
   env->cnt_ = 0;  
 }
 
+void ADSR_params_set(const ADSRParams_t *params)
+{
+
+}
+void ADSR_params_save(ADSRParams_t *params)
+{
+
+}
+
 void ADSR_keyOn(ADSR_t *env)
 {
 	env->cnt_ = 0;

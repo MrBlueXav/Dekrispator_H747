@@ -48,6 +48,12 @@ float filterFreq _DTCMRAM_;
 float filterFreq2 _DTCMRAM_;
 
 /****************************************************************************************************************/
+void ResonantFilter_params_save(ResonantFilterParams_t *params) {
+
+}
+void ResonantFilter_params_set(const ResonantFilterParams_t *params) {
+
+}
 
 void SVF_setReso(ResonantFilter* filter, float feedback)
 {

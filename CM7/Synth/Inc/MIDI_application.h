@@ -27,17 +27,9 @@
 #include "audio_conf.h"
 #include "midi_types.h"
 
-/*------------------------------------------------------------------------------*/
-
-extern int8_t currentNote;
-extern int8_t velocity;
-
 /* Exported functions ------------------------------------------------------- */
-
-void MagicFX(uint8_t val);
-void MagicPatch(uint8_t val);
-void Reset_notes_On(void);
 void ProcessReceivedMidiDatas(midi_package_t packet);
+void Reset_notes_On(void);
 
 /*------------------------------------------------------------------------------*/
 #endif /* MIDI_APPLICATION_H_ */

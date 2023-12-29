@@ -72,6 +72,12 @@ const float_t notesFreq[] =
 		11175.30340586, 11839.82152677, 12543.85395142
 };
 
+/*----------------------------------------------------------------------------*/
+float midiNoteToFreq(uint8_t note) {
+	if (note < LOWEST_NOTE) return notesFreq[0];
+	if (note > HIGHEST_NOTE) return notesFreq[MAX_NOTE_INDEX];
+	return notesFreq[note - LOWEST_NOTE];
+}
 /******************************************************************************/
 /*
  * 				SCALES

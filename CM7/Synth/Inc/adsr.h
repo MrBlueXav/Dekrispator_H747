@@ -8,18 +8,18 @@
  */
 /***************************************************/
 /*! \class ADSR
-    \brief STK ADSR envelope class.
+ \brief STK ADSR envelope class.
 
-    This Envelope subclass implements a
-    traditional ADSR (Attack, Decay,
-    Sustain, Release) envelope.  It
-    responds to simple keyOn and keyOff
-    messages, keeping track of its state.
-    The \e state = ADSR::DONE after the
-    envelope value reaches 0.0 in the
-    ADSR::RELEASE state.
+ This Envelope subclass implements a
+ traditional ADSR (Attack, Decay,
+ Sustain, Release) envelope.  It
+ responds to simple keyOn and keyOff
+ messages, keeping track of its state.
+ The \e state = ADSR::DONE after the
+ envelope value reaches 0.0 in the
+ ADSR::RELEASE state.
 
-    by Perry R. Cook and Gary P. Scavone, 1995 - 2005.
+ by Perry R. Cook and Gary P. Scavone, 1995 - 2005.
  */
 /***************************************************/
 
@@ -36,29 +36,43 @@
 /* Exported types ------------------------------------------------------------*/
 
 //! Envelope states.
-enum { ATTACK, DECAY, SUSTAIN, RELEASE, DONE };
+enum
+{
+	ATTACK, DECAY, SUSTAIN, RELEASE, DONE
+};
 
 typedef struct
 {
-	float 	attackRate_;
-	float 	decayRate_;
-	float 	sustainLevel_;
-	float 	releaseRate_;
-	float 	value_;
-	float	lastOutput_;
-	float 	target_;
-	float	rate_;
-	int 	state_;
+	float attackRate_;
+	float decayRate_;
+	float sustainLevel_;
+	float releaseRate_;
+	float value_;
+	float lastOutput_;
+	float target_;
+	float rate_;
+	int state_;
 	uint32_t cnt_; // sample counter for on state
 
+} ADSR_t;
 
-} ADSR_t ;
+typedef struct
+{
+	float attackRate_;
+	float decayRate_;
+	float sustainLevel_;
+	float releaseRate_;
 
+} ADSRParams_t;
 
 /* Exported functions --------------------------------------------------------*/
 
 //! Default constructor.
 void ADSR_init(ADSR_t *env);
+
+void ADSR_params_set(const ADSRParams_t *params);
+void ADSR_params_save(ADSRParams_t *params);
+
 
 //! Set target = 1, state = \e ADSR::ATTACK.
 void ADSR_keyOn(ADSR_t *env);
@@ -94,12 +108,12 @@ void ADSR_setAllTimes(ADSR_t *env, float aTime, float dTime, float sLevel, float
 void ADSR_setTarget(ADSR_t *env, float target);
 
 //! Return the current envelope \e state (ATTACK, DECAY, SUSTAIN, RELEASE, DONE).
-int ADSR_getState(ADSR_t *env) ;
+int ADSR_getState(ADSR_t *env);
 
 //! Set to state = ADSR::SUSTAIN with current and target values of \e aValue.
 void ADSR_setValue(ADSR_t *env, float value);
 
-float ADSR_computeSample( ADSR_t *env );
+float ADSR_computeSample(ADSR_t *env);
 
 void setGateTime(uint8_t val);
 void AttTime_set(uint8_t val);

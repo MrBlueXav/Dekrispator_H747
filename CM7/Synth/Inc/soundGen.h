@@ -39,6 +39,7 @@
 #include "resonantFilter.h"
 #include "adsr.h"
 #include "blepvco.h"
+#include "metronome.h"
 
 /* Exported functions ------------------------------------------------------- */
 
@@ -115,6 +116,10 @@ void setDecayFactor(uint8_t val);
 void nextSound(void);
 void prevSound(void);
 void Sound_set(uint8_t val);
+
+void MagicFX(uint8_t val);
+void MagicPatch(uint8_t val);
+
 
 void soundGenInit(void);
 void soundGenNewWave(void);

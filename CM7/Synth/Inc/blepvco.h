@@ -48,6 +48,18 @@ void place_step_dd(float *buffer, int index, float phase, float w, float scale);
 void place_slope_dd(float *buffer, int index, float phase, float w, float slope_delta);
 
 //----------------------------------------------------------------------------------------------------------
+typedef struct
+{
+	float	amp;
+	float	last_amp;
+	float 	freq;
+	float	waveform;	// duty cycle, must be in [-1, 1]
+
+} BlepOscillatorParams_t ;
+//----------------------------------------------------------------------------------------------------------
+void BlepOsc_params_set(const BlepOscillatorParams_t *params);
+void BlepOsc_params_save(BlepOscillatorParams_t *params);
+//----------------------------------------------------------------------------------------------------------
 
 //class VCO_blepsaw
 
