@@ -29,7 +29,7 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 {	Do_____nothing, 			/* 0 */
 	VibratoAmp_set,
 	DelayWet_set,
-	seq_tempo_set,
+	metro_tempo_set,	// MODIFIED
 	seq_freqMax_set,
 	seq_scale_set, 				/* 5 */
 	Sound_set,
@@ -70,9 +70,9 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	Delay_time_inc,
 	seq_gateTime_set,
 	AttTime_set,
-	Do_____nothing,
-	Do_____nothing,				/* 45 */
-	Do_____nothing,
+	metro_tempo_set,			// MODIFIED
+	metro2_tempo_set,				/* 45 */
+	metro3_tempo_set,
 	Do_____nothing,
 	Do_____nothing,
 	Do_____nothing,

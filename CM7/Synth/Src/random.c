@@ -7,29 +7,24 @@
  ******************************************************************************
  */
 //-------------------------------------------------------------------------------------------------------
-
 #include "random.h"
 
 //---------------------------------------------------------------------------
 /**************
  * returns a random float between a and b
  *****************/
-float_t frand_a_b(float_t a, float_t b)
+float frand_a_b(float a, float b)
 {
-	return ( rand()/(float_t)RAND_MAX ) * (b-a) + a ;
+	return (rand() / (float) RAND_MAX) * (b - a) + a;
 }
-
 
 //---------------------------------------------------------------------------
 /**************
  * returns a random float between 0 and 1
  *****************/
-float_t randomNum(void)
+float randomNum(void)
 {
-	float_t random = 1.0f;
-
-	random = rand()/4294967294.0f;
-	return random;
+	return ((float) rand() / (float) RAND_MAX);
 }
 
 /*-----------------------------------------------------------------------------*/
@@ -38,7 +33,20 @@ float_t randomNum(void)
  *****************/
 uint8_t MIDIrandVal(void)
 {
-	return (uint8_t)lrintf(frand_a_b(0 , MIDI_MAX));
+	return (uint8_t) lrintf(frand_a_b(0, MIDI_MAX));
+}
+
+/*-----------------------------------------------------------------------------*/
+/**************
+* Probabilistically generates triggers
+
+ \param prob (1 always returns true, 0 always false)
+
+ \return given a probability 0 to 1, returns true or false.
+ *****************/
+float mayTrig(float prob)
+{
+	return ((float) rand() / (float) RAND_MAX) <= prob ? true : false;
 }
 
 //-------------------------------------------------------------------------------------------------------

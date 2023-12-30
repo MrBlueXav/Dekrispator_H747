@@ -20,11 +20,11 @@
 
 
 /*-Exported functions---------------------------------------------------------*/
-//void 			randomGen_init (void);
-float_t 	frand_a_b (float_t a, float_t b);
-float_t 	randomNum (void);
-uint8_t 	MIDIrandVal(void);
 
+float 	frand_a_b (float a, float b);
+float 	randomNum (void);
+uint8_t 	MIDIrandVal(void);
+float 		mayTrig(float prob);
 
 /************************************************************************************/
 #endif

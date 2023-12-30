@@ -101,7 +101,7 @@
 						<entry excluding="STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_utils.c|BSP" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers/BSP"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="OPENAMP"/>
-						<entry excluding="Src/timers.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Synth"/>
+						<entry excluding="Src/soundGen.c|Src/timers.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Synth"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Third_Party"/>
 					</sourceEntries>
 				</configuration>
@@ -208,7 +208,7 @@
 						<entry excluding="STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_utils.c|BSP" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers/BSP"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="OPENAMP"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Synth/Src"/>
+						<entry excluding="soundGen.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Synth/Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Third_Party"/>
 					</sourceEntries>
 				</configuration>

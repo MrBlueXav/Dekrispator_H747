@@ -58,7 +58,7 @@ typedef struct
 	int32_t steptime; 	// unit : # of samples
 	int32_t smp_count;	// sample counter
 	int16_t step_idx;	// current step index
-	int32_t gateTime; 	// desired gate on time (in samples)
+	int32_t gateTime; 	// desired gate on time (in number of samples)
 	float_t samplerate;
 
 } Sequencer_t;
@@ -104,6 +104,7 @@ void Sequencer_params_save(SequencerParams_t *params);
 void seq_tempo_set(uint8_t val);
 void sequencer_process(void);
 void seq_sequence_new(void);
+int16_t seq_random_note(void);
 void seq_transpP2(uint8_t val);
 void seq_transpP7(uint8_t val);
 void seq_transpM2(uint8_t val);

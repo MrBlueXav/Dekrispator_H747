@@ -32,16 +32,19 @@
 Sequencer_t seq _DTCMRAM_;
 NoteGenerator_t noteGen _DTCMRAM_;
 
-void Sequencer_params_set(const SequencerParams_t *params) {
+void Sequencer_params_set(const SequencerParams_t *params)
+{
 
 }
 
-void Sequencer_params_save(SequencerParams_t *params) {
+void Sequencer_params_save(SequencerParams_t *params)
+{
 
 }
 
 /*--------------------------------------------------------------------------------------------*/
-void seq_tempo_set(uint8_t val) {
+void seq_tempo_set(uint8_t val)
+{
 	seq.tempo = (float) (800.f * val / MIDI_MAX + 20); // unit : bpm
 	seq.steptime = lrintf(seq.samplerate * 60 / seq.tempo);
 }
@@ -53,8 +56,10 @@ void seq_gateTime_set(uint8_t val) // val is a number of samples
 /*-------------------------------------------------------*/
 void seq_transpP2(uint8_t val) // one tone up
 {
-	if (val == MIDI_MAXi) {
-		if (noteGen.rootNote < (MAX_NOTE_INDEX - 12)) {
+	if (val == MIDI_MAXi)
+	{
+		if (noteGen.rootNote < (MAX_NOTE_INDEX - 12))
+		{
 			noteGen.transpose = 2;
 		}
 	}
@@ -62,8 +67,10 @@ void seq_transpP2(uint8_t val) // one tone up
 /*-------------------------------------------------------*/
 void seq_transpP7(uint8_t val) //
 {
-	if (val == MIDI_MAXi) {
-		if (noteGen.rootNote < (MAX_NOTE_INDEX - 12)) {
+	if (val == MIDI_MAXi)
+	{
+		if (noteGen.rootNote < (MAX_NOTE_INDEX - 12))
+		{
 			noteGen.transpose = 7;
 		}
 	}
@@ -71,8 +78,10 @@ void seq_transpP7(uint8_t val) //
 /*-------------------------------------------------------*/
 void seq_transpM2(uint8_t val) // one tone down
 {
-	if (val == MIDI_MAXi) {
-		if (noteGen.rootNote > LOWEST_NOTE) {
+	if (val == MIDI_MAXi)
+	{
+		if (noteGen.rootNote > LOWEST_NOTE)
+		{
 			noteGen.transpose = -2;
 		}
 	}
@@ -80,8 +89,10 @@ void seq_transpM2(uint8_t val) // one tone down
 /*-------------------------------------------------------*/
 void seq_transpM7(uint8_t val) //
 {
-	if (val == MIDI_MAXi) {
-		if (noteGen.rootNote > LOWEST_NOTE) {
+	if (val == MIDI_MAXi)
+	{
+		if (noteGen.rootNote > LOWEST_NOTE)
+		{
 			noteGen.transpose = -7;
 		}
 	}
@@ -89,28 +100,34 @@ void seq_transpM7(uint8_t val) //
 /*-------------------------------------------------------*/
 void seq_transpUp(void) // one tone up
 {
-	if (noteGen.rootNote < (MAX_NOTE_INDEX - 12)) {
+	if (noteGen.rootNote < (MAX_NOTE_INDEX - 12))
+	{
 		noteGen.transpose = 2;
 	}
 }
 /*-------------------------------------------------------*/
-void seq_transp(int8_t semitone, uint8_t val) {
-	if (val == MIDI_MAXi) {
+void seq_transp(int8_t semitone, uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
 		noteGen.transpose = semitone;
 	}
 }
 /*-------------------------------------------------------*/
 void seq_transpDown(void) // one tone down
 {
-	if (noteGen.rootNote > LOWEST_NOTE) {
+	if (noteGen.rootNote > LOWEST_NOTE)
+	{
 		noteGen.transpose = -2;
 	}
 }
 /*-------------------------------------------------------*/
-void seq_chooseScale(int16_t idx) {
+void seq_chooseScale(int16_t idx)
+{
 	uint8_t *currentScale;
 
-	switch (idx) {
+	switch (idx)
+	{
 	case 0:
 		currentScale = (uint8_t*) MIDIscale13;
 		break;
@@ -164,48 +181,58 @@ void seq_chooseScale(int16_t idx) {
 	noteGen.chRequested = true;
 }
 /*-------------------------------------------------------*/
-void seq_nextScale(void) {
-	if (noteGen.scaleIndex < MAX_SCALE_INDEX) {
+void seq_nextScale(void)
+{
+	if (noteGen.scaleIndex < MAX_SCALE_INDEX)
+	{
 		noteGen.scaleIndex++;
 		seq_chooseScale(noteGen.scaleIndex);
 	}
 }
 /*-------------------------------------------------------*/
-void seq_prevScale(void) {
-	if (noteGen.scaleIndex > 0) {
+void seq_prevScale(void)
+{
+	if (noteGen.scaleIndex > 0)
+	{
 		noteGen.scaleIndex--;
 		seq_chooseScale(noteGen.scaleIndex);
 	}
 }
 /*-------------------------------------------------------*/
-void seq_scale_set(uint8_t val) {
+void seq_scale_set(uint8_t val)
+{
 	noteGen.scaleIndex = (uint8_t) rintf(MAX_SCALE_INDEX / MIDI_MAX * val);
 	seq_chooseScale(noteGen.scaleIndex);
 }
 /*-------------------------------------------------------*/
-void seq_automatic_or_manual(void) {
+void seq_automatic_or_manual(void)
+{
 	if (noteGen.automaticON)
 		noteGen.automaticON = false;
 	else
 		noteGen.automaticON = true;
 }
 /*-------------------------------------------------------*/
-void seq_switchMovingSeq(uint8_t val) {
+void seq_switchMovingSeq(uint8_t val)
+{
 	if (val > 63)
 		noteGen.automaticON = true;
 	else
 		noteGen.automaticON = false;
 }
 /*-------------------------------------------------------*/
-void seq_toggleGlide(void) {
+void seq_toggleGlide(void)
+{
 	if (noteGen.glideON)
 		noteGen.glideON = false;
 	else
 		noteGen.glideON = true;
 }
 /*-------------------------------------------------------*/
-void seq_switchGlide(uint8_t val) {
-	switch (val) {
+void seq_switchGlide(uint8_t val)
+{
+	switch (val)
+	{
 	case MIDI_MAXi:
 		noteGen.glideON = true;
 		break;
@@ -215,15 +242,18 @@ void seq_switchGlide(uint8_t val) {
 	}
 }
 /*-------------------------------------------------------*/
-void seq_muteSomeNotes(void) {
+void seq_muteSomeNotes(void)
+{
 	if (noteGen.someNotesMuted)
 		noteGen.someNotesMuted = false;
 	else
 		noteGen.someNotesMuted = true;
 }
 /*-------------------------------------------------------*/
-void seq_switchMute(uint8_t val) {
-	switch (val) {
+void seq_switchMute(uint8_t val)
+{
+	switch (val)
+	{
 	case MIDI_MAXi:
 		noteGen.someNotesMuted = true;
 		break;
@@ -233,52 +263,62 @@ void seq_switchMute(uint8_t val) {
 	}
 }
 /*-------------------------------------------------------*/
-void seq_doubleTempo(void) {
+void seq_doubleTempo(void)
+{
 	//if (noteG.freq <= 5) noteG.freq *= 2;
 }
 /*-------------------------------------------------------*/
-void seq_halfTempo(void) {
+void seq_halfTempo(void)
+{
 	//if (noteG.freq >= .05f) noteG.freq *= 0.5f;
 }
 /*-------------------------------------------------------*/
-void seq_incTempo(void) {
+void seq_incTempo(void)
+{
 	//if (noteG.freq <= 5) noteG.freq += 0.01f;
 }
 
 /*-------------------------------------------------------*/
-void seq_decTempo(void) {
+void seq_decTempo(void)
+{
 	//if (noteG.freq >= .05f) noteG.freq -= 0.01f;
 }
 /*-------------------------------------------------------*/
-void seq_incMaxFreq(void) {
-	if (noteGen.octaveSpread < 8) {
+void seq_incMaxFreq(void)
+{
+	if (noteGen.octaveSpread < 8)
+	{
 		noteGen.octaveSpread++;
 		noteGen.chRequested = true;
 		//pitchGenChangePoints();
 	}
 }
 /*-------------------------------------------------------*/
-void seq_decMaxFreq(void) {
-	if (noteGen.octaveSpread > 0) {
+void seq_decMaxFreq(void)
+{
+	if (noteGen.octaveSpread > 0)
+	{
 		noteGen.octaveSpread--;
 		noteGen.chRequested = true;
 	}
 }
 /*-------------------------------------------------------*/
-void seq_freqMax_set(uint8_t val) {
+void seq_freqMax_set(uint8_t val)
+{
 	noteGen.octaveSpread = (uint8_t) (8 / MIDI_MAX * val);
 	noteGen.chRequested = true;
 }
 
 /*--------------------------------------------------------------------------------------------*/
-void _ITCMRAM_ seq_sequence_new(void) {
+void _ITCMRAM_ seq_sequence_new(void)
+{
 	int16_t relativeNote;
 	int16_t octaveShift;
 	int16_t index;
 
-	for (uint8_t i = 0; i < NUMBER_STEPS; i++) {
-		relativeNote = noteGen.currentScale[lrintf(
-				frand_a_b(1, noteGen.currentScale[0]))];
+	for (uint8_t i = 0; i < NUMBER_STEPS; i++)
+	{
+		relativeNote = noteGen.currentScale[lrintf(frand_a_b(1, noteGen.currentScale[0]))];
 		octaveShift = 12 * lrintf(frand_a_b(0, noteGen.octaveSpread));
 		index = noteGen.rootNote + octaveShift + relativeNote - LOWEST_NOTE;
 
@@ -289,11 +329,32 @@ void _ITCMRAM_ seq_sequence_new(void) {
 		seq.track1.note[i] = index; // note frequency is in notesFreq[index]
 	}
 }
+
 /*--------------------------------------------------------------------------------------------*/
-void seq_transpose(void) {
+int16_t seq_random_note(void) // returns a random midi note number through the note generator
+{
+	int16_t relativeNote;
+	int16_t octaveShift;
+	int16_t index;
+
+	relativeNote = noteGen.currentScale[lrintf(frand_a_b(1, noteGen.currentScale[0]))];
+	octaveShift = 12 * lrintf(frand_a_b(0, noteGen.octaveSpread));
+	index = noteGen.rootNote + octaveShift + relativeNote - LOWEST_NOTE;
+
+	while (index > MAX_NOTE_INDEX)
+		index -= 12;
+	while (index < 0)
+		index += 12;
+
+	return (index + LOWEST_NOTE) ;
+}
+/*--------------------------------------------------------------------------------------------*/
+void seq_transpose(void)
+{
 	int16_t noteIndex;
 
-	for (uint8_t i = 0; i < NUMBER_STEPS; i++) {
+	for (uint8_t i = 0; i < NUMBER_STEPS; i++)
+	{
 		noteIndex = seq.track1.note[i] + noteGen.transpose;
 		while (noteIndex > MAX_NOTE_INDEX)
 			noteIndex -= 12;
@@ -304,7 +365,8 @@ void seq_transpose(void) {
 	noteGen.transpose = 0;
 }
 /*--------------------------------------------------------------------------------------------*/
-void sequencer_init(float sample_rate) {
+void sequencer_init(float sample_rate)
+{
 	seq.samplerate = sample_rate;
 	seq.tempo = INIT_TEMPO;
 	seq.steptime = lrintf(seq.samplerate * 60 / seq.tempo);
@@ -328,9 +390,11 @@ void sequencer_init(float sample_rate) {
 void _ITCMRAM_ sequencer_process(void) // To be called at each sample treatment
 {
 	/* If we have reached a new step ....  */
-	if (seq.smp_count-- <= 0) {
+	if (seq.smp_count-- <= 0)
+	{
 		/* If we are at the beginning of a new sequence .... */
-		if (seq.step_idx == 0) {
+		if (seq.step_idx == 0)
+		{
 			sequencer_newSequence_action();
 		}
 		sequencer_newStep_action();

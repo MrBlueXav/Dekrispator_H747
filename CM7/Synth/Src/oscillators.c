@@ -47,7 +47,7 @@ Oscillator_t amp_lfo _DTCMRAM_;
 static float_t a[PARTIALS_NUMBER + 1] _DTCMRAM_; // additive generator amplitudes
 static float_t ph[PARTIALS_NUMBER + 1] _DTCMRAM_; // additive generator phases
 
-static float_t centralFreq = 3000;
+static float_t centralFreq = 440.0f;
 
 /*===============================================================================================================*/
 
@@ -314,6 +314,7 @@ float_t _ITCMRAM_ MorphingSaw_SampleCompute(Oscillator_t *op) // Morphing sawtoo
 		op->out = op->amp * (2 * op->phase - _2PI - op->phi0) / (_2PI - op->phi0);
 
 	op->phase += _2PI * Ts * op->freq; // increment phase
+
 	return op->out;
 }
 /*-------------------------------------------------------*/

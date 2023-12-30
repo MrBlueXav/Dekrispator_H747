@@ -19,10 +19,11 @@ C_SRCS += \
 ../Synth/Src/oscillators.c \
 ../Synth/Src/phaser.c \
 ../Synth/Src/random.c \
+../Synth/Src/rational_ratios.c \
 ../Synth/Src/resonantFilter.c \
 ../Synth/Src/sequencer.c \
 ../Synth/Src/sinetable.c \
-../Synth/Src/soundGen.c 
+../Synth/Src/soundGen2.c 
 
 OBJS += \
 ./Synth/Src/MIDI_application.o \
@@ -39,10 +40,11 @@ OBJS += \
 ./Synth/Src/oscillators.o \
 ./Synth/Src/phaser.o \
 ./Synth/Src/random.o \
+./Synth/Src/rational_ratios.o \
 ./Synth/Src/resonantFilter.o \
 ./Synth/Src/sequencer.o \
 ./Synth/Src/sinetable.o \
-./Synth/Src/soundGen.o 
+./Synth/Src/soundGen2.o 
 
 C_DEPS += \
 ./Synth/Src/MIDI_application.d \
@@ -59,10 +61,11 @@ C_DEPS += \
 ./Synth/Src/oscillators.d \
 ./Synth/Src/phaser.d \
 ./Synth/Src/random.d \
+./Synth/Src/rational_ratios.d \
 ./Synth/Src/resonantFilter.d \
 ./Synth/Src/sequencer.d \
 ./Synth/Src/sinetable.d \
-./Synth/Src/soundGen.d 
+./Synth/Src/soundGen2.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -72,7 +75,7 @@ Synth/Src/%.o Synth/Src/%.su Synth/Src/%.cyclo: ../Synth/Src/%.c Synth/Src/subdi
 clean: clean-Synth-2f-Src
 
 clean-Synth-2f-Src:
-	-$(RM) ./Synth/Src/MIDI_application.cyclo ./Synth/Src/MIDI_application.d ./Synth/Src/MIDI_application.o ./Synth/Src/MIDI_application.su ./Synth/Src/adsr.cyclo ./Synth/Src/adsr.d ./Synth/Src/adsr.o ./Synth/Src/adsr.su ./Synth/Src/audio_conf.cyclo ./Synth/Src/audio_conf.d ./Synth/Src/audio_conf.o ./Synth/Src/audio_conf.su ./Synth/Src/blepvco.cyclo ./Synth/Src/blepvco.d ./Synth/Src/blepvco.o ./Synth/Src/blepvco.su ./Synth/Src/chorusFD.cyclo ./Synth/Src/chorusFD.d ./Synth/Src/chorusFD.o ./Synth/Src/chorusFD.su ./Synth/Src/delay.cyclo ./Synth/Src/delay.d ./Synth/Src/delay.o ./Synth/Src/delay.su ./Synth/Src/drifter.cyclo ./Synth/Src/drifter.d ./Synth/Src/drifter.o ./Synth/Src/drifter.su ./Synth/Src/math_tools.cyclo ./Synth/Src/math_tools.d ./Synth/Src/math_tools.o ./Synth/Src/math_tools.su ./Synth/Src/metronome.cyclo ./Synth/Src/metronome.d ./Synth/Src/metronome.o ./Synth/Src/metronome.su ./Synth/Src/minblep_tables.cyclo ./Synth/Src/minblep_tables.d ./Synth/Src/minblep_tables.o ./Synth/Src/minblep_tables.su ./Synth/Src/notesTables.cyclo ./Synth/Src/notesTables.d ./Synth/Src/notesTables.o ./Synth/Src/notesTables.su ./Synth/Src/oscillators.cyclo ./Synth/Src/oscillators.d ./Synth/Src/oscillators.o ./Synth/Src/oscillators.su ./Synth/Src/phaser.cyclo ./Synth/Src/phaser.d ./Synth/Src/phaser.o ./Synth/Src/phaser.su ./Synth/Src/random.cyclo ./Synth/Src/random.d ./Synth/Src/random.o ./Synth/Src/random.su ./Synth/Src/resonantFilter.cyclo ./Synth/Src/resonantFilter.d ./Synth/Src/resonantFilter.o ./Synth/Src/resonantFilter.su ./Synth/Src/sequencer.cyclo ./Synth/Src/sequencer.d ./Synth/Src/sequencer.o ./Synth/Src/sequencer.su ./Synth/Src/sinetable.cyclo ./Synth/Src/sinetable.d ./Synth/Src/sinetable.o ./Synth/Src/sinetable.su ./Synth/Src/soundGen.cyclo ./Synth/Src/soundGen.d ./Synth/Src/soundGen.o ./Synth/Src/soundGen.su
+	-$(RM) ./Synth/Src/MIDI_application.cyclo ./Synth/Src/MIDI_application.d ./Synth/Src/MIDI_application.o ./Synth/Src/MIDI_application.su ./Synth/Src/adsr.cyclo ./Synth/Src/adsr.d ./Synth/Src/adsr.o ./Synth/Src/adsr.su ./Synth/Src/audio_conf.cyclo ./Synth/Src/audio_conf.d ./Synth/Src/audio_conf.o ./Synth/Src/audio_conf.su ./Synth/Src/blepvco.cyclo ./Synth/Src/blepvco.d ./Synth/Src/blepvco.o ./Synth/Src/blepvco.su ./Synth/Src/chorusFD.cyclo ./Synth/Src/chorusFD.d ./Synth/Src/chorusFD.o ./Synth/Src/chorusFD.su ./Synth/Src/delay.cyclo ./Synth/Src/delay.d ./Synth/Src/delay.o ./Synth/Src/delay.su ./Synth/Src/drifter.cyclo ./Synth/Src/drifter.d ./Synth/Src/drifter.o ./Synth/Src/drifter.su ./Synth/Src/math_tools.cyclo ./Synth/Src/math_tools.d ./Synth/Src/math_tools.o ./Synth/Src/math_tools.su ./Synth/Src/metronome.cyclo ./Synth/Src/metronome.d ./Synth/Src/metronome.o ./Synth/Src/metronome.su ./Synth/Src/minblep_tables.cyclo ./Synth/Src/minblep_tables.d ./Synth/Src/minblep_tables.o ./Synth/Src/minblep_tables.su ./Synth/Src/notesTables.cyclo ./Synth/Src/notesTables.d ./Synth/Src/notesTables.o ./Synth/Src/notesTables.su ./Synth/Src/oscillators.cyclo ./Synth/Src/oscillators.d ./Synth/Src/oscillators.o ./Synth/Src/oscillators.su ./Synth/Src/phaser.cyclo ./Synth/Src/phaser.d ./Synth/Src/phaser.o ./Synth/Src/phaser.su ./Synth/Src/random.cyclo ./Synth/Src/random.d ./Synth/Src/random.o ./Synth/Src/random.su ./Synth/Src/rational_ratios.cyclo ./Synth/Src/rational_ratios.d ./Synth/Src/rational_ratios.o ./Synth/Src/rational_ratios.su ./Synth/Src/resonantFilter.cyclo ./Synth/Src/resonantFilter.d ./Synth/Src/resonantFilter.o ./Synth/Src/resonantFilter.su ./Synth/Src/sequencer.cyclo ./Synth/Src/sequencer.d ./Synth/Src/sequencer.o ./Synth/Src/sequencer.su ./Synth/Src/sinetable.cyclo ./Synth/Src/sinetable.d ./Synth/Src/sinetable.o ./Synth/Src/sinetable.su ./Synth/Src/soundGen2.cyclo ./Synth/Src/soundGen2.d ./Synth/Src/soundGen2.o ./Synth/Src/soundGen2.su
 
 .PHONY: clean-Synth-2f-Src
 

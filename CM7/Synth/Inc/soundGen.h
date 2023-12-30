@@ -39,7 +39,9 @@
 #include "resonantFilter.h"
 #include "adsr.h"
 #include "blepvco.h"
+
 #include "metronome.h"
+#include "rational_ratios.h"
 
 /* Exported functions ------------------------------------------------------- */
 
@@ -116,6 +118,10 @@ void setDecayFactor(uint8_t val);
 void nextSound(void);
 void prevSound(void);
 void Sound_set(uint8_t val);
+
+void metro_tempo_set(uint8_t val);
+void metro2_tempo_set(uint8_t val);
+void metro3_tempo_set(uint8_t val);
 
 void MagicFX(uint8_t val);
 void MagicPatch(uint8_t val);
