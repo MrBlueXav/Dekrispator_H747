@@ -29,7 +29,7 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 {	Do_____nothing, 			/* 0 */
 	VibratoAmp_set,
 	DelayWet_set,
-	metro_tempo_set,	// MODIFIED
+	seq_tempo_set,
 	seq_freqMax_set,
 	seq_scale_set, 				/* 5 */
 	Sound_set,
@@ -63,9 +63,9 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	seq_transpP2,
 	seq_transpM7,				/* 35 */
 	seq_transpP7,
+	seq_transpM1,
+	seq_transpP1,
 	Chorus_reset,
-	MagicFX,
-	MagicPatch,
 	Delay_time_dec,				/* 40 */
 	Delay_time_inc,
 	seq_gateTime_set,
@@ -104,7 +104,7 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	Do_____nothing,				/* 75 */
 	RandSound1,
 	RandSound2,
-	Do_____nothing,
+	Desynkator_toggle,
 	Do_____nothing,
 	Do_____nothing,				/* 80 */
 	MagicFX,

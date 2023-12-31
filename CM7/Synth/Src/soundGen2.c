@@ -71,7 +71,7 @@ extern int8_t velocity;
 
 /*--------------------------------------------------------------*/
 
-Metro_t metro1, metro2, metro3;
+Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
 ADSR_t adsr2 _DTCMRAM_;
 ADSR_t adsr3 _DTCMRAM_;
 Oscillator_t oscill2;
@@ -82,6 +82,7 @@ static float f03 _DTCMRAM_;
 static float vol1 _DTCMRAM_;
 static float vol2 _DTCMRAM_;
 static float vol3 _DTCMRAM_;
+static bool desynkatorON = false;
 
 static bool demoMode = true;
 static bool freeze = false;
@@ -140,6 +141,16 @@ void DemoMode_toggle(uint8_t val)
 	if (val == MIDI_MAXi)
 	{
 		demoMode = !demoMode;
+	}
+	if (demoMode) desynkatorON = false;
+}
+
+/*---------------------------------------------------------*/
+void Desynkator_toggle(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		desynkatorON = !desynkatorON;
 	}
 }
 /*---------------------------------------------------------*/
@@ -490,8 +501,8 @@ void metro_tempo_set(uint8_t val)
 	fr3 = metro_getFreq(&metro3);
 	metro_setBPM(&metro1, (float) (800.f * val / MIDI_MAX + 20)); // unit : bpm
 	frNew = metro_getFreq(&metro1);
-	metro_setFreq(&metro2, fr2/fr1*frNew);
-	metro_setFreq(&metro3, fr3/fr1*frNew);
+	metro_setFreq(&metro2, fr2 / fr1 * frNew);
+	metro_setFreq(&metro3, fr3 / fr1 * frNew);
 
 	seq.steptime = lrintf(seq.samplerate * 60 / seq.tempo);
 
@@ -603,7 +614,6 @@ void MagicPatch(uint8_t val) /* random sound parameters */
 
 void Synth_Init(void)
 {
-
 	samplerate = (float) SAMPLERATE;
 	g_sequencerIsOn = true;
 	vol = 1;
@@ -644,6 +654,7 @@ void Synth_Init(void)
 	ADSR_init(&adsr3);
 	osc_init(&oscill2, 0.8f, 587.f);
 	osc_init(&oscill3, 0.8f, 587.f);
+	desynkatorON = false;
 }
 
 /*---------------------------------------------------------------------------------------*/
@@ -730,151 +741,178 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 	float y, y1, y2, y3;
 	float yL, yR;
 	float f1;
-	float env1, env2, env3;
+	float env, env1, env2, env3;
 	uint16_t valueL, valueR;
 	uint8_t clock1, clock2, clock3;
 	outp = buf;
 
 	for (pos = 0; pos < length; pos++)
 	{
-
-//		/*--- Sequencer actions and update ---*/
-//		if (g_sequencerIsOn == true)
-//		{
-//			sequencer_process(); //computes f0 and calls sequencer_newStep_action() and sequencer_newSequence_action()
-//		}
-//		else
-//		{
-//			f0 = notesFreq[currentNote];
-//			vol = (float) velocity / 127.0f;
-//		}
-
-		clock1 = metro_process(&metro1);
-		clock2 = metro_process(&metro2);
-		clock3 = metro_process(&metro3);
-
-		if (clock1)
+		/*--------------------------------------- Desynkator synth ----------------------------------*/
+		if (desynkatorON)
 		{
-			if ((noteGen.automaticON || noteGen.chRequested))
+			clock1 = metro_process(&metro1);
+			clock2 = metro_process(&metro2);
+			clock3 = metro_process(&metro3);
+			/**************************/
+			if (clock1)
 			{
-				seq_sequence_new();
-				noteGen.chRequested = false;
-				AdditiveGen_newWaveform();
-			}
-
-			if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
-				ADSR_keyOff(&adsr);
-			else
-				ADSR_keyOn(&adsr);
-
-			if (autoFilterON)
-				SVF_directSetFilterValue(&SVFilter,
-				Ts * 600.f * powf(5000.f / 600.f, frand_a_b(0, 1)));
-
-			if (noteGen.transpose != 0)
-			{
-				noteGen.rootNote += noteGen.transpose;
-				seq_transpose();
-			}
-
-			if (autoSound == 1)
-			{
-				switch (rand() % 4)
-				// 4 random timbers
+				if ((noteGen.automaticON || noteGen.chRequested))
 				{
-				case 0:
-					sound = CHORD15;
-					break;
-				case 1:
+					seq_sequence_new();
+					noteGen.chRequested = false;
 					AdditiveGen_newWaveform();
-					sound = ADDITIVE;
-					break;
-				case 2:
-					sound = CHORD13min5;
-					break;
-				case 3:
-					sound = VOICES3;
-					break;
 				}
+
+				if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+					ADSR_keyOff(&adsr);
+				else
+					ADSR_keyOn(&adsr);
+
+				if (autoFilterON)
+					SVF_directSetFilterValue(&SVFilter,
+					Ts * 600.f * powf(5000.f / 600.f, frand_a_b(0, 1)));
+
+				if (noteGen.transpose != 0)
+				{
+					noteGen.rootNote += noteGen.transpose;
+					seq_transpose();
+				}
+
+				if (autoSound == 1)
+				{
+					switch (rand() % 4)
+					// 4 random timbers
+					{
+					case 0:
+						sound = CHORD15;
+						break;
+					case 1:
+						AdditiveGen_newWaveform();
+						sound = ADDITIVE;
+						break;
+					case 2:
+						sound = CHORD13min5;
+						break;
+					case 3:
+						sound = VOICES3;
+						break;
+					}
+				}
+				if (autoSound == 2)
+				{
+					sound = rand() % LAST_SOUND;
+					if ((sound == CHORD13min5) || (sound == CHORD135))
+						sound = VOICES3;
+					if (sound == ADDITIVE)
+						AdditiveGen_newWaveform();
+				}
+
+				f01 = midiNoteToFreq((uint8_t) seq_random_note());
+				vol1 = frand_a_b(0.4f, .8f); // slightly random volume for each note
 			}
-			if (autoSound == 2)
+			/**************************/
+			if (clock2)
 			{
-				sound = rand() % LAST_SOUND;
-				if ((sound == CHORD13min5) || (sound == CHORD135))
-					sound = VOICES3;
-				if (sound == ADDITIVE)
-					AdditiveGen_newWaveform();
+				if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+					ADSR_keyOff(&adsr2);
+				else
+					ADSR_keyOn(&adsr2);
+				f02 = midiNoteToFreq((uint8_t) seq_random_note());
+				vol2 = frand_a_b(0.4f, .8f); // slightly random volume for each note
+
+			}
+			/**************************/
+			if (clock3)
+			{
+				if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+					ADSR_keyOff(&adsr3);
+				else
+					ADSR_keyOn(&adsr3);
+				f03 = midiNoteToFreq((uint8_t) seq_random_note());
+				vol3 = frand_a_b(0.4f, .8f); // slightly random volume for each note
+
 			}
 
-			f01 = midiNoteToFreq((uint8_t) seq_random_note());
-			vol1 = frand_a_b(0.4f, .8f); // slightly random volume for each note
-		}
+			/*--- compute vibrato modulation ---*/
+			f1 = f01 * (1 + Osc_WT_SINE_SampleCompute(&vibr_lfo));
+			OpSetFreq(&oscill2, f02);
+			OpSetFreq(&oscill3, f03);
 
-		if (clock2)
-		{
-			if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+			/*--- Generate waveform ---*/
+
+			y1 = waveCompute(sound, f1);
+			y2 = MorphingSaw_SampleCompute(&oscill2);
+			y3 = BasicSquare_SampleCompute(&oscill3);
+
+			/*--- Apply envelop and tremolo ---*/
+			env1 = ADSR_computeSample(&adsr) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo));
+			y1 *= vol1 * env1; // apply volume and envelop
+			if (adsr.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro1))) // 50% gate time
+				ADSR_keyOff(&adsr);
+
+			env2 = ADSR_computeSample(&adsr2);
+			y2 *= vol2 * env2; // apply volume and envelop
+			if (adsr2.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro2))) // 50% gate time
 				ADSR_keyOff(&adsr2);
-			else
-				ADSR_keyOn(&adsr2);
-			f02 = midiNoteToFreq((uint8_t) seq_random_note());
-			vol2 = frand_a_b(0.4f, .8f); // slightly random volume for each note
 
-		}
-
-		if (clock3)
-		{
-			if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+			env3 = ADSR_computeSample(&adsr3);
+			y3 *= vol3 * env3; // apply volume and envelop
+			if (adsr3.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro3))) // 50% gate time
 				ADSR_keyOff(&adsr3);
+
+			/*--- Apply filter effect ---*/
+			/* Update the filters cutoff frequencies */
+			if ((!autoFilterON) && (filt_lfo.amp != 0))
+				SVF_directSetFilterValue(&SVFilter, filterFreq * (1 + OpSampleCompute7bis(&filt_lfo)));
+			if (filt2_lfo.amp != 0)
+				SVF_directSetFilterValue(&SVFilter2, filterFreq2 * (1 + OpSampleCompute7bis(&filt2_lfo)));
+			y1 = 0.5f * (SVF_calcSample(&SVFilter, y1) + SVF_calcSample(&SVFilter2, y1)); // Two filters in parallel
+
+			/*---  Mix 3 oscillators ----*/
+			y = 0.4f * (y1 + y2 + y3);
+
+		}
+		else
+		{
+			/*------------------------------------ Dekrispator synth ----------------------------------*/
+			/*--- Sequencer actions and update ---*/
+			if (g_sequencerIsOn == true)
+			{
+				sequencer_process(); //computes f0 and calls sequencer_newStep_action() and sequencer_newSequence_action()
+			}
 			else
-				ADSR_keyOn(&adsr3);
-			f03 = midiNoteToFreq((uint8_t) seq_random_note());
-			vol3 = frand_a_b(0.4f, .8f); // slightly random volume for each note
+			{
+				f0 = notesFreq[currentNote];
+				vol = (float) velocity / 127.0f;
+			}
+			/*--- compute vibrato modulation ---*/
+			f1 = f0 * (1 + Osc_WT_SINE_SampleCompute(&vibr_lfo));
+
+			/*--- Generate waveform ---*/
+			y = waveCompute(sound, f1);
+
+			/*--- Apply envelop and tremolo ---*/
+			env = ADSR_computeSample(&adsr) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo));
+			y *= vol * env; // apply volume and envelop
+
+			if (g_sequencerIsOn == true)
+			{
+				if (adsr.cnt_ >= seq.gateTime)
+					ADSR_keyOff(&adsr);
+			}
+
+			/*--- Apply filter effect ---*/
+			/* Update the filters cutoff frequencies */
+			if ((!autoFilterON) && (filt_lfo.amp != 0))
+				SVF_directSetFilterValue(&SVFilter, filterFreq * (1 + OpSampleCompute7bis(&filt_lfo)));
+			if (filt2_lfo.amp != 0)
+				SVF_directSetFilterValue(&SVFilter2, filterFreq2 * (1 + OpSampleCompute7bis(&filt2_lfo)));
+			y = 0.5f * (SVF_calcSample(&SVFilter, y) + SVF_calcSample(&SVFilter2, y)); // Two filters in parallel
 
 		}
 
-		/*--- compute vibrato modulation ---*/
-		f1 = f01 * (1 + Osc_WT_SINE_SampleCompute(&vibr_lfo));
-		OpSetFreq(&oscill2, f02);
-		OpSetFreq(&oscill3, f03);
-
-		/*--- Generate waveform ---*/
-
-		y1 = waveCompute(sound, f1);
-		y2 = MorphingSaw_SampleCompute(&oscill2);
-		y3 = BasicSquare_SampleCompute(&oscill3);
-
-		/*--- Apply envelop and tremolo ---*/
-		env1 = ADSR_computeSample(&adsr) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo));
-		y1 *= vol1 * env1; // apply volume and envelop
-		if (adsr.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro1))) // 50% gate time
-			ADSR_keyOff(&adsr);
-
-		env2 = ADSR_computeSample(&adsr2);
-		y2 *= vol2 * env2; // apply volume and envelop
-		if (adsr2.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro2))) // 50% gate time
-			ADSR_keyOff(&adsr2);
-
-		env3 = ADSR_computeSample(&adsr3);
-		y3 *= vol3 * env3; // apply volume and envelop
-		if (adsr3.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro3))) // 50% gate time
-			ADSR_keyOff(&adsr3);
-
-//		if (g_sequencerIsOn == true)
-//		{
-//			if (adsr.cnt_ >= seq.gateTime)
-//				ADSR_keyOff(&adsr);
-//		}
-
-		/*--- Apply filter effect ---*/
-		/* Update the filters cutoff frequencies */
-		if ((!autoFilterON) && (filt_lfo.amp != 0))
-			SVF_directSetFilterValue(&SVFilter, filterFreq * (1 + OpSampleCompute7bis(&filt_lfo)));
-		if (filt2_lfo.amp != 0)
-			SVF_directSetFilterValue(&SVFilter2, filterFreq2 * (1 + OpSampleCompute7bis(&filt2_lfo)));
-		y1 = 0.5f * (SVF_calcSample(&SVFilter, y1) + SVF_calcSample(&SVFilter2, y1)); // Two filters in parallel
-
-		/*---  Mix 3 oscillators ----*/
-		y = 0.4f * (y1 + y2 + y3);
+		/*------------------------------------------ Common effects ------------------------------------------------*/
 
 		/*---  Apply delay effect ----*/
 		if (delayON)

@@ -63,6 +63,7 @@ void Oscillator_params_save(const Oscillator_t *op, OscillatorParams_t *params);
 void 	osc_init(Oscillator_t * op, float_t amp, float_t freq);
 /*-------------------------------------------------------*/
 float 	waveCompute(uint8_t sound, float f0);
+/*-------------------------------------------------------*/
 
 float_t OpSampleCompute(Oscillator_t * op); // accurate sine
 /*-------------------------------------------------------*/

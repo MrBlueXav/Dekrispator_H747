@@ -64,6 +64,18 @@ void seq_transpP2(uint8_t val) // one tone up
 		}
 	}
 }
+
+/*-------------------------------------------------------*/
+void seq_transpP1(uint8_t val) // one semitone up
+{
+	if (val == MIDI_MAXi)
+	{
+		if (noteGen.rootNote < (MAX_NOTE_INDEX - 12))
+		{
+			noteGen.transpose = 1;
+		}
+	}
+}
 /*-------------------------------------------------------*/
 void seq_transpP7(uint8_t val) //
 {
@@ -83,6 +95,18 @@ void seq_transpM2(uint8_t val) // one tone down
 		if (noteGen.rootNote > LOWEST_NOTE)
 		{
 			noteGen.transpose = -2;
+		}
+	}
+}
+
+/*-------------------------------------------------------*/
+void seq_transpM1(uint8_t val) // one semitone down
+{
+	if (val == MIDI_MAXi)
+	{
+		if (noteGen.rootNote > LOWEST_NOTE)
+		{
+			noteGen.transpose = -1;
 		}
 	}
 }

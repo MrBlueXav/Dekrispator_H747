@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  * File Name          	: blepvco.c
- * Author				: Xavier Halgand + Sean Bolton
+ * Author				: Sean Bolton (rewritten by Xavier Halgand)
  * Date               	:
  * Description        	:
  ******************************************************************************
