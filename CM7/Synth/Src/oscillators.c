@@ -38,12 +38,6 @@ Oscillator_t op2 _DTCMRAM_;
 Oscillator_t op3 _DTCMRAM_;
 Oscillator_t op4 _DTCMRAM_;
 
-Oscillator_t vibr_lfo _DTCMRAM_;
-Oscillator_t filt_lfo _DTCMRAM_;
-Oscillator_t filt2_lfo _DTCMRAM_;
-
-Oscillator_t amp_lfo _DTCMRAM_;
-
 static float_t a[PARTIALS_NUMBER + 1] _DTCMRAM_; // additive generator amplitudes
 static float_t ph[PARTIALS_NUMBER + 1] _DTCMRAM_; // additive generator phases
 

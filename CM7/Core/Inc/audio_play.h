@@ -15,6 +15,9 @@
 #include "stm32h747i_discovery_audio.h"
 #include "soundGen.h"
 
+/* AUDIO_BUFFER_SIZE should be a multiple of 8 (bytes)  */
+#define AUDIO_BUFFER_SIZE            2048
+
 /* Exported types ------------------------------------------------------------*/
 typedef enum {
   AUDIO_ERROR_NONE = 0,

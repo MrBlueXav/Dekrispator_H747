@@ -7,16 +7,20 @@
 
 #include "metronome.h"
 
+/****************************************************************************************/
+
 void Metro_params_set(const MetroParams_t *params, Metro_t *metro)
 {
 	metro->freq_ = params->freq_;
 	metro->phs_ = 0.0f;
 	metro->phs_inc_ = (_2PI * metro->freq_) / metro->sample_rate_;
 }
+
 void Metro_params_save(const Metro_t *metro, MetroParams_t *params)
 {
 	params->freq_ = metro->freq_;
 }
+
 
 /** Initializes Metro module.
  Arguments:

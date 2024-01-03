@@ -11,8 +11,6 @@
 
 /*-----------------------------------------------------------------------------*/
 
-//int8_t currentNote _DTCMRAM_;
-//int8_t velocity _DTCMRAM_;
 uint8_t notes_On[128] _DTCMRAM_; /*= {0};*/
 int8_t notesCount = 0; // number of notes on (keys pressed)
 int8_t currentNote;
@@ -20,7 +18,7 @@ int8_t velocity;
 extern ADSR_t adsr;
 extern bool g_sequencerIsOn;
 
-
+/*-----------------------------------------------------------------------------*/
 void Do_____nothing(uint8_t val);
 
 /*------------------------------MIDI CC implementation----------------------------------------*/

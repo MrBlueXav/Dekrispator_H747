@@ -42,10 +42,6 @@
 
 /*---------------------------------------------------------------------------*/
 
-ADSR_t			adsr _DTCMRAM_;
-
-/*---------------------------------------------------------------------------*/
-
 void ADSR_init(ADSR_t *env)
 {
   env->target_ = 0.0;
@@ -154,23 +150,7 @@ int ADSR_getState(ADSR_t *env)
 {
   return env->state_;
 }
-/*----------------------------------MIDI functions-------------------------------------------*/
-void AttTime_set(uint8_t val)
-{
-	ADSR_setAttackTime(&adsr, val/MIDI_MAX + 0.0001f);
-}
-void DecTime_set(uint8_t val)
-{
-	ADSR_setDecayTime(&adsr, .2*val/MIDI_MAX + 0.0001f);
-}
-void SustLevel_set(uint8_t val)
-{
-	ADSR_setSustainLevel(&adsr, val/MIDI_MAX);
-}
-void RelTime_set(uint8_t val)
-{
-	ADSR_setReleaseTime(&adsr, .5f * val/MIDI_MAX + 0.0001f);
-}
+
 /*--------------------------------------------------------------------------------------*/
 float _ITCMRAM_ ADSR_computeSample(ADSR_t *env)
 {

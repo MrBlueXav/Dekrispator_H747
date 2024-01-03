@@ -26,12 +26,10 @@ float samplerate ;
 
 #define AUDIO_DEFAULT_VOLUME    70
 
-/*Since SysTick is set to 1ms (unless to set it quicker) */
-/* to run up to 48khz, a buffer around 1000 (or more) is requested*/
-/* to run up to 96khz, a buffer around 2000 (or more) is requested*/
+/*Since SysTick is set to 1ms (unless to set it quicker) ??? */
+/* to run up to 48khz, a buffer around 1000 (or more) is requested ??? */
+/* to run up to 96khz, a buffer around 2000 (or more) is requested ??? */
 
-/* AUDIO_BUFFER_SIZE should be a multiple of 8 (bytes)  */
-#define AUDIO_BUFFER_SIZE            2048
 
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
@@ -56,12 +54,7 @@ typedef struct
 /* Private variables ---------------------------------------------------------*/
 ALIGN_32BYTES(static AUDIO_BufferTypeDef buffer_ctl);
 static AUDIO_PLAYBACK_StateTypeDef audio_state;
-
 __IO uint32_t uwVolume = 20;
-//static uint32_t *AudioFreq_ptr;
-//static uint32_t AudioFreq[9] =
-//{ 8000, 11025, 16000, 22050, 32000, 44100, 48000, 96000, 192000 };
-
 BSP_AUDIO_Init_t *AudioPlayInit;
 
 /* Private functions ---------------------------------------------------------*/
@@ -74,8 +67,6 @@ BSP_AUDIO_Init_t *AudioPlayInit;
 void AudioInit(void)
 {
 	uwVolume = 60;
-	//AudioFreq_ptr = AudioFreq + 6; /*AF_48K*/
-	//sound_generator_init0();
 
 	AudioPlayInit->Device = AUDIO_OUT_DEVICE_HEADPHONE;
 	AudioPlayInit->ChannelsNbr = 2;

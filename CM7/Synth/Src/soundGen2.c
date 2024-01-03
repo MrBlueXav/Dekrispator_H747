@@ -1,16 +1,9 @@
-/*
- * soundGen2.c
- *
- *  Created on: Dec 29, 2023
- *      Author: Xavier Halgand
- */
-
 /**
  ******************************************************************************
  * File Name        : soundGen2.c
  * Author			: Xavier Halgand
- * Date             :
- * Description      :
+ * Date             : Dec 29, 2023
+ * Description      : main synthesizer file : modules & structure
  ******************************************************************************
  */
 
@@ -45,45 +38,42 @@ bool g_sequencerIsOn = true;
 
 extern Sequencer_t seq;
 extern NoteGenerator_t noteGen;
-
 extern Oscillator_t op1;
 extern Oscillator_t op2;
 extern Oscillator_t op3;
 extern Oscillator_t op4;
-
 extern VCO_blepsaw_t mbSawOsc;
 extern VCO_bleprect_t mbRectOsc;
 extern VCO_bleptri_t mbTriOsc;
-
-extern Oscillator_t vibr_lfo;
-extern Oscillator_t filt_lfo;
-extern Oscillator_t filt2_lfo;
-extern Oscillator_t amp_lfo;
-
 extern ResonantFilter SVFilter;
 extern ResonantFilter SVFilter2;
 extern float filterFreq;
 extern float filterFreq2;
-
-extern ADSR_t adsr;
 extern int8_t currentNote;
 extern int8_t velocity;
 
+ADSR_t adsr;
+
 /*--------------------------------------------------------------*/
 
-Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
-ADSR_t adsr2 _DTCMRAM_;
-ADSR_t adsr3 _DTCMRAM_;
-Oscillator_t oscill2;
-Oscillator_t oscill3;
+static Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
+static ADSR_t adsr2 _DTCMRAM_;
+static ADSR_t adsr3 _DTCMRAM_;
+static Oscillator_t oscill2;
+static Oscillator_t oscill3;
+static Oscillator_t vibr_lfo;
+static Oscillator_t filt_lfo;
+static Oscillator_t filt2_lfo;
+static Oscillator_t amp_lfo;
+
 static float f01 _DTCMRAM_;
 static float f02 _DTCMRAM_;
 static float f03 _DTCMRAM_;
 static float vol1 _DTCMRAM_;
 static float vol2 _DTCMRAM_;
 static float vol3 _DTCMRAM_;
-static bool desynkatorON = false;
 
+static bool desynkatorON = false;
 static bool demoMode = true;
 static bool freeze = false;
 static bool autoFilterON _DTCMRAM_;
@@ -97,7 +87,24 @@ static float vol _DTCMRAM_;
 
 static enum timbre sound _DTCMRAM_;
 
-/*===============================================================================================================*/
+/*=============================================   MIDI functions   ===================================================*/
+
+void AttTime_set(uint8_t val)
+{
+	ADSR_setAttackTime(&adsr, val/MIDI_MAX + 0.0001f);
+}
+void DecTime_set(uint8_t val)
+{
+	ADSR_setDecayTime(&adsr, .2*val/MIDI_MAX + 0.0001f);
+}
+void SustLevel_set(uint8_t val)
+{
+	ADSR_setSustainLevel(&adsr, val/MIDI_MAX);
+}
+void RelTime_set(uint8_t val)
+{
+	ADSR_setReleaseTime(&adsr, .5f * val/MIDI_MAX + 0.0001f);
+}
 
 void autoSound_set(int8_t val)
 {
@@ -623,6 +630,7 @@ void Synth_Init(void)
 	chorusON = false;
 	delayON = false;
 	phaserON = false;
+	desynkatorON = false;
 
 	sinetable_init();
 	Delay_init();
@@ -631,9 +639,11 @@ void Synth_Init(void)
 	ADSR_init(&adsr);
 	Chorus_init();
 	PhaserInit();
+
 	SVF_init();
 	filterFreq = 0.25f;
 	filterFreq2 = 0.25f;
+
 	osc_init(&op1, 0.8f, 587.f);
 	osc_init(&op2, 0.8f, 587.f);
 	osc_init(&op3, 0.8f, 587.f);
@@ -654,7 +664,7 @@ void Synth_Init(void)
 	ADSR_init(&adsr3);
 	osc_init(&oscill2, 0.8f, 587.f);
 	osc_init(&oscill3, 0.8f, 587.f);
-	desynkatorON = false;
+
 }
 
 /*---------------------------------------------------------------------------------------*/
@@ -943,7 +953,6 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 		*outp++ = valueL; // left channel sample
 		*outp++ = valueR; // right channel sample
 	}
-
 }
 
 /******************************************************* END *************************************************/

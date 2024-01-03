@@ -45,6 +45,12 @@
 
 /* Exported functions ------------------------------------------------------- */
 
+void setGateTime(uint8_t val);
+void AttTime_set(uint8_t val);
+void DecTime_set(uint8_t val);
+void SustLevel_set(uint8_t val);
+void RelTime_set(uint8_t val);
+
 uint8_t soundNumber_get(void);
 void autoSound_set(int8_t val);
 void RandSound1(uint8_t val);
