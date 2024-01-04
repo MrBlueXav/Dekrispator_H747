@@ -158,7 +158,7 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 		break;
 
 	case NoteOn: // 0x9
-		printf("Note Off, ch= %d", channel);
+		printf("Note On, ch= %d", channel);
 		printf(", note= %d", data1);
 		printf(", velocity= %d", data2);
 		printf("\n");
