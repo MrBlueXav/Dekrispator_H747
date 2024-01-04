@@ -57,10 +57,14 @@ ADSR_t adsr;
 /*--------------------------------------------------------------*/
 
 static Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
+static float proba1, proba2, proba3;
+static bool metro_reset_requested;
 static ADSR_t adsr2 _DTCMRAM_;
 static ADSR_t adsr3 _DTCMRAM_;
 static Oscillator_t oscill2;
 static Oscillator_t oscill3;
+static Oscillator_t amp_lfo2;
+
 static Oscillator_t vibr_lfo;
 static Oscillator_t filt_lfo;
 static Oscillator_t filt2_lfo;
@@ -91,19 +95,19 @@ static enum timbre sound _DTCMRAM_;
 
 void AttTime_set(uint8_t val)
 {
-	ADSR_setAttackTime(&adsr, val/MIDI_MAX + 0.0001f);
+	ADSR_setAttackTime(&adsr, val / MIDI_MAX + 0.0001f);
 }
 void DecTime_set(uint8_t val)
 {
-	ADSR_setDecayTime(&adsr, .2*val/MIDI_MAX + 0.0001f);
+	ADSR_setDecayTime(&adsr, .2 * val / MIDI_MAX + 0.0001f);
 }
 void SustLevel_set(uint8_t val)
 {
-	ADSR_setSustainLevel(&adsr, val/MIDI_MAX);
+	ADSR_setSustainLevel(&adsr, val / MIDI_MAX);
 }
 void RelTime_set(uint8_t val)
 {
-	ADSR_setReleaseTime(&adsr, .5f * val/MIDI_MAX + 0.0001f);
+	ADSR_setReleaseTime(&adsr, .5f * val / MIDI_MAX + 0.0001f);
 }
 
 void autoSound_set(int8_t val)
@@ -149,7 +153,8 @@ void DemoMode_toggle(uint8_t val)
 	{
 		demoMode = !demoMode;
 	}
-	if (demoMode) desynkatorON = false;
+	if (demoMode)
+		desynkatorON = false;
 }
 
 /*---------------------------------------------------------*/
@@ -529,6 +534,29 @@ void metro3_tempo_set(uint8_t val)
 
 }
 
+/*--------------------------------------------------------------------------------------------*/
+void metro1_proba_set(uint8_t val)
+{
+	proba1 = val/MIDI_MAX;
+}
+void metro2_proba_set(uint8_t val)
+{
+	proba2 = val/MIDI_MAX;
+}
+void metro3_proba_set(uint8_t val)
+{
+	proba3 = val/MIDI_MAX;
+}
+
+/*--------------------------------------------------------------------------------------------*/
+void metro_reset_rq(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		metro_reset_requested = true;
+	}
+}
+
 /*-----------------------------------------------------------------------------*/
 void MagicFX(uint8_t val) /* random effects parameters */
 {
@@ -657,13 +685,17 @@ void Synth_Init(void)
 	VCO_bleprect_Init(&mbRectOsc);
 	VCO_bleptri_Init(&mbTriOsc);
 
+	/*---- Desynkator initialization -------*/
 	metro_initBPM(&metro1, 90.0f, samplerate);
 	metro_initBPM(&metro2, 90.0f, samplerate);
 	metro_initBPM(&metro3, 90.0f, samplerate);
+	proba1 = proba2 = proba3 = 0.6f;
 	ADSR_init(&adsr2);
 	ADSR_init(&adsr3);
 	osc_init(&oscill2, 0.8f, 587.f);
 	osc_init(&oscill3, 0.8f, 587.f);
+	osc_init(&amp_lfo2, 0.3f, VIBRATO_FREQ);
+	metro_reset_requested = false;
 
 }
 
@@ -745,8 +777,6 @@ void sequencer_newSequence_action(void) // User callback function called by sequ
  */
 void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the Sequencer
 {
-
-	uint16_t pos;
 	uint16_t *outp;
 	float y, y1, y2, y3;
 	float yL, yR;
@@ -754,16 +784,27 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 	float env, env1, env2, env3;
 	uint16_t valueL, valueR;
 	uint8_t clock1, clock2, clock3;
+
 	outp = buf;
 
-	for (pos = 0; pos < length; pos++)
+	for (uint16_t frame = 0; frame < length; frame++)
 	{
 		/*--------------------------------------- Desynkator synth ----------------------------------*/
 		if (desynkatorON)
 		{
+
 			clock1 = metro_process(&metro1);
 			clock2 = metro_process(&metro2);
 			clock3 = metro_process(&metro3);
+
+			if (metro_reset_requested)
+			{
+				metro_reset(&metro1);
+				metro_reset(&metro2);
+				metro_reset(&metro3);
+				clock1 = clock2 = clock3 = 1;
+				metro_reset_requested = false;
+			}
 			/**************************/
 			if (clock1)
 			{
@@ -774,7 +815,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 					AdditiveGen_newWaveform();
 				}
 
-				if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+				if ((noteGen.someNotesMuted) && (!mayTrig(proba1)))
 					ADSR_keyOff(&adsr);
 				else
 					ADSR_keyOn(&adsr);
@@ -824,7 +865,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			/**************************/
 			if (clock2)
 			{
-				if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+				if ((noteGen.someNotesMuted) && (!mayTrig(proba2)))
 					ADSR_keyOff(&adsr2);
 				else
 					ADSR_keyOn(&adsr2);
@@ -835,7 +876,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			/**************************/
 			if (clock3)
 			{
-				if ((noteGen.someNotesMuted) && (mayTrig(0.6f)))
+				if ((noteGen.someNotesMuted) && (!mayTrig(proba3)))
 					ADSR_keyOff(&adsr3);
 				else
 					ADSR_keyOn(&adsr3);
@@ -861,7 +902,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			if (adsr.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro1))) // 50% gate time
 				ADSR_keyOff(&adsr);
 
-			env2 = ADSR_computeSample(&adsr2);
+			env2 = ADSR_computeSample(&adsr2)* (1 + Osc_WT_SINE_SampleCompute(&amp_lfo2));
 			y2 *= vol2 * env2; // apply volume and envelop
 			if (adsr2.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro2))) // 50% gate time
 				ADSR_keyOff(&adsr2);

@@ -129,6 +129,10 @@ void Sound_set(uint8_t val);
 void metro_tempo_set(uint8_t val);
 void metro2_tempo_set(uint8_t val);
 void metro3_tempo_set(uint8_t val);
+void metro1_proba_set(uint8_t val);
+void metro2_proba_set(uint8_t val);
+void metro3_proba_set(uint8_t val);
+void metro_reset_rq(uint8_t val);
 
 void MagicFX(uint8_t val);
 void MagicPatch(uint8_t val);

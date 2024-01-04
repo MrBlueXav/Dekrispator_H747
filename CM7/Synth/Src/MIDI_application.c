@@ -95,15 +95,15 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	Synth_reset,
 	Sequencer_toggle,
 	Freeze_toggle,				/* 70 */
-	Do_____nothing,
-	Do_____nothing,
-	Do_____nothing,
+	metro1_proba_set,
+	metro2_proba_set,
+	metro3_proba_set,
 	Do_____nothing,
 	Do_____nothing,				/* 75 */
 	RandSound1,
 	RandSound2,
 	Desynkator_toggle,
-	Do_____nothing,
+	metro_reset_rq,
 	Do_____nothing,				/* 80 */
 	MagicFX,
 	MagicPatch,
