@@ -11,6 +11,10 @@ Of course, at that cost (about 100€), we can wonder if a raspberry Pi would be
 
 More info on this synth here (project started in 2012) : https://github.com/MrBlueXav/Dekrispator_v2/tree/dekrispatorV3
 
+Sound example for Desynkator : 
+https://polymerickblue.bandcamp.com/track/desynkator-i  
+https://polymerickblue.bandcamp.com/track/desynkator-ii		
+
 ----
 
 # General features :
