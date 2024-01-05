@@ -14,6 +14,7 @@ More info on this synth here (project started in 2012) : https://github.com/MrBl
 Sound examples for Desynkator :   
 https://polymerickblue.bandcamp.com/track/desynkator-i  
 https://polymerickblue.bandcamp.com/track/desynkator-ii		
+https://polymerickblue.bandcamp.com/track/desynkator-iii  
 
 ----
 
@@ -61,15 +62,16 @@ Makefiles are in /Release folder with also binaries for direct flashing.
  * Effects : 
 	* vibrato  
 	* tremolo  
-	* drive/distortion  
+	* overdrive/distortion  
 	* echo  
-	* chorus/flanger  
 	* phaser  
+	* stereo chorus/flanger  
+	
  * random sound and FX patch generator
  	
 ----
 
-**Special thanks** : Sean Bolton, Perry R. Cook and Gary P. Scavone, Gabriel Rivas, Ross Bencina, GaryA, Thorsten Klose, erwincoumans, ElectroSmith/DaisySP, ST
+**Special thanks** : Sean Bolton, Perry R. Cook and Gary P. Scavone, Gabriel Rivas, Ross Bencina, Julian Schmidt, GaryA, Thorsten Klose, erwincoumans, ElectroSmith/DaisySP, ST
 
 ---- 
 

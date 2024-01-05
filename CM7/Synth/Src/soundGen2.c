@@ -45,16 +45,15 @@ extern Oscillator_t op4;
 extern VCO_blepsaw_t mbSawOsc;
 extern VCO_bleprect_t mbRectOsc;
 extern VCO_bleptri_t mbTriOsc;
-extern ResonantFilter SVFilter;
-extern ResonantFilter SVFilter2;
-extern float filterFreq;
-extern float filterFreq2;
+
 extern int8_t currentNote;
 extern int8_t velocity;
 
-ADSR_t adsr;
-
 /*--------------------------------------------------------------*/
+
+static ADSR_t adsr;
+static ResonantFilter SVFilter;
+static ResonantFilter SVFilter2;
 
 static Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
 static float proba1, proba2, proba3;
@@ -84,32 +83,74 @@ static bool autoFilterON _DTCMRAM_;
 static bool delayON _DTCMRAM_;
 static bool phaserON _DTCMRAM_;
 static bool chorusON _DTCMRAM_;
+static enum timbre sound _DTCMRAM_;
 static int8_t autoSound _DTCMRAM_;
 
 static float f0 _DTCMRAM_;
 static float vol _DTCMRAM_;
 
-static enum timbre sound _DTCMRAM_;
+/*=============================================   MIDI and control functions   ===================================================*/
 
-/*=============================================   MIDI functions   ===================================================*/
-
+/*************************************** ADSR functions ******************************/
 void AttTime_set(uint8_t val)
 {
 	ADSR_setAttackTime(&adsr, val / MIDI_MAX + 0.0001f);
 }
+
+/*---------------------------------------------------------*/
 void DecTime_set(uint8_t val)
 {
 	ADSR_setDecayTime(&adsr, .2 * val / MIDI_MAX + 0.0001f);
 }
+
+/*---------------------------------------------------------*/
 void SustLevel_set(uint8_t val)
 {
 	ADSR_setSustainLevel(&adsr, val / MIDI_MAX);
 }
+
+/*---------------------------------------------------------*/
 void RelTime_set(uint8_t val)
 {
 	ADSR_setReleaseTime(&adsr, .5f * val / MIDI_MAX + 0.0001f);
 }
 
+/*---------------------------------------------------------*/
+void ADSRkeyON(void)
+{
+	ADSR_keyOn(&adsr);
+}
+
+/*---------------------------------------------------------*/
+void ADSRkeyOFF(void)
+{
+	ADSR_keyOff(&adsr);
+}
+
+/******************************************  Sound functions   *******************************/
+void nextSound(void)
+{
+	if (sound < LAST_SOUND)
+		(sound)++;
+	else
+		sound = LAST_SOUND;
+}
+/*-------------------------------------------------------*/
+void prevSound(void)
+{
+	if (sound > 0)
+		(sound)--;
+	else
+		sound = 0;
+}
+/*-------------------------------------------------------*/
+void Sound_set(uint8_t val)
+{
+	sound = (uint8_t) rintf((LAST_SOUND - 1) / MIDI_MAX * val);
+	if (sound != ADDITIVE)
+		AdditiveGen_newWaveform();
+}
+/*-------------------------------------------------------*/
 void autoSound_set(int8_t val)
 {
 	autoSound = val;
@@ -194,17 +235,72 @@ void Synth_reset(uint8_t val)
 		Synth_Init();
 	}
 }
-/*-------------------------------------------------------*/
-void AmpLFO_amp_set(uint8_t val)
+
+/******************************************   FILTERS FUNCTIONS *****************************/
+
+void Filter1Freq_set(uint8_t val)
 {
-	amp_lfo.amp = val / MIDI_MAX;
+	float freq = Lin2Exp(val, MIN_FREQ, MAX_FREQ) / SAMPLERATE;
+	SVF_directSetFilterValue(&SVFilter, freq);
+	SVF_refFreq_set(&SVFilter, freq);
+}
+//------------------------------------------------------------------------------------
+void Filter1Res_set(uint8_t val)
+{
+	SVF_setReso(&SVFilter, val / MIDI_MAX);
+}
+//------------------------------------------------------------------------------------
+void Filter1Drive_set(uint8_t val)
+{
+	SVF_setDrive(&SVFilter, val);
+}
+//------------------------------------------------------------------------------------
+void Filter1Type_set(uint8_t val)
+{
+	SVFilter.type = (uint8_t) lrintf(FILTER_TYPES * val / MIDI_MAX);
+}
+
+//------------------------------------------------------------------------------------
+void Filter2Freq_set(uint8_t val)
+{
+	float freq = Lin2Exp(val, MIN_FREQ, MAX_FREQ) / SAMPLERATE;
+	SVF_directSetFilterValue(&SVFilter2, freq);
+	SVF_refFreq_set(&SVFilter2, freq);
+}
+//------------------------------------------------------------------------------------
+void Filter2Res_set(uint8_t val)
+{
+	SVF_setReso(&SVFilter2, val / MIDI_MAX);
+}
+//------------------------------------------------------------------------------------
+void Filter2Drive_set(uint8_t val)
+{
+	SVF_setDrive(&SVFilter2, val);
+}
+//------------------------------------------------------------------------------------
+void Filter2Type_set(uint8_t val)
+{
+	SVFilter2.type = (uint8_t) lrintf(FILTER_TYPES * val / MIDI_MAX);
+}
+
+/*-------------------------------------------------------*/
+void toggleFilter(void)
+{
+	if (autoFilterON)
+		autoFilterON = false;
+	else
+		autoFilterON = true;
 }
 /*-------------------------------------------------------*/
-void AmpLFO_freq_set(uint8_t val)
+void Filter_Random_switch(uint8_t val)
 {
-	amp_lfo.freq = MAX_VIBRATO_FREQ / MIDI_MAX * val;
+	if (val > 63)
+		autoFilterON = true;
+	else
+		autoFilterON = false;
 }
-/*-------------------------------------------------------*/
+
+/*************************************** LFOs functions ******************************/
 void Filt1LFO_amp_set(uint8_t val)
 {
 	filt_lfo.amp = MAX_FILTER_LFO_AMP / MIDI_MAX * val;
@@ -245,7 +341,19 @@ void VibratoFreq_set(uint8_t val)
 {
 	vibr_lfo.freq = MAX_VIBRATO_FREQ / MIDI_MAX * val;
 }
+
 /*-------------------------------------------------------*/
+void AmpLFO_amp_set(uint8_t val)
+{
+	amp_lfo.amp = val / MIDI_MAX;
+}
+/*-------------------------------------------------------*/
+void AmpLFO_freq_set(uint8_t val)
+{
+	amp_lfo.freq = MAX_VIBRATO_FREQ / MIDI_MAX * val;
+}
+
+/******************************************** Volume functions **************************/
 void toggleSynthOut(void)
 {
 	if (op1.amp != 0)
@@ -321,7 +429,8 @@ void SynthOut_amp_set(uint8_t val)
 	mbRectOsc.amp = amp;
 	mbTriOsc.amp = amp;
 }
-/*-------------------------------------------------------*/
+
+/******************************************** Delay functions **************************/
 void Delay_toggle(void)
 {
 	if (delayON)
@@ -344,23 +453,8 @@ void Delay_switch(uint8_t val)
 		Delay_clean();
 	}
 }
-/*-------------------------------------------------------*/
-void toggleFilter(void)
-{
-	if (autoFilterON)
-		autoFilterON = false;
-	else
-		autoFilterON = true;
-}
-/*-------------------------------------------------------*/
-void Filter_Random_switch(uint8_t val)
-{
-	if (val > 63)
-		autoFilterON = true;
-	else
-		autoFilterON = false;
-}
-/*-------------------------------------------------------*/
+
+/******************************************** Chorus functions **************************/
 void Chorus_toggle(void)
 {
 	if (chorusON)
@@ -377,7 +471,8 @@ void Chorus_switch(uint8_t val)
 	else
 		chorusON = false;
 }
-/*-------------------------------------------------------*/
+
+/******************************************** Phaser functions **************************/
 void Phaser_switch(uint8_t val)
 {
 
@@ -386,30 +481,8 @@ void Phaser_switch(uint8_t val)
 	else
 		phaserON = false;
 }
-/*-------------------------------------------------------*/
-void nextSound(void)
-{
-	if (sound < LAST_SOUND)
-		(sound)++;
-	else
-		sound = LAST_SOUND;
-}
-/*-------------------------------------------------------*/
-void prevSound(void)
-{
-	if (sound > 0)
-		(sound)--;
-	else
-		sound = 0;
-}
-/*-------------------------------------------------------*/
-void Sound_set(uint8_t val)
-{
-	sound = (uint8_t) rintf((LAST_SOUND - 1) / MIDI_MAX * val);
-	if (sound != ADDITIVE)
-		AdditiveGen_newWaveform();
-}
-/*******************************************************************************************************************************/
+
+/****************************************** Oscillators functions *****************************/
 
 void FM_OP1_freq_set(uint8_t val)
 {
@@ -421,7 +494,7 @@ void FM_OP1_modInd_set(uint8_t val)
 	FM_op_modInd_set(&op1, val);
 }
 
-/*----------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------*/
 void FM_OP2_freq_set(uint8_t val)
 {
 	//FM_op_freq_set(&op2, val);
@@ -450,7 +523,7 @@ void FM_OP2_modInd_set(uint8_t val)
 	FM_op_modInd_set(&op2, val);
 }
 
-/*------------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------*/
 void FM_OP3_freq_set(uint8_t val)
 {
 	op3.mul = Lin2Exp(val, 0.2f, 32.f); // the freq of op3 is a multiple of the main pitch freq (op1)
@@ -476,7 +549,7 @@ void FM_OP3_freqMul_dec(uint8_t val)
 		op3.mul *= 0.99f;
 	}
 }
-/*--------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------*/
 void FM_OP4_freq_set(uint8_t val)
 {
 	op4.mul = Lin2Exp(val, 0.2f, 32.f); // the freq of op4 is a multiple of the main pitch freq (op1)
@@ -503,7 +576,8 @@ void FM_OP4_freqMul_dec(uint8_t val)
 	}
 }
 
-/*--------------------------------------------------------------------------------------------*/
+/************************************* Desynkator functions **********************************************/
+
 void metro_tempo_set(uint8_t val)
 {
 	float fr1, fr2, fr3, frNew;
@@ -517,7 +591,6 @@ void metro_tempo_set(uint8_t val)
 	metro_setFreq(&metro3, fr3 / fr1 * frNew);
 
 	seq.steptime = lrintf(seq.samplerate * 60 / seq.tempo);
-
 }
 
 /*--------------------------------------------------------------------------------------------*/
@@ -537,15 +610,17 @@ void metro3_tempo_set(uint8_t val)
 /*--------------------------------------------------------------------------------------------*/
 void metro1_proba_set(uint8_t val)
 {
-	proba1 = val/MIDI_MAX;
+	proba1 = val / MIDI_MAX;
 }
+/*-------------------------------------------------------*/
 void metro2_proba_set(uint8_t val)
 {
-	proba2 = val/MIDI_MAX;
+	proba2 = val / MIDI_MAX;
 }
+/*-------------------------------------------------------*/
 void metro3_proba_set(uint8_t val)
 {
-	proba3 = val/MIDI_MAX;
+	proba3 = val / MIDI_MAX;
 }
 
 /*--------------------------------------------------------------------------------------------*/
@@ -557,7 +632,8 @@ void metro_reset_rq(uint8_t val)
 	}
 }
 
-/*-----------------------------------------------------------------------------*/
+/*****************************************  Random sounds and FX functions *************************/
+
 void MagicFX(uint8_t val) /* random effects parameters */
 {
 	if (val == MIDI_MAXi)
@@ -645,7 +721,8 @@ void MagicPatch(uint8_t val) /* random sound parameters */
 		AmpLFO_freq_set(MIDIrandVal());
 	}
 }
-/*===============================================================================================================*/
+
+/*============================================== Main Synth initialization =========================================*/
 
 void Synth_Init(void)
 {
@@ -668,9 +745,8 @@ void Synth_Init(void)
 	Chorus_init();
 	PhaserInit();
 
-	SVF_init();
-	filterFreq = 0.25f;
-	filterFreq2 = 0.25f;
+	SVF_initialize(&SVFilter);
+	SVF_initialize(&SVFilter2);
 
 	osc_init(&op1, 0.8f, 587.f);
 	osc_init(&op2, 0.8f, 587.f);
@@ -699,7 +775,7 @@ void Synth_Init(void)
 
 }
 
-/*---------------------------------------------------------------------------------------*/
+/***************************************** Sequencer functions ***************************************************/
 
 void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called by sequencer_process()
 {
@@ -769,11 +845,11 @@ void sequencer_newSequence_action(void) // User callback function called by sequ
 		MagicFX(MIDI_MAXi);
 	}
 }
-/*===============================================================================================================*/
+/*==========================================================================================================================*/
 /*
- Main sound generator function
- buf : pointer to the audio buffer to be filled
- length : is the number of frames. A frame is a 4 bytes data = left 16 bits sample + right 16 bits sample
+ *	 Main sound generator function
+ *	 buf : pointer to the audio buffer to be filled
+ *	 length : is the number of frames. A frame is a 4 bytes data = left 16 bits sample + right 16 bits sample
  */
 void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the Sequencer
 {
@@ -821,8 +897,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 					ADSR_keyOn(&adsr);
 
 				if (autoFilterON)
-					SVF_directSetFilterValue(&SVFilter,
-					Ts * 600.f * powf(5000.f / 600.f, frand_a_b(0, 1)));
+					SVF_directSetFilterValue(&SVFilter, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
 
 				if (noteGen.transpose != 0)
 				{
@@ -886,6 +961,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			}
 
 			/*--- compute vibrato modulation ---*/
+
 			f1 = f01 * (1 + Osc_WT_SINE_SampleCompute(&vibr_lfo));
 			OpSetFreq(&oscill2, f02);
 			OpSetFreq(&oscill3, f03);
@@ -897,27 +973,35 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			y3 = BasicSquare_SampleCompute(&oscill3);
 
 			/*--- Apply envelop and tremolo ---*/
+
 			env1 = ADSR_computeSample(&adsr) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo));
 			y1 *= vol1 * env1; // apply volume and envelop
+
 			if (adsr.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro1))) // 50% gate time
 				ADSR_keyOff(&adsr);
 
-			env2 = ADSR_computeSample(&adsr2)* (1 + Osc_WT_SINE_SampleCompute(&amp_lfo2));
+			env2 = ADSR_computeSample(&adsr2) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo2));
 			y2 *= vol2 * env2; // apply volume and envelop
+
 			if (adsr2.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro2))) // 50% gate time
 				ADSR_keyOff(&adsr2);
 
 			env3 = ADSR_computeSample(&adsr3);
 			y3 *= vol3 * env3; // apply volume and envelop
+
 			if (adsr3.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro3))) // 50% gate time
 				ADSR_keyOff(&adsr3);
 
 			/*--- Apply filter effect ---*/
+
 			/* Update the filters cutoff frequencies */
 			if ((!autoFilterON) && (filt_lfo.amp != 0))
-				SVF_directSetFilterValue(&SVFilter, filterFreq * (1 + OpSampleCompute7bis(&filt_lfo)));
+				SVF_directSetFilterValue(&SVFilter, SVF_refFreq_get(&SVFilter) * (1 + OpSampleCompute7bis(&filt_lfo)));
+
 			if (filt2_lfo.amp != 0)
-				SVF_directSetFilterValue(&SVFilter2, filterFreq2 * (1 + OpSampleCompute7bis(&filt2_lfo)));
+				SVF_directSetFilterValue(&SVFilter2,
+						SVF_refFreq_get(&SVFilter2) * (1 + OpSampleCompute7bis(&filt2_lfo)));
+
 			y1 = 0.5f * (SVF_calcSample(&SVFilter, y1) + SVF_calcSample(&SVFilter2, y1)); // Two filters in parallel
 
 			/*---  Mix 3 oscillators ----*/
@@ -956,9 +1040,12 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			/*--- Apply filter effect ---*/
 			/* Update the filters cutoff frequencies */
 			if ((!autoFilterON) && (filt_lfo.amp != 0))
-				SVF_directSetFilterValue(&SVFilter, filterFreq * (1 + OpSampleCompute7bis(&filt_lfo)));
+				SVF_directSetFilterValue(&SVFilter, SVF_refFreq_get(&SVFilter) * (1 + OpSampleCompute7bis(&filt_lfo)));
+
 			if (filt2_lfo.amp != 0)
-				SVF_directSetFilterValue(&SVFilter2, filterFreq2 * (1 + OpSampleCompute7bis(&filt2_lfo)));
+				SVF_directSetFilterValue(&SVFilter2,
+						SVF_refFreq_get(&SVFilter2) * (1 + OpSampleCompute7bis(&filt2_lfo)));
+
 			y = 0.5f * (SVF_calcSample(&SVFilter, y) + SVF_calcSample(&SVFilter2, y)); // Two filters in parallel
 
 		}
@@ -973,7 +1060,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 		if (phaserON)
 			y = Phaser_compute(y);
 
-		/*--- Apply chorus/flanger effect ---*/
+		/*--- Apply stereo chorus/flanger effect ---*/
 		if (chorusON)
 			stereoChorus_compute(&yL, &yR, y);
 		else
@@ -987,8 +1074,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 		yR = (yR < -1.0f) ? -1.0f : yR;
 
 		/****** let's hear the new sample *******/
-
-		valueL = (uint16_t) ((int16_t) ((32767.0f) * yL)); // conversion float -> int
+		valueL = (uint16_t) ((int16_t) ((32767.0f) * yL)); // conversion float -> int16 !!!???
 		valueR = (uint16_t) ((int16_t) ((32767.0f) * yR));
 
 		*outp++ = valueL; // left channel sample
@@ -996,4 +1082,4 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 	}
 }
 
-/******************************************************* END *************************************************/
+/******************************************************* END *****************************************************************/

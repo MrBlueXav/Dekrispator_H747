@@ -70,6 +70,7 @@ void Oscillator_params_set(const OscillatorParams_t *params, Oscillator_t *op)
 	op->out = 0;
 }
 
+/*-------------------------------------------------------*/
 void osc_init(Oscillator_t *op, float_t amp, float_t freq)
 {
 	op->amp = amp;

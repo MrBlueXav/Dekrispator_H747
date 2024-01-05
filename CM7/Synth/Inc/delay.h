@@ -10,17 +10,17 @@
 #ifndef __DELAY_H
 #define __DELAY_H
 
-//*************************************************************************************************
+/*--------------------------------------------------------------------------- */
 
-/*--------------------- Global Defines ------------------------ */
 #define DELAYLINE_LEN           48000  // max delay in samples (30000 is 0.625 seconds)
-#define INIT_DELAY              24000  // init delay (in samples)
+#define INIT_DELAY              12000  // init delay (in samples)
 #define INIT_FEEDB              0.4f
 #define INIT_WET				0.5f
 #define MIN_DELAY				250		// min delay, in samples
 #define DELTA_DELAY				20		// variation step of delay time
 
 /* Includes ------------------------------------------------------------------*/
+
 #include <stdint.h>
 #include <math.h>
 #include "constants.h"

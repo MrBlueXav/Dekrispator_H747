@@ -334,7 +334,7 @@ void seq_freqMax_set(uint8_t val)
 }
 
 /*--------------------------------------------------------------------------------------------*/
-void _ITCMRAM_ seq_sequence_new(void)
+void _ITCMRAM_ seq_sequence_new(void) // make a new sequence of notes following noteGen parameters
 {
 	int16_t relativeNote;
 	int16_t octaveShift;

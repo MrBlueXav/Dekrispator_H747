@@ -3,7 +3,7 @@
  *
  *  Created on: 05.04.2012
  * ------------------------------------------------------------------------------------------------------------------------
- *  Copyright 2013 Julian Schmidt
+ *  Copyright 2013 Julian Schmidt	////// Modified by Xavier Halgand
  *  Julian@sonic-potions.com
  * ------------------------------------------------------------------------------------------------------------------------
  *  This file is part of the Sonic Potions LXR drumsynth firmware.
@@ -47,6 +47,7 @@
 
 //----------------------------------------------------
 
+#define FILTER_TYPES	5 /* Number of filter types */
 #define ENABLE_NONLINEAR_INTEGRATORS 	1
 #define FILTER_GAIN_F 					0.88f
 #define USE_SHAPER_NONLINEARITY 		0
@@ -65,10 +66,11 @@ enum filterTypeEnum
 //----------------------------------------------------
 typedef struct ResoFilterStruct
 {
-	uint8_t 	type; // filter type : LP, HP, BP...
-	float 		f;	/**< cutoff */
-	float 		g;  /**< embedded integrator gain (Fig 3.11), wc == wa*/
-	float 		q;	/**< q value calculated from setReso()*/
+	uint8_t 	type; 	// filter type : LP, HP, BP...
+	float 		f;		/* actual relative cutoff freq. (/samplerate) */
+	float		f0; 	/* reference relative cutoff freq. */
+	float 		g;  	/* embedded integrator gain (Fig 3.11), wc == wa*/
+	float 		q;		/* q value calculated from setReso()*/
 	float 		s1;
 	float 		s2;
 	float 		drive;
@@ -81,40 +83,28 @@ typedef struct ResoFilterStruct
 #endif
 
 } ResonantFilter;
+
 //-----------------------------------------------------------------------------------------
 typedef struct
 {
-	uint8_t 	type; // filter type : LP, HP, BP...
-	float 		f;	/**< cutoff */
-	float 		q;	/**< q value calculated from setReso()*/
+	uint8_t 	type; 	// filter type : LP, HP, BP...
+	float 		f;		/* actual relative cutoff freq. (/samplerate) */
+	float		f0; 	/* reference relative cutoff freq. */
+	float 		q;		/* q value calculated from setReso()*/
 	float 		drive;
 
 } ResonantFilterParams_t;
-/*************************************************************************************************************/
-void 	SVF_init(void);
-void ResonantFilter_params_save(ResonantFilterParams_t *params);
-void ResonantFilter_params_set(const ResonantFilterParams_t *params);
-//------------------------------------------------------------------------------------
-void 	SVF_setReso(ResonantFilter* filter, float feedback);
-//------------------------------------------------------------------------------------
-void 	SVF_setDrive(ResonantFilter* filter, uint8_t drive);
-//------------------------------------------------------------------------------------
-void 	SVF_directSetFilterValue(ResonantFilter* filter, float val);
-//------------------------------------------------------------------------------------
-//void SVF_calcBlockZDF(ResonantFilter* filter, const uint8_t type, int16_t* buf, const uint8_t size);
-//------------------------------------------------------------------------------------
-void 	SVF_recalcFreq(ResonantFilter* filter);
 
+/*************************************************************************************************************/
+void 	ResonantFilter_params_save(const ResonantFilter *filter, ResonantFilterParams_t *params);
+void 	ResonantFilter_params_set(const ResonantFilterParams_t *params, ResonantFilter *filter);
+void 	SVF_initialize(ResonantFilter* filter);
+void 	SVF_setReso(ResonantFilter* filter, float feedback);
+void 	SVF_setDrive(ResonantFilter* filter, uint8_t drive);
+void 	SVF_directSetFilterValue(ResonantFilter* filter, float val);
+void	SVF_refFreq_set(ResonantFilter* filter, float val);
+float	SVF_refFreq_get(ResonantFilter* filter);
+void 	SVF_recalcFreq(ResonantFilter* filter);
 float 	SVF_calcSample(ResonantFilter* filter, float in);
-//------------------------------------------------------------------------------------
-void 	Filter1Freq_set(uint8_t val);
-void 	Filter1Res_set(uint8_t val);
-void	Filter1Drive_set(uint8_t val);
-void 	Filter1Type_set(uint8_t val);
-/*-----------------------------------------------------------------------------------*/
-void 	Filter2Freq_set(uint8_t val);
-void 	Filter2Res_set(uint8_t val);
-void	Filter2Drive_set(uint8_t val);
-void 	Filter2Type_set(uint8_t val);
 
 #endif /* DEKRISPATOR_V2_SYNTH_RESONANTFILTER_H_ */

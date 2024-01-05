@@ -46,8 +46,7 @@
 /*------------------------------------------------------------------------------*/
 typedef struct
 {
-	int16_t note[NUMBER_STEPS]; //
-//int16_t		veloc[NUMBER_STEPS]; //
+	int16_t note[NUMBER_STEPS];
 
 } Track_t;
 /*------------------------------------------------------------------------------*/
@@ -101,9 +100,10 @@ typedef struct
 void sequencer_init(float sample_rate);
 void Sequencer_params_set(const SequencerParams_t *params);
 void Sequencer_params_save(SequencerParams_t *params);
-void seq_tempo_set(uint8_t val);
 void sequencer_process(void);
 void seq_sequence_new(void);
+
+void seq_tempo_set(uint8_t val);
 int16_t seq_random_note(void);
 void seq_transpP1(uint8_t val);
 void seq_transpP2(uint8_t val);

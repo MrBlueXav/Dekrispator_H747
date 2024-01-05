@@ -12,7 +12,7 @@
 
 /*--------------------- Global Defines ------------------------ */
 
-#define MAX_FILTER_LFO_AMP	32.f
+#define MAX_FILTER_LFO_AMP	2.0f
 #define DECAY_FACTOR		0.99975f // initial multiplying factor for the envelope decay
 #define MIN_DECAY_FACTOR	0.999f
 #define VIBRATO_AMP			0.01f
@@ -50,6 +50,8 @@ void AttTime_set(uint8_t val);
 void DecTime_set(uint8_t val);
 void SustLevel_set(uint8_t val);
 void RelTime_set(uint8_t val);
+void ADSRkeyON(void);
+void ADSRkeyOFF(void);
 
 uint8_t soundNumber_get(void);
 void autoSound_set(int8_t val);
@@ -87,6 +89,17 @@ void FM_OP4_modInd_set(uint8_t val);
 /*-------------------------------------------------------*/
 void AmpLFO_amp_set(uint8_t val);
 void AmpLFO_freq_set(uint8_t val);
+
+//------------------------------------------------------------------------------------
+void 	Filter1Freq_set(uint8_t val);
+void 	Filter1Res_set(uint8_t val);
+void	Filter1Drive_set(uint8_t val);
+void 	Filter1Type_set(uint8_t val);
+/*-----------------------------------------------------------------------------------*/
+void 	Filter2Freq_set(uint8_t val);
+void 	Filter2Res_set(uint8_t val);
+void	Filter2Drive_set(uint8_t val);
+void 	Filter2Type_set(uint8_t val);
 
 void Filt1LFO_amp_set(uint8_t val);
 void Filt1LFO_freq_set(uint8_t val);

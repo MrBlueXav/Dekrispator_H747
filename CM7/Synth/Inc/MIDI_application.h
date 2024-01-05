@@ -28,6 +28,7 @@
 #include "midi_types.h"
 
 /* Exported functions ------------------------------------------------------- */
+
 void ProcessReceivedMidiDatas(midi_package_t packet);
 void Reset_notes_On(void);
 

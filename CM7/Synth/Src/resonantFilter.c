@@ -3,7 +3,7 @@
  *
  *  Created on: 05.04.2012
  * ------------------------------------------------------------------------------------------------------------------------
- *  Copyright 2013 Julian Schmidt
+ *  Copyright 2013 Julian Schmidt	///// Modified by Xavier Halgand
  *  Julian@sonic-potions.com
  * ------------------------------------------------------------------------------------------------------------------------
  *  This file is part of the Sonic Potions LXR drumsynth firmware.
@@ -37,26 +37,21 @@
 
 //-----------------------------------------------------------------------------------
 
-#define FILTER_TYPES	5 /* Number of filter types */
 
-//-----------------------------------------------------------------------------------
-
-ResonantFilter SVFilter _DTCMRAM_ ;
-ResonantFilter SVFilter2 _DTCMRAM_ ;
-
-float filterFreq _DTCMRAM_;
-float filterFreq2 _DTCMRAM_;
 
 /****************************************************************************************************************/
-void ResonantFilter_params_save(ResonantFilterParams_t *params)
-{
-
-}
-void ResonantFilter_params_set(const ResonantFilterParams_t *params)
+void ResonantFilter_params_save(const ResonantFilter *filter, ResonantFilterParams_t *params)
 {
 
 }
 
+//------------------------------------------------------------------------------------
+void ResonantFilter_params_set(const ResonantFilterParams_t *params, ResonantFilter *filter)
+{
+
+}
+
+//------------------------------------------------------------------------------------
 void SVF_setReso(ResonantFilter* filter, float feedback)
 {
 	filter->q = 1-feedback;
@@ -70,12 +65,12 @@ void SVF_initialize(ResonantFilter* filter)
 	filter->s1 = 0;
 	filter->s2 = 0;
 
-	filter->f = 0.20f;
+	filter->f0 = 0.3f;
 	filter->q = 0.9f;
 
 	filter->drive = 0.4f;
 
-	SVF_directSetFilterValue(filter,0.25f);
+	SVF_directSetFilterValue(filter,0.3f);
 
 #if ENABLE_NONLINEAR_INTEGRATORS
 	filter->zi = 0;	//input z^(-1)
@@ -113,55 +108,16 @@ void SVF_directSetFilterValue(ResonantFilter* filter, float val) // 0 < val < 1
 	filter->g  = fastTan(_PI * filter->f );
 
 }
-//=====================================================================================================
-void SVF_init(void)
+//------------------------------------------------------------------------------------
+void	SVF_refFreq_set(ResonantFilter* filter, float val)
 {
-	SVF_initialize(&SVFilter);
-	SVF_initialize(&SVFilter2);
+	filter->f0 = val;
 }
 
 //------------------------------------------------------------------------------------
-void 	Filter1Freq_set(uint8_t val)
+float	SVF_refFreq_get(ResonantFilter* filter)
 {
-	filterFreq = Lin2Exp(val, MIN_FREQ, MAX_FREQ) / SAMPLERATE ;
-	SVF_directSetFilterValue(&SVFilter, filterFreq);
-}
-//------------------------------------------------------------------------------------
-void 	Filter1Res_set(uint8_t val)
-{
-	SVF_setReso(&SVFilter, val / MIDI_MAX);
-}
-//------------------------------------------------------------------------------------
-void	Filter1Drive_set(uint8_t val)
-{
-	SVF_setDrive(&SVFilter, val);
-}
-//------------------------------------------------------------------------------------
-void 	Filter1Type_set(uint8_t val)
-{
-	SVFilter.type = (uint8_t)lrintf(FILTER_TYPES * val / MIDI_MAX);
-}
-
-//------------------------------------------------------------------------------------
-void 	Filter2Freq_set(uint8_t val)
-{
-	filterFreq2 = Lin2Exp(val, MIN_FREQ, MAX_FREQ) / SAMPLERATE ;
-	SVF_directSetFilterValue(&SVFilter2, filterFreq2);
-}
-//------------------------------------------------------------------------------------
-void 	Filter2Res_set(uint8_t val)
-{
-	SVF_setReso(&SVFilter2, val / MIDI_MAX);
-}
-//------------------------------------------------------------------------------------
-void	Filter2Drive_set(uint8_t val)
-{
-	SVF_setDrive(&SVFilter2, val);
-}
-//------------------------------------------------------------------------------------
-void 	Filter2Type_set(uint8_t val)
-{
-	SVFilter2.type = (uint8_t)lrintf(FILTER_TYPES * val / MIDI_MAX);
+	return filter->f0;
 }
 
 //------------------------------------------------------------------------------------

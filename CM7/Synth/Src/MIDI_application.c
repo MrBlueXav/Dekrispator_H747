@@ -15,7 +15,7 @@ uint8_t notes_On[128] _DTCMRAM_; /*= {0};*/
 int8_t notesCount = 0; // number of notes on (keys pressed)
 int8_t currentNote;
 int8_t velocity;
-extern ADSR_t adsr;
+//extern ADSR_t adsr;
 extern bool g_sequencerIsOn;
 
 /*-----------------------------------------------------------------------------*/
@@ -155,7 +155,7 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 
 };
 /*-----------------------------------------------------------------------------*/
-void Do_____nothing(uint8_t val)  { }  /* for ControlFunctionsTable */
+void Do_____nothing(uint8_t val)  { }  /* for ControlFunctionsTable[] */
 
 /*-----------------------------------------------------------------------------*/
 void Reset_notes_On(void)
@@ -177,7 +177,7 @@ void ProcessReceivedMidiDatas(midi_package_t pack)
 			notesCount--;
 			if (notesCount <= 0) // no more keys pressed
 			{
-				ADSR_keyOff(&adsr);
+				ADSRkeyOFF();
 				notesCount = 0;
 			}
 			else // some keys still pressed... (legato)
@@ -209,7 +209,7 @@ void ProcessReceivedMidiDatas(midi_package_t pack)
 					currentNote = noteOn - LOWEST_NOTE; // conversion for notesFreq[]
 				}
 
-				ADSR_keyOn(&adsr);
+				ADSRkeyON();
 				notesCount++;
 				notes_On[noteOn] = 1;
 			}
@@ -220,7 +220,7 @@ void ProcessReceivedMidiDatas(midi_package_t pack)
 				notesCount--;
 				if (notesCount <= 0)
 				{
-					ADSR_keyOff(&adsr);
+					ADSRkeyOFF();
 					notesCount = 0;
 				}
 				else
