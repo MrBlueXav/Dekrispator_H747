@@ -13,7 +13,7 @@ More info on this synth here (project started in 2012) : https://github.com/MrBl
 
 Sound examples for Desynkator :   
 https://polymerickblue.bandcamp.com/track/desynkator-i  
-https://polymerickblue.bandcamp.com/track/desynkator-ii		
+https://polymerickblue.bandcamp.com/track/desynkator-ii  
 https://polymerickblue.bandcamp.com/track/desynkator-iii  
 
 ----

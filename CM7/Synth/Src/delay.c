@@ -41,12 +41,14 @@ static float		wet _DTCMRAM_; // wet/dry factor
 void Delay_init(void)
 {
 	/* initialize pointers positions for delay effect */
+	Delay_clean();
 	coeff_a1 = 0.6f;
 	wet = INIT_WET;
 	fdb = INIT_FEEDB;
 	shift = INIT_DELAY;
 	readpos = delayline;
 	writepos = delayline + INIT_DELAY;
+
 }
 /*-------------------------------------------------------------------------------------------*/
 void _ITCMRAM_ Delay_clean(void)

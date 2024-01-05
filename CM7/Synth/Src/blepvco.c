@@ -42,12 +42,6 @@
 
 /**======================================================================================================**/
 
-VCO_blepsaw_t	mbSawOsc _DTCMRAM_;
-VCO_bleprect_t	mbRectOsc _DTCMRAM_;
-VCO_bleptri_t	mbTriOsc _DTCMRAM_;
-
-/**======================================================================================================**/
-
 
 void _ITCMRAM_ place_step_dd(float *buffer, int index, float phase, float w, float scale)
 {

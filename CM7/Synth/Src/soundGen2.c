@@ -36,15 +36,17 @@ extern float samplerate;
 
 bool g_sequencerIsOn = true;
 
+VCO_blepsaw_t	mbSawOsc;
+VCO_bleprect_t	mbRectOsc, mbRectOsc2;
+VCO_bleptri_t	mbTriOsc;
+
+
 extern Sequencer_t seq;
 extern NoteGenerator_t noteGen;
 extern Oscillator_t op1;
 extern Oscillator_t op2;
 extern Oscillator_t op3;
 extern Oscillator_t op4;
-extern VCO_blepsaw_t mbSawOsc;
-extern VCO_bleprect_t mbRectOsc;
-extern VCO_bleptri_t mbTriOsc;
 
 extern int8_t currentNote;
 extern int8_t velocity;
@@ -52,7 +54,7 @@ extern int8_t velocity;
 /*--------------------------------------------------------------*/
 
 static ADSR_t adsr;
-static ResonantFilter SVFilter;
+static ResonantFilter SVFilter1;
 static ResonantFilter SVFilter2;
 
 static Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
@@ -241,23 +243,23 @@ void Synth_reset(uint8_t val)
 void Filter1Freq_set(uint8_t val)
 {
 	float freq = Lin2Exp(val, MIN_FREQ, MAX_FREQ) / SAMPLERATE;
-	SVF_directSetFilterValue(&SVFilter, freq);
-	SVF_refFreq_set(&SVFilter, freq);
+	SVF_directSetFilterValue(&SVFilter1, freq);
+	SVF_refFreq_set(&SVFilter1, freq);
 }
 //------------------------------------------------------------------------------------
 void Filter1Res_set(uint8_t val)
 {
-	SVF_setReso(&SVFilter, val / MIDI_MAX);
+	SVF_setReso(&SVFilter1, val / MIDI_MAX);
 }
 //------------------------------------------------------------------------------------
 void Filter1Drive_set(uint8_t val)
 {
-	SVF_setDrive(&SVFilter, val);
+	SVF_setDrive(&SVFilter1, val);
 }
 //------------------------------------------------------------------------------------
 void Filter1Type_set(uint8_t val)
 {
-	SVFilter.type = (uint8_t) lrintf(FILTER_TYPES * val / MIDI_MAX);
+	SVFilter1.type = (uint8_t) lrintf(FILTER_TYPES * val / MIDI_MAX);
 }
 
 //------------------------------------------------------------------------------------
@@ -427,6 +429,7 @@ void SynthOut_amp_set(uint8_t val)
 	op3.amp = amp;
 	mbSawOsc.amp = amp;
 	mbRectOsc.amp = amp;
+	mbRectOsc2.amp = amp;
 	mbTriOsc.amp = amp;
 }
 
@@ -745,7 +748,7 @@ void Synth_Init(void)
 	Chorus_init();
 	PhaserInit();
 
-	SVF_initialize(&SVFilter);
+	SVF_initialize(&SVFilter1);
 	SVF_initialize(&SVFilter2);
 
 	osc_init(&op1, 0.8f, 587.f);
@@ -759,6 +762,8 @@ void Synth_Init(void)
 	AdditiveGen_newWaveform();
 	VCO_blepsaw_Init(&mbSawOsc);
 	VCO_bleprect_Init(&mbRectOsc);
+	VCO_bleprect_Init(&mbRectOsc2);
+	mbRectOsc2.waveform = 0.5f; // more rectangle wave
 	VCO_bleptri_Init(&mbTriOsc);
 
 	/*---- Desynkator initialization -------*/
@@ -792,8 +797,10 @@ void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called b
 		ADSR_keyOn(&adsr);
 
 	if (autoFilterON)
-		SVF_directSetFilterValue(&SVFilter,
-		Ts * 600.f * powf(5000.f / 600.f, frand_a_b(0, 1)));
+	{
+						SVF_directSetFilterValue(&SVFilter1, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
+						SVF_directSetFilterValue(&SVFilter2, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
+					}
 
 	if (noteGen.transpose != 0)
 	{
@@ -897,8 +904,10 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 					ADSR_keyOn(&adsr);
 
 				if (autoFilterON)
-					SVF_directSetFilterValue(&SVFilter, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
-
+				{
+					SVF_directSetFilterValue(&SVFilter1, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
+					SVF_directSetFilterValue(&SVFilter2, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
+				}
 				if (noteGen.transpose != 0)
 				{
 					noteGen.rootNote += noteGen.transpose;
@@ -964,13 +973,15 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 
 			f1 = f01 * (1 + Osc_WT_SINE_SampleCompute(&vibr_lfo));
 			OpSetFreq(&oscill2, f02);
-			OpSetFreq(&oscill3, f03);
+			mbRectOsc2.freq = f03;
+			//OpSetFreq(&oscill3, f03);
 
 			/*--- Generate waveform ---*/
 
 			y1 = waveCompute(sound, f1);
 			y2 = MorphingSaw_SampleCompute(&oscill2);
-			y3 = BasicSquare_SampleCompute(&oscill3);
+			y3 = VCO_bleprect_SampleCompute(&mbRectOsc2);
+			//y3 = BasicSquare_SampleCompute(&oscill3);
 
 			/*--- Apply envelop and tremolo ---*/
 
@@ -996,13 +1007,13 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 
 			/* Update the filters cutoff frequencies */
 			if ((!autoFilterON) && (filt_lfo.amp != 0))
-				SVF_directSetFilterValue(&SVFilter, SVF_refFreq_get(&SVFilter) * (1 + OpSampleCompute7bis(&filt_lfo)));
+				SVF_directSetFilterValue(&SVFilter1, SVF_refFreq_get(&SVFilter1) * (1 + OpSampleCompute7bis(&filt_lfo)));
 
 			if (filt2_lfo.amp != 0)
 				SVF_directSetFilterValue(&SVFilter2,
 						SVF_refFreq_get(&SVFilter2) * (1 + OpSampleCompute7bis(&filt2_lfo)));
 
-			y1 = 0.5f * (SVF_calcSample(&SVFilter, y1) + SVF_calcSample(&SVFilter2, y1)); // Two filters in parallel
+			y1 = 0.5f * (SVF_calcSample(&SVFilter1, y1) + SVF_calcSample(&SVFilter2, y1)); // Two filters in parallel
 
 			/*---  Mix 3 oscillators ----*/
 			y = 0.4f * (y1 + y2 + y3);
@@ -1040,13 +1051,13 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			/*--- Apply filter effect ---*/
 			/* Update the filters cutoff frequencies */
 			if ((!autoFilterON) && (filt_lfo.amp != 0))
-				SVF_directSetFilterValue(&SVFilter, SVF_refFreq_get(&SVFilter) * (1 + OpSampleCompute7bis(&filt_lfo)));
+				SVF_directSetFilterValue(&SVFilter1, SVF_refFreq_get(&SVFilter1) * (1 + OpSampleCompute7bis(&filt_lfo)));
 
 			if (filt2_lfo.amp != 0)
 				SVF_directSetFilterValue(&SVFilter2,
 						SVF_refFreq_get(&SVFilter2) * (1 + OpSampleCompute7bis(&filt2_lfo)));
 
-			y = 0.5f * (SVF_calcSample(&SVFilter, y) + SVF_calcSample(&SVFilter2, y)); // Two filters in parallel
+			y = 0.5f * (SVF_calcSample(&SVFilter1, y) + SVF_calcSample(&SVFilter2, y)); // Two filters in parallel
 
 		}
 
