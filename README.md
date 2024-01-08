@@ -28,8 +28,8 @@ https://polymerickblue.bandcamp.com/track/desynkator-iii
 * No LCD at the moment.
 * LED information :
 	* The orange LED reflects the CPU usage : when it's dim CPU gets overloaded.  
-	* The red LED lights on when sequencer is stopped or when a system error occurs.  
-	* The green LED indicates a midi usb is connected and recognized.  
+	* The red LED lights on when a system error occurs.  
+	* The green LED indicates a midi usb device is connected and recognized.  
 	* The blue LED indicates midi activity.  
 
 * Debug messages sent with virtual com port from STlink (USART1 --> USB CN2).  
@@ -43,7 +43,7 @@ https://polymerickblue.bandcamp.com/track/desynkator-iii
 I encountered endless issues to make this project work and suffered a lot... ;-)) I hope some people will find it useful and could use it as an audio synth platform !  
 It was first a STM32CubeMX project (the only way I found to reach that point) but can't be regenerated now, be careful ! I left the .ioc file for info only.  
 You should be able to import the project in STM32CubeIDE, I think all necessary files are in the repository.  
-Makefiles are in /Release folder with also binaries for direct flashing.
+Makefiles are in /Release folder.
 
 ----
 
