@@ -17,6 +17,7 @@
 /* Exported function prototypes -----------------------------------------------*/
 void openamp_cm7_init(void);
 void Process_message(void);
+void string_sendToCM4(uint32_t number);
 
 
 #endif /* INC_OPENAMP_INTERFACE_H_ */

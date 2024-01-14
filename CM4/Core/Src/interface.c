@@ -6,7 +6,9 @@
  */
 #include "interface.h"
 
-#define RX_BUFF_SIZE 64 /* USB MIDI buffer : max received data 64 bytes */
+#define RX_BUFF_SIZE 	64 /* USB MIDI buffer : max received data 64 bytes */
+
+#define CYC_MAX			(((float)AUDIO_BUFFER_SIZE / 8.0f) * ((float)FREQ_CM7 / (float)SAMPLERATE))
 
 extern ApplicationTypeDef Appli_state;
 extern USBH_HandleTypeDef hUsbHostHS;
@@ -24,7 +26,9 @@ void midipacket_print(midi_package_t pack);
 
 /* Private variables ---------------------------------------------------------*/
 static volatile int message_received;
-static volatile midi_package_t received_data;
+static volatile uint32_t received_number;
+static volatile char *received_data_p;
+static volatile size_t received_data_len;
 static struct rpmsg_endpoint rp_endpoint;
 HSEM_TypeDef *HSEM_DEBUG = HSEM;
 
@@ -34,7 +38,7 @@ void openamp_init(void)
 	/* Initialize the mailbox use notify the other core on new message */
 	MAILBOX_Init();
 
-	/* Inilitize OpenAmp and libmetal libraries */
+	/* Initialize OpenAmp and libmetal libraries */
 	if (MX_OPENAMP_Init(RPMSG_REMOTE, NULL) != HAL_OK)
 		Error_Handler();
 
@@ -50,7 +54,8 @@ void openamp_init(void)
 
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
 {
-	received_data = *((midi_package_t*) data);
+	received_number = *((uint32_t *) data);
+	received_data_len = len;
 	message_received = 1;
 	return 0;
 }
@@ -68,22 +73,28 @@ void midipacket_sendToCM7(midi_package_t packet)
 
 /*------------------------------------------------------------------------------------------------*/
 
-void Application_Process(void)
+void Application_Process(void) // called in main() loop (main_cm4.c)
 {
+	/* Check for CM7 messages (openamp) */
+	if (message_received == 0)
+	{
+		OPENAMP_check_for_message();
+	}
+	if (message_received)
+	{
+		//printf("Message de CM7 : %s \n", received_data_p);
+		printf("Nombre de cycles de CM7 = %lu \n", received_number);
+		uint32_t occupation_cm7 = (uint32_t)roundf((100 * (float)received_number / CYC_MAX));
+		printf("Taux d'occupation CM7 = %lu %% \n", occupation_cm7);
+		message_received = 0;
+	}
+
+	/* Check for MIDI messages (if USB MIDI controller connected) */
 	if (Appli_state == APPLICATION_READY)
 	{
 		BSP_LED_On(LED_GREEN);
 
-		if (message_received == 0)
-		{
-			OPENAMP_check_for_message();
-		}
-		if (message_received)
-		{
-			message_received = 0;
-		}
-
-		/* start a new reception not faster than 1 per ms */
+		/* start a new MIDI reception not faster than 1 per ms */
 		newtick = HAL_GetTick();
 		if (newtick != oldtick)
 		{
@@ -102,7 +113,7 @@ void Application_Process(void)
 
 /*-----------------------------------------------------------------------------*/
 /**
- * @brief  MIDI data receive callback. _weak defined in usbh_midi_XH.c
+ * @brief  MIDI data receive callback. _weak function defined in usbh_midi_XH.c
  * @param  phost: Host handle
  * @retval None
  */
@@ -149,7 +160,8 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 	uint8_t data1 = pack.evnt1;
 	uint8_t data2 = pack.evnt2;
 
-	switch (type)	{
+	switch (type)
+	{
 	case NoteOff: // 0x8
 		printf("Note Off, ch= %d", channel);
 		printf(", note= %d", data1);

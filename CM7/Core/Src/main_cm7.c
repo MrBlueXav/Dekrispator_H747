@@ -12,6 +12,7 @@
 #include "openamp_interface.h"
 #include "rng.h"
 #include "gpio.h"
+#include "perf.h"
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
@@ -78,14 +79,15 @@ int main(void)
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_RNG_Init();
+	EnableTiming(); // For performance measurements
 	BSP_LED_Init(LED_RED);
 	Synth_Init();
 	AudioInit();
 
 	while (1)
 	{
-		Process_message();
-		AUDIO_Process();
+		Process_message(); 	// in openamp_interface.c
+		AUDIO_Process();	// in audio_play.c
 	}
 }
 /*-----------------------------------------------------------------------------------------------------------------*/

@@ -6,10 +6,14 @@
  * Description        : Global defines for Dekrispator
  ******************************************************************************
  */
-#ifndef __CONSTANTS_H__
-#define __CONSTANTS_H__
+#ifndef __DEKR_CONSTANTS_H__
+#define __DEKR_CONSTANTS_H__
 
 /*--------------------------------------------------------------------------------------*/
+/* AUDIO_BUFFER_SIZE (in bytes) must be a multiple of 8   */
+#define AUDIO_BUFFER_SIZE       1024
+
+#define FREQ_CM7				400000000
 
 #define SAMPLERATE              48000 // Don't modify !
 #define Ts						(1.f/SAMPLERATE)  // sample period
@@ -38,4 +42,4 @@
 #endif /* __GNUC__ */
 
 /************************************************************************************/
-#endif  /*__CONSTANTS_H__ */
+#endif  /*__DEKR_CONSTANTS_H__ */

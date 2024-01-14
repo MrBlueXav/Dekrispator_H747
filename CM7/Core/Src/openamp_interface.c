@@ -11,7 +11,7 @@
 #define RPMSG_CHAN_NAME              "midi_communication"
 
 /* Private variables ---------------------------------------------------------*/
-static uint32_t message = 0;
+static uint32_t message = 14;
 static volatile int message_received;
 static volatile int service_created;
 static volatile midi_package_t received_data;
@@ -43,7 +43,7 @@ void new_service_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest)
 }
 
 /*-----------------------------------------------------------------------------------------------------------------*/
-void Process_message(void)
+void Process_message(void) // called in main() loop (in main_cm7.c)
 {
 	if (message_received == 0 && service_created == 1)
 	{
@@ -63,9 +63,7 @@ void openamp_cm7_init(void)
 	MAILBOX_Init();
 
 	/* Initialize the rpmsg endpoint to set default addresses to RPMSG_ADDR_ANY */
-	rpmsg_init_ept(&rp_endpoint, RPMSG_CHAN_NAME, RPMSG_ADDR_ANY,
-	RPMSG_ADDR_ANY,
-	NULL, NULL);
+	rpmsg_init_ept(&rp_endpoint, RPMSG_CHAN_NAME, RPMSG_ADDR_ANY, RPMSG_ADDR_ANY, NULL, NULL);
 	/* Initialize OpenAmp and libmetal libraries */
 	if (MX_OPENAMP_Init(RPMSG_MASTER, new_service_cb) != HAL_OK)
 		Error_Handler();
@@ -76,7 +74,7 @@ void openamp_cm7_init(void)
 	 */
 	OPENAMP_Wait_EndPointready(&rp_endpoint);
 
-	/* Send the massage to the remote CPU */
+	/* Send the message to the remote CPU */
 	int32_t status;
 	status = OPENAMP_send(&rp_endpoint, &message, sizeof(message));
 	if (status < 0)
@@ -85,3 +83,12 @@ void openamp_cm7_init(void)
 	}
 }
 /*-------------------------------------------------------------------------------------*/
+void string_sendToCM4(uint32_t number)
+{
+	int32_t status = 0;
+	status = OPENAMP_send(&rp_endpoint, &number, sizeof(number));
+	if (status < 0)
+	{
+		Error_Handler();
+	}
+}

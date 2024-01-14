@@ -72,7 +72,7 @@ int main(void)
 	while (1)
 	{
 		MX_USB_HOST_Process();
-		Application_Process();
+		Application_Process(); // in interface.c
 	}
 }
 /*********************************************************************************************/
