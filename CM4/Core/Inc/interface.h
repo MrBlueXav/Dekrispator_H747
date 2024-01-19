@@ -15,6 +15,7 @@
 #include "usbh_midi_XH.h"
 #include "usb_host.h"
 #include "stm32h747i_discovery.h"
+#include "stm32_lcd.h"
 #include "openamp.h"
 #include "constants.h"
 

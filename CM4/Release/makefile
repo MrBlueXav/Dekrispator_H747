@@ -19,7 +19,15 @@ RM := rm -rf
 -include Middlewares/Third_Party/OpenAMP/libmetal/lib/system/generic/subdir.mk
 -include Middlewares/Third_Party/OpenAMP/libmetal/lib/subdir.mk
 -include Middlewares/ST/STM32_USB_Host_Library/Core/Src/subdir.mk
+-include Drivers/lcd/subdir.mk
+-include Drivers/STM32H7xx_HAL_Driver/Src/Legacy/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
+-include Drivers/BSP/Components/otm8009a/subdir.mk
+-include Drivers/BSP/Components/nt35510/subdir.mk
+-include Drivers/BSP/Components/mt25tl01g/subdir.mk
+-include Drivers/BSP/Components/is42s32800j/subdir.mk
+-include Drivers/BSP/Components/ft6x06/subdir.mk
+-include Drivers/BSP/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include Common/Src/subdir.mk

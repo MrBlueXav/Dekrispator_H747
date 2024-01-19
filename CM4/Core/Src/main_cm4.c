@@ -1,13 +1,11 @@
-/* USER CODE BEGIN Header */
 /**
  ******************************************************************************
- * @file           : main.c
+ * 					DEKRISPATOR H747
+ * @file           : main_cm4.c
  * @brief          : Main program body for CM4
  ******************************************************************************
  * @attention
  *
- * Copyright (c) 2023 STMicroelectronics.
- * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
  * in the root directory of this software component.
@@ -15,7 +13,7 @@
  *
  ******************************************************************************
  */
-/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main_cm4.h"
 #include "rtc.h"
@@ -24,7 +22,11 @@
 #include "gpio.h"
 #include "stdio.h"
 #include "stm32h747i_discovery.h"
+#include "stm32h747i_discovery_lcd.h"
+#include "stm32_lcd.h"
+#include "lcd_trace.h"
 #include "interface.h"
+#include "qspi.h"
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
@@ -33,6 +35,7 @@
 /*---------------------------------------------------------------------------------------------*/
 void BSP_LED_Initialize(void);
 void Welcome_message(void);
+static void Display_DemoDescription(void);
 /*---------------------------------------------------------------------------------------------*/
 /**
  * @brief  The application entry point.
@@ -66,7 +69,22 @@ int main(void)
 	MX_USART1_UART_Init();
 	BSP_LED_Initialize();
 
+#if (USE_THE_LCD > 0)
+
+	/* Initialize the LCD */
+	BSP_LCD_Init(0, LCD_ORIENTATION_LANDSCAPE);
+	UTIL_LCD_SetFuncDriver(&LCD_Driver);
+
+//	/* Initialize the LCD Log module */
+//	UTIL_LCD_TRACE_Init();
+//	UTIL_LCD_TRACE_SetHeader((uint8_t*) " DEKRISPATOR H747 ");
+	//Display_DemoDescription();
+
+#endif
+
 	MX_USB_HOST_Init();
+	QSPI_demo();
+	HAL_Delay(1000);
 	Welcome_message();
 
 	while (1)
@@ -95,13 +113,78 @@ void BSP_LED_Initialize(void)
 /*--------------------------------------------------------------------------------------*/
 void Welcome_message(void)
 {
+
+	uint32_t x_size;
+	uint32_t y_size;
+	BSP_LCD_GetXSize(0, &x_size);
+	BSP_LCD_GetYSize(0, &y_size);
+	/* Clear the LCD */
+	UTIL_LCD_Clear(UTIL_LCD_COLOR_WHITE);
+
+	/* Set LCD Demo description */
+	UTIL_LCD_FillRect(0, 0, x_size, 80, UTIL_LCD_COLOR_BLUE);
+	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_WHITE);
+	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
+	UTIL_LCD_SetFont(&Font24);
+	UTIL_LCD_DisplayStringAt(0, 10, (uint8_t*) "DEKRISPATOR H747", CENTER_MODE);
+	UTIL_LCD_SetFont(&Font20);
+	UTIL_LCD_DisplayStringAt(0, 45, (uint8_t*) "Copyright (c) Xavier Halgand 2024", CENTER_MODE);
+
+
+	/* Set the LCD Text Color */
+	UTIL_LCD_DrawRect(10, 90, x_size - 20, y_size - 100, UTIL_LCD_COLOR_BLUE);
+	UTIL_LCD_DrawRect(11, 91, x_size - 22, y_size - 102, UTIL_LCD_COLOR_BLUE);
+
+	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_BLACK);
+	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+
 	printf("\n");
 	printf("-----------------------------------------\n");
-	printf("**** This is Dekrispator H747 ! ****\n");
+	printf("****    This is Dekrispator H747 !   ****\n");
 	printf("Waiting for USB MIDI controller device...\n");
 	printf("-----------------------------------------\n");
 	printf("\n");
 }
+
+/**
+ * @brief  Display main demo messages
+ * @param  None
+ * @retval None
+ */
+static void Display_DemoDescription(void)
+{
+	char desc[64];
+	uint32_t x_size;
+	uint32_t y_size;
+
+	BSP_LCD_GetXSize(0, &x_size);
+	BSP_LCD_GetYSize(0, &y_size);
+	/* Set LCD Foreground Layer  */
+	UTIL_LCD_SetFont(&UTIL_LCD_DEFAULT_FONT);
+
+	/* Clear the LCD */
+	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+	UTIL_LCD_Clear(UTIL_LCD_COLOR_WHITE);
+
+	/* Set the LCD Text Color */
+	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_DARKBLUE);
+
+	/* Display LCD messages */
+	UTIL_LCD_DisplayStringAt(0, 10, (uint8_t*) "STM32H747I BSP", CENTER_MODE);
+	UTIL_LCD_DisplayStringAt(0, 35, (uint8_t*) "Drivers examples", CENTER_MODE);
+
+	UTIL_LCD_SetFont(&Font12);
+	UTIL_LCD_DisplayStringAt(0, y_size - 20, (uint8_t*) "Copyright (c) Xavier Halgand 2024", CENTER_MODE);
+
+	UTIL_LCD_SetFont(&Font16);
+	BSP_LCD_FillRect(0, 0, y_size / 2 + 15, x_size, 60, UTIL_LCD_COLOR_BLUE);
+	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_WHITE);
+	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
+	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 30, (uint8_t*) "Press Wakeup button to start :", CENTER_MODE);
+
+	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 45, (uint8_t*) desc, CENTER_MODE);
+}
+
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None

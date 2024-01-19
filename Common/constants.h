@@ -27,6 +27,8 @@
 #define MIDI_MAXi				127		// integer max value
 #define MIDI_MID_i				64		// integer mid value
 
+#define USE_THE_LCD				1
+
 //#define _CCM_					__attribute__((section(".ccmram"))) // for use of CCM RAM (64kB)
 //#define _DTCM_				__attribute__((section(".dtcm_vars")))
 //#define _DTCMRAM_				__attribute__((section(".DTCMRAM_section")))

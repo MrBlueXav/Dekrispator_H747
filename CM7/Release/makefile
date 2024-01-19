@@ -17,6 +17,7 @@ RM := rm -rf
 -include Third_Party/OpenAMP/libmetal/lib/subdir.mk
 -include Synth/Src/subdir.mk
 -include OPENAMP/subdir.mk
+-include Drivers/STM32H7xx_HAL_Driver/Src/Legacy/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Drivers/BSP/Components/wm8994/subdir.mk
 -include Drivers/BSP/Components/otm8009a/subdir.mk

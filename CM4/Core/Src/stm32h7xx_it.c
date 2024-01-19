@@ -20,6 +20,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main_cm4.h"
 #include "stm32h7xx_it.h"
+#include "stm32h747i_discovery.h"
+#include "stm32h747i_discovery_lcd.h"
+#include "stm32h747i_discovery_sdram.h"
+//#include "stm32h747i_discovery_conf.h"
+//#include "stm32h747i_discovery_sd.h"
+//#include "stm32h747i_discovery_ts.h"
+//#include "stm32h747i_discovery_audio.h"
+//#include "stm32h747i_discovery_qspi.h"
+//#include "stm32h747i_discovery_camera.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -198,6 +208,66 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32h7xx.s).                    */
 /******************************************************************************/
+
+/**
+* @brief  This function handles External line 2 interrupt request.
+* @param  None
+* @retval None
+*/
+void EXTI2_IRQHandler(void)
+{
+   BSP_JOY_IRQHandler(JOY1, JOY_SEL);
+}
+
+/**
+* @brief  This function handles External line 3 interrupt request.
+* @param  None
+* @retval None
+*/
+void EXTI3_IRQHandler(void)
+{
+   BSP_JOY_IRQHandler(JOY1, JOY_DOWN);
+}
+
+/**
+* @brief  This function handles External line 4 interrupt request.
+* @param  None
+* @retval None
+*/
+void EXTI4_IRQHandler(void)
+{
+   BSP_JOY_IRQHandler(JOY1, JOY_LEFT);
+}
+
+/**
+* @brief  This function handles External lines 9 to 5 interrupt request.
+* @param  None
+* @retval None
+*/
+void EXTI9_5_IRQHandler(void)
+{
+  BSP_JOY_IRQHandler(JOY1, JOY_RIGHT);
+  BSP_JOY_IRQHandler(JOY1, JOY_UP);
+}
+
+/**
+  * @brief  This function handles External lines 15 to 10 interrupt request.
+  * @param  None
+  * @retval None
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  BSP_PB_IRQHandler(BUTTON_WAKEUP);
+}
+
+/**
+  * @brief  Handles MDMA transfer interrupt request.
+  * @retval None
+  */
+void MDMA_IRQHandler(void)
+{
+    BSP_SDRAM_IRQHandler(0);
+}
 
 /**
   * @brief This function handles USB On The Go HS global interrupt.

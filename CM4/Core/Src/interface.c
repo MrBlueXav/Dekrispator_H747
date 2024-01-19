@@ -32,6 +32,8 @@ static volatile size_t received_data_len;
 static struct rpmsg_endpoint rp_endpoint;
 HSEM_TypeDef *HSEM_DEBUG = HSEM;
 
+static char string_message[100];
+
 /*----------------------------------------------------------------------------------------------------------------*/
 void openamp_init(void)
 {
@@ -54,7 +56,7 @@ void openamp_init(void)
 
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
 {
-	received_number = *((uint32_t *) data);
+	received_number = *((uint32_t*) data);
 	received_data_len = len;
 	message_received = 1;
 	return 0;
@@ -83,9 +85,13 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 	if (message_received)
 	{
 		//printf("Message de CM7 : %s \n", received_data_p);
-		printf("Nombre de cycles de CM7 = %lu \n", received_number);
-		uint32_t occupation_cm7 = (uint32_t)roundf((100 * (float)received_number / CYC_MAX));
-		printf("Taux d'occupation CM7 = %lu %% \n", occupation_cm7);
+		printf("Nombre de cycles moyen de CM7 = %lu \n", received_number);
+		uint32_t occupation_cm7 = (uint32_t) roundf((100 * (float) received_number / CYC_MAX));
+		printf("Taux d'occupation moyen CM7 = %lu %% \n", occupation_cm7);
+
+		int n = sprintf(string_message, "Taux d'occupation moyen CM7 = %lu %%   \n", occupation_cm7);
+		UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
+
 		message_received = 0;
 	}
 

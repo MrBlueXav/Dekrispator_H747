@@ -27,7 +27,15 @@ SUBDIRS := \
 Common/Src \
 Core/Src \
 Core/Startup \
+Drivers/BSP/Components/ft6x06 \
+Drivers/BSP/Components/is42s32800j \
+Drivers/BSP/Components/mt25tl01g \
+Drivers/BSP/Components/nt35510 \
+Drivers/BSP/Components/otm8009a \
+Drivers/BSP \
+Drivers/STM32H7xx_HAL_Driver/Src/Legacy \
 Drivers/STM32H7xx_HAL_Driver/Src \
+Drivers/lcd \
 Middlewares/ST/STM32_USB_Host_Library/Core/Src \
 Middlewares/Third_Party/OpenAMP/libmetal/lib \
 Middlewares/Third_Party/OpenAMP/libmetal/lib/system/generic \

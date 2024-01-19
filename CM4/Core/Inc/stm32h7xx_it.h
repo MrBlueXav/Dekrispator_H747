@@ -57,6 +57,16 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 void OTG_HS_IRQHandler(void);
 void HSEM2_IRQHandler(void);
+void EXTI2_IRQHandler(void);
+void EXTI3_IRQHandler(void);
+void EXTI4_IRQHandler(void);
+void EXTI9_5_IRQHandler(void);
+void EXTI15_10_IRQHandler(void);
+//void DMA2_Stream6_IRQHandler(void);
+void DMA2D_IRQHandler(void);
+void MDMA_IRQHandler(void);
+void BSP_LCD_LTDC_IRQHandler(void);
+void BSP_LCD_LTDC_ER_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

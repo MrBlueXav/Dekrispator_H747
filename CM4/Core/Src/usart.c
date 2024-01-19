@@ -136,6 +136,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+#if (USE_THE_LCD == 0)
+
 #ifdef __GNUC__
  int __io_putchar (int ch)
  #else
@@ -145,4 +147,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
   (void)HAL_UART_Transmit (&huart1, (uint8_t *) &ch, 1, 1000);
   return ch;
 }
+
+#endif
 /* USER CODE END 1 */
