@@ -20,12 +20,12 @@ https://polymerickblue.bandcamp.com/track/desynkator-iii
 
 # General features :
 
-* M4 core (at 200 MHz) manages MIDI USB Host function (stable with my old Korg NanoKontrol !). Use CN1 to connect your midi device.
+* M4 core (at 200 MHz) manages MIDI USB Host function (stable with my old Korg NanoKontrol !) sends debug infos on UART or LCD. Use CN1 to connect your midi device.
 * M7 core (at 400 MHz) computes sound. Samplerate is 48kHz.
 * Each core communicates through OPENAMP infrastructure. (M4 core just sends midi packets to M7 core.)
 * MIDI Control Changes definitions are in a table of functions "ControlChangeFunctionsTable[128]" in MIDI_application.c file.
 * AUDIO_BUFFER_SIZE is defined in audio_play.h file.
-* No LCD at the moment.
+* Basic LCD use at the moment.
 * LED information :
 	* The orange LED reflects the CPU usage : when it's dim CPU gets overloaded.  
 	* The red LED lights on when a system error occurs.  

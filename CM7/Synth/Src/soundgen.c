@@ -43,6 +43,7 @@ VCO_bleptri_t	mbTriOsc;
 
 extern Sequencer_t seq;
 extern NoteGenerator_t noteGen;
+
 extern Oscillator_t op1;
 extern Oscillator_t op2;
 extern Oscillator_t op3;

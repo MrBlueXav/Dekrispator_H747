@@ -13,6 +13,12 @@
 #include "rng.h"
 #include "gpio.h"
 #include "perf.h"
+#include "stm32h747i_discovery.h"
+#include "stm32h747i_discovery_audio.h"
+
+#include "audio_play.h"
+#include "MIDI_application.h"
+#include "soundGen.h"
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/

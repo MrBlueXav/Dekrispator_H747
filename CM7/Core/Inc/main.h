@@ -28,15 +28,11 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_hal.h"
+#include "stm32h747i_discovery_audio.h"
 
 /* Private includes ----------------------------------------------------------*/
 
-#include "stm32h747i_discovery.h"
-#include "stm32h747i_discovery_audio.h"
 
-#include "audio_play.h"
-#include "MIDI_application.h"
-#include "soundGen.h"
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);

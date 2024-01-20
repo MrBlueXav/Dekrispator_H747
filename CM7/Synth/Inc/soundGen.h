@@ -25,12 +25,13 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
+
 #include "constants.h"
+#include "oscillators.h"
 #include "MIDI_application.h"
 #include "math_tools.h"
 #include "random.h"
 #include "sequencer.h"
-#include "oscillators.h"
 #include "delay.h"
 #include "chorusFD.h"
 #include "phaser.h"
@@ -39,9 +40,59 @@
 #include "resonantFilter.h"
 #include "adsr.h"
 #include "blepvco.h"
-
 #include "metronome.h"
 #include "rational_ratios.h"
+
+/*------------------------------------------------------------------------------*/
+typedef struct
+{
+	bool desynkatorON_par;
+	bool autoFilterON_par;
+	bool delayON_par;
+	bool phaserON_par;
+	bool chorusON_par;
+	int8_t sound_par; //"enum timber sound ;" not compiling !
+	int8_t autoSound_par;
+
+	OscillatorParams_t op1_par;
+	OscillatorParams_t op2_par;
+	OscillatorParams_t op3_par;
+	OscillatorParams_t op4_par;
+	OscillatorParams_t oscill2_par;
+	OscillatorParams_t oscill3_par;
+	OscillatorParams_t amp_lfo2_par;
+
+	OscillatorParams_t vibr_lfo_par;
+	OscillatorParams_t filt_lfo_par;
+	OscillatorParams_t filt2_lfo_par;
+	OscillatorParams_t amp_lfo_par;
+
+	ADSRParams_t adsr_par;
+	ADSRParams_t adsr2_par;
+	ADSRParams_t adsr3_par;
+
+	ResonantFilterParams_t filt1_par;
+	ResonantFilterParams_t filt2_par;
+
+	BlepOscillatorParams_t rect_osc1_par;
+	BlepOscillatorParams_t rect_osc2_par;
+	BlepOscillatorParams_t saw_osc_par;
+	BlepOscillatorParams_t tri_osc_par;
+
+	SequencerParams_t seq_par;
+
+	MetroParams_t metro1_par;
+	MetroParams_t metro2_par;
+	MetroParams_t metro3_par;
+	float proba1_par;
+	float proba2_par;
+	float proba3_par;
+
+	PhaserParams_t phaser_par;
+	DelayParams_t delay_par;
+	ChorusParams_t chorus_par;
+
+} SynthPatch_t;
 
 /* Exported functions ------------------------------------------------------- */
 
@@ -91,15 +142,15 @@ void AmpLFO_amp_set(uint8_t val);
 void AmpLFO_freq_set(uint8_t val);
 
 //------------------------------------------------------------------------------------
-void 	Filter1Freq_set(uint8_t val);
-void 	Filter1Res_set(uint8_t val);
-void	Filter1Drive_set(uint8_t val);
-void 	Filter1Type_set(uint8_t val);
+void Filter1Freq_set(uint8_t val);
+void Filter1Res_set(uint8_t val);
+void Filter1Drive_set(uint8_t val);
+void Filter1Type_set(uint8_t val);
 /*-----------------------------------------------------------------------------------*/
-void 	Filter2Freq_set(uint8_t val);
-void 	Filter2Res_set(uint8_t val);
-void	Filter2Drive_set(uint8_t val);
-void 	Filter2Type_set(uint8_t val);
+void Filter2Freq_set(uint8_t val);
+void Filter2Res_set(uint8_t val);
+void Filter2Drive_set(uint8_t val);
+void Filter2Type_set(uint8_t val);
 
 void Filt1LFO_amp_set(uint8_t val);
 void Filt1LFO_freq_set(uint8_t val);
@@ -150,12 +201,11 @@ void metro_reset_rq(uint8_t val);
 void MagicFX(uint8_t val);
 void MagicPatch(uint8_t val);
 
-
 void soundGenInit(void);
 void soundGenNewWave(void);
 void Synth_Init(void);
 
-void make_sound(uint16_t *buf , uint16_t len);
+void make_sound(uint16_t *buf, uint16_t len);
 void OpsRandFreq(void);
 
 #endif /* __SOUNDGEN_H */

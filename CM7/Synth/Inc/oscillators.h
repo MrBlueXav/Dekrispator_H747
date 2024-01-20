@@ -1,14 +1,14 @@
-/**
+/*
  ******************************************************************************
  * File Name          	: oscillators.h
  * Author				: Xavier Halgand
- * Date               	:
+ * Date               	: 2023
  * Description        	:
  ******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __OSCILLATORS_H
-#define __OSCILLATORS_H
+#ifndef __DEKR_OSCILLATORS_H
+#define __DEKR_OSCILLATORS_H
 
 /*--------------------- Global Defines ------------------------ */
 #define PARTIALS_NUMBER		10 // number of computed harmonics in the additive generator
@@ -44,20 +44,21 @@ typedef struct
 
 } Oscillator_t;
 
+/*----------------------------------------------------------------------------*/
 typedef struct
 {
-	float_t 	amp;	// should be <= 1 for normal sound output
-	float_t		last_amp;
-	float_t 	freq;	// Hertz
-	float_t		modInd;	// Modulation Index for FM
-	float_t		mul;	// pitch frequency multiplier
+	float 		amp;	// should be <= 1 for normal sound output
+	float		last_amp;
+	float 		freq;	// Hertz
+	float		modInd;	// Modulation Index for FM
+	float		mul;	// pitch frequency multiplier
 
 } OscillatorParams_t;
 
 /* Exported functions ------------------------------------------------------- */
 
-void Oscillator_params_set(const OscillatorParams_t *params, Oscillator_t *op);
-void Oscillator_params_save(const Oscillator_t *op, OscillatorParams_t *params);
+void 	Oscillator_params_set(const OscillatorParams_t *params, Oscillator_t *op);
+void 	Oscillator_params_save(const Oscillator_t *op, OscillatorParams_t *params);
 
 /*-------------------------------------------------------*/
 void 	osc_init(Oscillator_t * op, float_t amp, float_t freq);
@@ -101,6 +102,5 @@ void 	OpSetFreq(Oscillator_t * op, float_t f);
 void	Drifter_centralFreq_set(uint8_t val);
 float	Lin2Exp(uint8_t val, float min, float max); // input val in 0 ... 127
 
-
 /****************************************************************************************************************************/
-#endif /* __OSCILLATORS_H */
+#endif /* __DEKR_OSCILLATORS_H */

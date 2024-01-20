@@ -25,10 +25,22 @@
 #include <math.h>
 #include "constants.h"
 
+/*----------------------------------------------------------------------------*/
+typedef struct
+{
+	uint32_t	shift;
+	float		coeff_a1;
+	float 		fdb;
+	float		wet;
+
+} DelayParams_t;
+
 /* Exported functions --------------------------------------------------------*/
 
 void 	Delay_init(void);
 void 	Delay_clean(void);
+void 	Delay_params_set(const DelayParams_t *params);
+void 	Delay_params_save(DelayParams_t *params);
 float	Delay_compute (float x);
 void 	Delay_feedback_inc(void);
 void	Delay_feedback_dec(void);

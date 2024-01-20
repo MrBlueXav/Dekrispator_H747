@@ -56,7 +56,7 @@ void Oscillator_params_save(const Oscillator_t *op, OscillatorParams_t *params)
 	params->mul = op->mul;
 }
 
-/*------------------ Set op parameters using params stuct ---------------------------------------------------*/
+/*------------------ Set op parameters using params struct ---------------------------------------------------*/
 
 void Oscillator_params_set(const OscillatorParams_t *params, Oscillator_t *op)
 {

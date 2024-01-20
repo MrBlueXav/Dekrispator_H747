@@ -46,7 +46,7 @@ uint8_t MIDIrandVal(void)
  *****************/
 float mayTrig(float prob)
 {
-	return ((float) rand() / (float) RAND_MAX) <= prob ? true : false;
+	return ((float) rand() / (float) RAND_MAX) <= prob ? 1.0f : 0.0f;
 }
 
 //-------------------------------------------------------------------------------------------------------
