@@ -83,10 +83,10 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	Filter1Type_set,
 	AmpLFO_amp_set,
 	AmpLFO_freq_set,
-	Drifter_amp_set,
-	Drifter_minFreq_set,		/* 60 */
-	Drifter_maxFreq_set,
-	Drifter_centralFreq_set,
+	DriftOsc1_amp_set,
+	DriftOsc1_minFreq_set,		/* 60 */
+	DriftOsc1_maxFreq_set,
+	DriftOsc1_centralFreq_set,
 	SynthOut_amp_set,
 	Do_____nothing, 			/*  64 Damper pedal */
 	Filt1LFO_amp_set,			/* 65 */

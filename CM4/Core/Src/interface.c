@@ -4,37 +4,37 @@
  *  Created on: Nov 14, 2023
  *      Author: Xavier Halgand
  */
+/*------------------------------------------------------------------------------------------------------------------*/
 #include "interface.h"
 
-#define RX_BUFF_SIZE 	64 /* USB MIDI buffer : max received data 64 bytes */
+/*------------------------ Private macro ---------------------------------------------------------------------------*/
+#define RPMSG_SERVICE_NAME 		"midi_communication"
+#define RX_BUFF_SIZE 			64 /* USB MIDI buffer : max received data 64 bytes */
+#define CYC_MAX					(((float)AUDIO_BUFFER_SIZE / 8.0f) * ((float)FREQ_CM7 / (float)SAMPLERATE))
 
-#define CYC_MAX			(((float)AUDIO_BUFFER_SIZE / 8.0f) * ((float)FREQ_CM7 / (float)SAMPLERATE))
-
+/*------------------------------------------------------------------------------------------------------------------*/
 extern ApplicationTypeDef Appli_state;
 extern USBH_HandleTypeDef hUsbHostHS;
-
-uint8_t MIDI_RX_Buffer[RX_BUFF_SIZE]; // MIDI reception buffer
-uint32_t oldtick, newtick;
 
 /*------------------------------------------------------------------------------------------------------------------*/
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv);
 void ProcessReceivedMidiDatas(void);
 void midipacket_print(midi_package_t pack);
 
-/* Private macro -------------------------------------------------------------*/
-#define RPMSG_SERVICE_NAME              "midi_communication"
-
-/* Private variables ---------------------------------------------------------*/
-static volatile int message_received;
-static volatile uint32_t received_number;
-static volatile char *received_data_p;
-static volatile size_t received_data_len;
-static struct rpmsg_endpoint rp_endpoint;
+/* -----------------------------------------------------------------------------------------------------------------*/
 HSEM_TypeDef *HSEM_DEBUG = HSEM;
 
+/*-------------------------------------- Private variables ---------------------------------------------------------*/
+static uint8_t MIDI_RX_Buffer[RX_BUFF_SIZE]; // MIDI reception buffer
+static uint32_t oldtick, newtick;
+static volatile int message_received;
+static volatile uint32_t received_number;
+//static volatile char 		*received_data_p;
+static volatile size_t received_data_len;
+static struct rpmsg_endpoint rp_endpoint;
 static char string_message[100];
 
-/*----------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------------------------*/
 void openamp_init(void)
 {
 	/* Initialize the mailbox use notify the other core on new message */
@@ -44,7 +44,7 @@ void openamp_init(void)
 	if (MX_OPENAMP_Init(RPMSG_REMOTE, NULL) != HAL_OK)
 		Error_Handler();
 
-	/* create a endpoint for rmpsg communication */
+	/* create an endpoint for rmpsg communication */
 	int32_t status = 0;
 	status = OPENAMP_create_endpoint(&rp_endpoint, RPMSG_SERVICE_NAME, RPMSG_ADDR_ANY, rpmsg_recv_callback, NULL);
 	if (status < 0)
@@ -89,17 +89,14 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 		uint32_t occupation_cm7 = (uint32_t) roundf((100 * (float) received_number / CYC_MAX));
 		printf("Taux d'occupation moyen CM7 = %lu %% \n", occupation_cm7);
 
-		int n = sprintf(string_message, "Taux d'occupation moyen CM7 = %lu %%   \n", occupation_cm7);
+		sprintf(string_message, "Average CPU load (M7) = %lu %%   ", occupation_cm7);
 		UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
 
 		message_received = 0;
 	}
 
-	/* Check for MIDI messages (if USB MIDI controller connected) */
-	if (Appli_state == APPLICATION_READY)
+	if (Appli_state == APPLICATION_RUNNING) /* Check for MIDI messages (if USB MIDI controller connected) */
 	{
-		BSP_LED_On(LED_GREEN);
-
 		/* start a new MIDI reception not faster than 1 per ms */
 		newtick = HAL_GetTick();
 		if (newtick != oldtick)
@@ -109,9 +106,17 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 		}
 	}
 
+	if (Appli_state == APPLICATION_READY)
+	{
+		BSP_LED_On(LED_GREEN);
+		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller connected !   ", LEFT_MODE);
+		Appli_state = APPLICATION_RUNNING;
+	}
+
 	if (Appli_state == APPLICATION_DISCONNECT)
 	{
 		BSP_LED_Off(LED_GREEN);
+		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected.", LEFT_MODE);
 		Appli_state = APPLICATION_IDLE;
 		USBH_MIDI_Stop(&hUsbHostHS);
 	}
@@ -119,7 +124,7 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 
 /*-----------------------------------------------------------------------------*/
 /**
- * @brief  MIDI data receive callback. _weak function defined in usbh_midi_XH.c
+ * @brief  MIDI data receive callback. Redefinition of _weak function defined in usbh_midi_XH.c
  * @param  phost: Host handle
  * @retval None
  */

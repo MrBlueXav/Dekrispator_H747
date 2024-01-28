@@ -66,7 +66,7 @@ void Delay_params_set(const DelayParams_t *params)
 	shift = params->shift;
 	readpos = delayline;
 	writepos = delayline + shift;
-	Delay_clean(); // ??
+	Delay_clean(); // useful ??
 }
 
 /*-------------------------------------------------------------------------------------------*/

@@ -32,23 +32,30 @@
  *   USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * ------------------------------------------------------------------------------------------------------------------------
  */
-//-----------------------------------------------------------------------------------
+
 #include "resonantFilter.h"
-
-//-----------------------------------------------------------------------------------
-
 
 
 /****************************************************************************************************************/
 void ResonantFilter_params_save(const ResonantFilter *filter, ResonantFilterParams_t *params)
 {
-
+	params->type = filter->type;
+	params->f0 = filter->f0;
+	params->q = filter->q;
+	params->drive = filter->drive;
 }
 
 //------------------------------------------------------------------------------------
 void ResonantFilter_params_set(const ResonantFilterParams_t *params, ResonantFilter *filter)
 {
+	filter->type = params->type;
+	filter->f0 = params->f0;
+	filter->q = params->q;
+	filter->drive = params->drive;
 
+	filter->s1 = 0;
+	filter->s2 = 0;
+	SVF_directSetFilterValue(filter,params->f0);
 }
 
 //------------------------------------------------------------------------------------
@@ -70,7 +77,7 @@ void SVF_initialize(ResonantFilter* filter)
 
 	filter->drive = 0.4f;
 
-	SVF_directSetFilterValue(filter,0.3f);
+	SVF_directSetFilterValue(filter, filter->f0);
 
 #if ENABLE_NONLINEAR_INTEGRATORS
 	filter->zi = 0;	//input z^(-1)

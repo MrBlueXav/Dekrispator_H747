@@ -1,8 +1,8 @@
 /**
  ******************************************************************************
- * File Name        : soundGen2.c
+ * File Name        : soundgen.c
  * Author			: Xavier Halgand
- * Date             : Dec 29, 2023
+ * Date             : 2024
  * Description      : main synthesizer file : modules & structure
  ******************************************************************************
  */
@@ -26,33 +26,32 @@
 
 #include "soundGen.h"
 
-extern float samplerate;
-
 /*-------------------------------------------------------*/
-
 #define EPSI				.00002f
-
 /*-------------------------------------------------------*/
+
+extern float samplerate;
 
 bool g_sequencerIsOn = true;
 
-VCO_blepsaw_t	mbSawOsc;
-VCO_bleprect_t	mbRectOsc, mbRectOsc2;
-VCO_bleptri_t	mbTriOsc;
-
-
 extern Sequencer_t seq;
 extern NoteGenerator_t noteGen;
-
-extern Oscillator_t op1;
-extern Oscillator_t op2;
-extern Oscillator_t op3;
-extern Oscillator_t op4;
-
 extern int8_t currentNote;
 extern int8_t velocity;
 
 /*--------------------------------------------------------------*/
+static Oscillator_t op1;
+static Oscillator_t op2;
+static Oscillator_t op3;
+static Oscillator_t op4;
+
+static VCO_blepsaw_t mbSawOsc;
+static VCO_bleprect_t mbRectOsc, mbRectOsc2;
+static VCO_bleptri_t mbTriOsc;
+
+static Add_oscillator_t addosc;
+static DriftingOsc_t driftosc;
+static Drifter_t d1, d2;
 
 static ADSR_t adsr;
 static ResonantFilter SVFilter1;
@@ -86,15 +85,78 @@ static bool autoFilterON _DTCMRAM_;
 static bool delayON _DTCMRAM_;
 static bool phaserON _DTCMRAM_;
 static bool chorusON _DTCMRAM_;
-static enum timbre sound _DTCMRAM_;
+
+static Timbre_t sound _DTCMRAM_;
 static int8_t autoSound _DTCMRAM_;
 
 static float f0 _DTCMRAM_;
 static float vol _DTCMRAM_;
 
+/*============================================== Main Synth initialization =========================================*/
+
+void Synth_Init(void)
+{
+	samplerate = (float) SAMPLERATE;
+	g_sequencerIsOn = true;
+	vol = 1;
+	sound = MORPH_SAW;
+	autoFilterON = false;
+	autoSound = 0;
+	chorusON = false;
+	delayON = false;
+	phaserON = false;
+	desynkatorON = false;
+
+	sinetable_init();
+	Delay_init();
+	//drifters_init();
+	sequencer_init(samplerate);
+	ADSR_init(&adsr);
+	Chorus_init();
+	PhaserInit();
+
+	SVF_initialize(&SVFilter1);
+	SVF_initialize(&SVFilter2);
+
+	Osc_init(&op1, 0.8f, 587.f);
+	Osc_init(&op2, 0.8f, 587.f);
+	Osc_init(&op3, 0.8f, 587.f);
+	Osc_init(&op4, 0.8f, 587.f);
+	AddOsc_init(&addosc, 0.8f, 587.f);
+	AddOsc_gen_newWaveform(&addosc);
+	DriftOsc_init(&driftosc);
+	Drifter_init(&d1);
+	Drifter_init(&d2);
+
+	VCO_blepsaw_Init(&mbSawOsc);
+	VCO_bleprect_Init(&mbRectOsc);
+	VCO_bleprect_Init(&mbRectOsc2);
+	mbRectOsc2.waveform = 0.5f; // more rectangle wave
+	VCO_bleptri_Init(&mbTriOsc);
+
+	Osc_init(&vibr_lfo, 0.0f, VIBRATO_FREQ);
+	Osc_init(&filt_lfo, 0, 0);
+	Osc_init(&filt2_lfo, 0, 0);
+	Osc_init(&amp_lfo, 0, 0);
+
+	/*---- Desynkator initialization -------*/
+	metro_initBPM(&metro1, 90.0f, samplerate);
+	metro_initBPM(&metro2, 90.0f, samplerate);
+	metro_initBPM(&metro3, 90.0f, samplerate);
+	proba1 = proba2 = proba3 = 0.6f;
+	ADSR_init(&adsr2);
+	ADSR_init(&adsr3);
+	Osc_init(&oscill2, 0.8f, 587.f);
+	oscill2.type = MSAW;
+	Osc_init(&oscill3, 0.8f, 587.f);
+	Osc_init(&amp_lfo2, 0.3f, VIBRATO_FREQ);
+	metro_reset_requested = false;
+
+}
+
 /*=============================================   MIDI and control functions   ===================================================*/
 
-/*************************************** ADSR functions ******************************/
+/*************************************** ADSR functions **************************************/
 void AttTime_set(uint8_t val)
 {
 	ADSR_setAttackTime(&adsr, val / MIDI_MAX + 0.0001f);
@@ -150,8 +212,6 @@ void prevSound(void)
 void Sound_set(uint8_t val)
 {
 	sound = (uint8_t) rintf((LAST_SOUND - 1) / MIDI_MAX * val);
-	if (sound != ADDITIVE)
-		AdditiveGen_newWaveform();
 }
 /*-------------------------------------------------------*/
 void autoSound_set(int8_t val)
@@ -239,7 +299,7 @@ void Synth_reset(uint8_t val)
 	}
 }
 
-/******************************************   FILTERS FUNCTIONS *****************************/
+/******************************************   FILTERS FUNCTIONS ******************************/
 
 void Filter1Freq_set(uint8_t val)
 {
@@ -303,7 +363,7 @@ void Filter_Random_switch(uint8_t val)
 		autoFilterON = false;
 }
 
-/*************************************** LFOs functions ******************************/
+/*************************************** LFOs functions **************************************/
 void Filt1LFO_amp_set(uint8_t val)
 {
 	filt_lfo.amp = MAX_FILTER_LFO_AMP / MIDI_MAX * val;
@@ -356,7 +416,7 @@ void AmpLFO_freq_set(uint8_t val)
 	amp_lfo.freq = MAX_VIBRATO_FREQ / MIDI_MAX * val;
 }
 
-/******************************************** Volume functions **************************/
+/******************************************** Volume functions *******************************/
 void toggleSynthOut(void)
 {
 	if (op1.amp != 0)
@@ -434,7 +494,7 @@ void SynthOut_amp_set(uint8_t val)
 	mbTriOsc.amp = amp;
 }
 
-/******************************************** Delay functions **************************/
+/******************************************** Delay functions ********************************/
 void Delay_toggle(void)
 {
 	if (delayON)
@@ -458,7 +518,7 @@ void Delay_switch(uint8_t val)
 	}
 }
 
-/******************************************** Chorus functions **************************/
+/******************************************** Chorus functions *******************************/
 void Chorus_toggle(void)
 {
 	if (chorusON)
@@ -476,7 +536,7 @@ void Chorus_switch(uint8_t val)
 		chorusON = false;
 }
 
-/******************************************** Phaser functions **************************/
+/******************************************** Phaser functions *******************************/
 void Phaser_switch(uint8_t val)
 {
 
@@ -486,7 +546,7 @@ void Phaser_switch(uint8_t val)
 		phaserON = false;
 }
 
-/****************************************** Oscillators functions *****************************/
+/****************************************** Oscillators functions ****************************/
 
 void FM_OP1_freq_set(uint8_t val)
 {
@@ -580,7 +640,56 @@ void FM_OP4_freqMul_dec(uint8_t val)
 	}
 }
 
-/************************************* Desynkator functions **********************************************/
+/*-----------------------------------------------------------------------------------------------*/
+float_t _ITCMRAM_ FM1_sampleCompute(void) // op4 -> op3 -> op2 -> op1 => sound
+{
+	OpSampleCompute(&op4, WTSIN); // The result is in op4.out !
+	op3.phase += op3.modInd * op4.out;
+	OpSampleCompute(&op3, WTSIN);
+	op2.phase += op2.modInd * op3.out;
+	OpSampleCompute(&op2, WTSIN);
+	op1.phase += op1.modInd * op2.out;
+	OpSampleCompute(&op1, WTSIN);
+
+	return op1.out;
+}
+/*-----------------------------------------------------------------------------------------------*/
+float_t _ITCMRAM_ FM2_sampleCompute(float frq) //  (op2 -> op1) + (op4 -> op3) => sound
+{
+	float in;
+	op1.freq = frq;
+	op2.freq = op2.mul * frq;
+	op3.freq = op3.mul * frq;
+	op4.freq = op4.mul * frq;
+	in = Osc_FM_sine_SampleCompute(&op2, 0);
+	Osc_FM_sine_SampleCompute(&op1, in);
+	in = Osc_FM_sine_SampleCompute(&op4, 0);
+	Osc_FM_sine_SampleCompute(&op3, in);
+
+	return 0.5f * (op1.out + op3.out);
+}
+/*-------------------------------------------------------*/
+void DriftOsc1_amp_set(uint8_t val)
+{
+	DriftOsc_amp_set(&driftosc, val);
+}
+/*-------------------------------------------------------*/
+void DriftOsc1_minFreq_set(uint8_t val)
+{
+	DriftOsc_minFreq_set(&driftosc, val);
+}
+/*-------------------------------------------------------*/
+void DriftOsc1_maxFreq_set(uint8_t val)
+{
+	DriftOsc_maxFreq_set(&driftosc, val);
+}
+/*-------------------------------------------------------*/
+void DriftOsc1_centralFreq_set(uint8_t val)
+{
+	DriftOsc_centralFreq_set(&driftosc, val);
+}
+
+/************************************* Desynkator functions **********************************/
 
 void metro_tempo_set(uint8_t val)
 {
@@ -636,7 +745,7 @@ void metro_reset_rq(uint8_t val)
 	}
 }
 
-/*****************************************  Random sounds and FX functions *************************/
+/*****************************************  Random sounds and FX functions *******************/
 
 void MagicFX(uint8_t val) /* random effects parameters */
 {
@@ -663,7 +772,7 @@ void MagicFX(uint8_t val) /* random effects parameters */
 	}
 }
 /*-----------------------------------------------------------------------------*/
-void MagicPatch(uint8_t val) /* random sound parameters */
+void MagicPatch(uint8_t val) /* Create a new sound with random sound parameters */
 {
 	if (val == MIDI_MAXi)
 	{
@@ -690,11 +799,14 @@ void MagicPatch(uint8_t val) /* random sound parameters */
 		}
 		else if (snd == DRIFTERS)
 		{
-			//STM_EVAL_LEDOn(LED_Green);
-			Drifter_amp_set(MIDIrandVal());
-			Drifter_minFreq_set(MIDIrandVal());
-			Drifter_maxFreq_set(MIDIrandVal());
-			Drifter_centralFreq_set(MIDIrandVal());
+			DriftOsc1_amp_set(MIDIrandVal());
+			DriftOsc1_minFreq_set(MIDIrandVal());
+			DriftOsc1_maxFreq_set(MIDIrandVal());
+			DriftOsc1_centralFreq_set(MIDIrandVal());
+		}
+		else if (snd == ADDITIVE)
+		{
+			AddOsc_gen_newWaveform(&addosc);
 		}
 
 		Filter1Freq_set(MIDIrandVal());
@@ -726,61 +838,6 @@ void MagicPatch(uint8_t val) /* random sound parameters */
 	}
 }
 
-/*============================================== Main Synth initialization =========================================*/
-
-void Synth_Init(void)
-{
-	samplerate = (float) SAMPLERATE;
-	g_sequencerIsOn = true;
-	vol = 1;
-	sound = MORPH_SAW;
-	autoFilterON = false;
-	autoSound = 0;
-	chorusON = false;
-	delayON = false;
-	phaserON = false;
-	desynkatorON = false;
-
-	sinetable_init();
-	Delay_init();
-	drifter_init();
-	sequencer_init(samplerate);
-	ADSR_init(&adsr);
-	Chorus_init();
-	PhaserInit();
-
-	SVF_initialize(&SVFilter1);
-	SVF_initialize(&SVFilter2);
-
-	osc_init(&op1, 0.8f, 587.f);
-	osc_init(&op2, 0.8f, 587.f);
-	osc_init(&op3, 0.8f, 587.f);
-	osc_init(&op4, 0.8f, 587.f);
-	osc_init(&vibr_lfo, 0.0f, VIBRATO_FREQ);
-	osc_init(&filt_lfo, 0, 0);
-	osc_init(&filt2_lfo, 0, 0);
-	osc_init(&amp_lfo, 0, 0);
-	AdditiveGen_newWaveform();
-	VCO_blepsaw_Init(&mbSawOsc);
-	VCO_bleprect_Init(&mbRectOsc);
-	VCO_bleprect_Init(&mbRectOsc2);
-	mbRectOsc2.waveform = 0.5f; // more rectangle wave
-	VCO_bleptri_Init(&mbTriOsc);
-
-	/*---- Desynkator initialization -------*/
-	metro_initBPM(&metro1, 90.0f, samplerate);
-	metro_initBPM(&metro2, 90.0f, samplerate);
-	metro_initBPM(&metro3, 90.0f, samplerate);
-	proba1 = proba2 = proba3 = 0.6f;
-	ADSR_init(&adsr2);
-	ADSR_init(&adsr3);
-	osc_init(&oscill2, 0.8f, 587.f);
-	osc_init(&oscill3, 0.8f, 587.f);
-	osc_init(&amp_lfo2, 0.3f, VIBRATO_FREQ);
-	metro_reset_requested = false;
-
-}
-
 /***************************************** Sequencer functions ***************************************************/
 
 void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called by sequencer_process()
@@ -789,7 +846,7 @@ void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called b
 	{
 		seq_sequence_new();
 		noteGen.chRequested = false;
-		AdditiveGen_newWaveform();
+		AddOsc_gen_newWaveform(&addosc);
 	}
 
 	if ((noteGen.someNotesMuted) && (rintf(frand_a_b(0.4f, 1)) == 0))
@@ -799,9 +856,9 @@ void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called b
 
 	if (autoFilterON)
 	{
-						SVF_directSetFilterValue(&SVFilter1, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
-						SVF_directSetFilterValue(&SVFilter2, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
-					}
+		SVF_directSetFilterValue(&SVFilter1, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
+		SVF_directSetFilterValue(&SVFilter2, 600.f / samplerate * powf(5000.f / 600.f, frand_a_b(0, 1)));
+	}
 
 	if (noteGen.transpose != 0)
 	{
@@ -818,7 +875,7 @@ void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called b
 			sound = CHORD15;
 			break;
 		case 1:
-			AdditiveGen_newWaveform();
+			AddOsc_gen_newWaveform(&addosc);
 			sound = ADDITIVE;
 			break;
 		case 2:
@@ -835,7 +892,7 @@ void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called b
 		if ((sound == CHORD13min5) || (sound == CHORD135))
 			sound = VOICES3;
 		if (sound == ADDITIVE)
-			AdditiveGen_newWaveform();
+			AddOsc_gen_newWaveform(&addosc);
 	}
 
 	f0 = notesFreq[seq.track1.note[seq.step_idx]]; // Main "melody" frequency
@@ -853,6 +910,128 @@ void sequencer_newSequence_action(void) // User callback function called by sequ
 		MagicFX(MIDI_MAXi);
 	}
 }
+
+
+/*==========================================================================================================================*/
+float _ITCMRAM_ waveCompute(Timbre_t sound, float frq)
+{
+	float y;
+
+	OpSetFreq(&op1, frq);
+
+	/* choose waveform generator */
+	switch (sound)
+	{
+	case MORPH_SAW:
+
+		y = 0.8f * OpSampleCompute(&op1, MSAW);
+		break;
+
+	case SPLIT:
+	{
+		if (frq < 200)
+		{
+			y = OpSampleCompute(&op1, SQSAW);
+		}
+		else if (frq < 600)
+		{
+			y = OpSampleCompute(&op1, SAW);
+		}
+		else
+		{
+			y = OpSampleCompute(&op1, TRI);
+		}
+	}
+		break;
+
+	case ACC_SINE:
+		y = 0.8 * OpSampleCompute(&op1, ACCSIN);
+		break;
+
+	case POWER_SINE:
+		y = OpSampleCompute(&op1, SIN5);
+		break;
+
+	case BLEPTRIANGLE:
+		mbTriOsc.freq = frq;
+		y = VCO_bleptri_SampleCompute(&mbTriOsc);
+		break;
+
+	case BLEPSQUARE:
+		mbRectOsc.freq = frq;
+		y = VCO_bleprect_SampleCompute(&mbRectOsc);
+		break;
+
+	case BLEPSAW:
+	{
+		mbSawOsc.freq = frq;
+		y = VCO_blepsaw_SampleCompute(&mbSawOsc);
+	}
+		break;
+
+	case WT_SINE:
+		y = 0.8f * OpSampleCompute(&op1, WTSIN);
+		break;
+
+	case ADDITIVE:
+		AddOsc_freq_set(&addosc, frq);
+		y = AddOsc_SampleCompute(&addosc);
+		break;
+
+	case NOISE:
+		y = op1.amp * frand_a_b(-.8f, .8f);
+		break; // noise !
+
+	case CHORD15:
+	{	// fundamental + fifth : 1 5
+		OpSetFreq(&op2, frq * 1.50f);
+		y = 0.5f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW));
+	}
+		break;
+
+	case CHORD135:
+	{	// major chord : 1 3maj 5
+		OpSetFreq(&op2, frq * 1.26f);
+		OpSetFreq(&op3, frq * 1.5f);
+		y = 0.33f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW) + OpSampleCompute(&op3, MSAW));
+	}
+		break;
+
+	case CHORD13min5:
+	{	// minor chord : 1 3min 5
+		OpSetFreq(&op2, frq * 1.1892f);
+		OpSetFreq(&op3, frq * 1.5f);
+		y = 0.33f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW) + OpSampleCompute(&op3, MSAW));
+	}
+		break;
+
+	case VOICES3:
+	{ // 3 slightly detuned oscillators with drifters
+
+		OpSetFreq(&op2, frq * (1 + Drifter_nextSample(&d1)));
+		OpSetFreq(&op3, frq * (1 + Drifter_nextSample(&d2)));
+		y = 0.33f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW) + OpSampleCompute(&op3, MSAW));
+	}
+		break;
+
+	case DRIFTERS:
+		DriftOsc_freq_set(&driftosc, frq);
+		y = DriftOsc_sample_compute(&driftosc);
+		break;
+
+	case FM2:
+		y = FM2_sampleCompute(frq);
+		break;
+
+	default:
+		y = 0.8f * OpSampleCompute(&op1, WTSIN);
+		break;
+
+	}
+
+	return y;
+}
+
 /*==========================================================================================================================*/
 /*
  *	 Main sound generator function
@@ -873,7 +1052,8 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 
 	for (uint16_t frame = 0; frame < length; frame++)
 	{
-		/*--------------------------------------- Desynkator synth ----------------------------------*/
+		/*--------------------------------------- Desynkator synth -----------------------------------------------------*/
+
 		if (desynkatorON)
 		{
 
@@ -889,14 +1069,14 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 				clock1 = clock2 = clock3 = 1;
 				metro_reset_requested = false;
 			}
-			/**************************/
+			/*************************************************************/
 			if (clock1)
 			{
 				if ((noteGen.automaticON || noteGen.chRequested))
 				{
 					seq_sequence_new();
 					noteGen.chRequested = false;
-					AdditiveGen_newWaveform();
+					AddOsc_gen_newWaveform(&addosc);
 				}
 
 				if ((noteGen.someNotesMuted) && (!mayTrig(proba1)))
@@ -924,7 +1104,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 						sound = CHORD15;
 						break;
 					case 1:
-						AdditiveGen_newWaveform();
+						AddOsc_gen_newWaveform(&addosc);
 						sound = ADDITIVE;
 						break;
 					case 2:
@@ -941,13 +1121,13 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 					if ((sound == CHORD13min5) || (sound == CHORD135))
 						sound = VOICES3;
 					if (sound == ADDITIVE)
-						AdditiveGen_newWaveform();
+						AddOsc_gen_newWaveform(&addosc);
 				}
 
 				f01 = midiNoteToFreq((uint8_t) seq_random_note());
 				vol1 = frand_a_b(0.4f, .8f); // slightly random volume for each note
 			}
-			/**************************/
+			/*******************************************************************************/
 			if (clock2)
 			{
 				if ((noteGen.someNotesMuted) && (!mayTrig(proba2)))
@@ -958,7 +1138,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 				vol2 = frand_a_b(0.4f, .8f); // slightly random volume for each note
 
 			}
-			/**************************/
+			/******************************************************************************/
 			if (clock3)
 			{
 				if ((noteGen.someNotesMuted) && (!mayTrig(proba3)))
@@ -972,7 +1152,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 
 			/*--- compute vibrato modulation ---*/
 
-			f1 = f01 * (1 + Osc_WT_SINE_SampleCompute(&vibr_lfo));
+			f1 = f01 * (1 + OpSampleCompute(&vibr_lfo, WTSIN));
 			OpSetFreq(&oscill2, f02);
 			mbRectOsc2.freq = f03;
 			//OpSetFreq(&oscill3, f03);
@@ -980,19 +1160,18 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			/*--- Generate waveform ---*/
 
 			y1 = waveCompute(sound, f1);
-			y2 = MorphingSaw_SampleCompute(&oscill2);
+			y2 = OpSampleCompute(&oscill2, MSAW);
 			y3 = VCO_bleprect_SampleCompute(&mbRectOsc2);
-			//y3 = BasicSquare_SampleCompute(&oscill3);
 
 			/*--- Apply envelop and tremolo ---*/
 
-			env1 = ADSR_computeSample(&adsr) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo));
+			env1 = ADSR_computeSample(&adsr) * (1 + OpSampleCompute(&amp_lfo, WTSIN));
 			y1 *= vol1 * env1; // apply volume and envelop
 
 			if (adsr.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro1))) // 50% gate time
 				ADSR_keyOff(&adsr);
 
-			env2 = ADSR_computeSample(&adsr2) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo2));
+			env2 = ADSR_computeSample(&adsr2) * (1 + OpSampleCompute(&amp_lfo2, WTSIN));
 			y2 *= vol2 * env2; // apply volume and envelop
 
 			if (adsr2.cnt_ >= lrintf(0.5f * samplerate / metro_getFreq(&metro2))) // 50% gate time
@@ -1008,7 +1187,8 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 
 			/* Update the filters cutoff frequencies */
 			if ((!autoFilterON) && (filt_lfo.amp != 0))
-				SVF_directSetFilterValue(&SVFilter1, SVF_refFreq_get(&SVFilter1) * (1 + OpSampleCompute7bis(&filt_lfo)));
+				SVF_directSetFilterValue(&SVFilter1,
+						SVF_refFreq_get(&SVFilter1) * (1 + OpSampleCompute7bis(&filt_lfo)));
 
 			if (filt2_lfo.amp != 0)
 				SVF_directSetFilterValue(&SVFilter2,
@@ -1022,7 +1202,8 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 		}
 		else
 		{
-			/*------------------------------------ Dekrispator synth ----------------------------------*/
+			/*------------------------------------ Dekrispator synth --------------------------------------------------------*/
+
 			/*--- Sequencer actions and update ---*/
 			if (g_sequencerIsOn == true)
 			{
@@ -1034,13 +1215,13 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 				vol = (float) velocity / 127.0f;
 			}
 			/*--- compute vibrato modulation ---*/
-			f1 = f0 * (1 + Osc_WT_SINE_SampleCompute(&vibr_lfo));
+			f1 = f0 * (1 + OpSampleCompute(&vibr_lfo, WTSIN));
 
 			/*--- Generate waveform ---*/
 			y = waveCompute(sound, f1);
 
 			/*--- Apply envelop and tremolo ---*/
-			env = ADSR_computeSample(&adsr) * (1 + Osc_WT_SINE_SampleCompute(&amp_lfo));
+			env = ADSR_computeSample(&adsr) * (1 + OpSampleCompute(&amp_lfo, WTSIN));
 			y *= vol * env; // apply volume and envelop
 
 			if (g_sequencerIsOn == true)
@@ -1052,7 +1233,8 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			/*--- Apply filter effect ---*/
 			/* Update the filters cutoff frequencies */
 			if ((!autoFilterON) && (filt_lfo.amp != 0))
-				SVF_directSetFilterValue(&SVFilter1, SVF_refFreq_get(&SVFilter1) * (1 + OpSampleCompute7bis(&filt_lfo)));
+				SVF_directSetFilterValue(&SVFilter1,
+						SVF_refFreq_get(&SVFilter1) * (1 + OpSampleCompute7bis(&filt_lfo)));
 
 			if (filt2_lfo.amp != 0)
 				SVF_directSetFilterValue(&SVFilter2,
@@ -1062,7 +1244,7 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 
 		}
 
-		/*------------------------------------------ Common effects ------------------------------------------------*/
+		/*------------------------------------------ Common effects ------------------------------------------------------------*/
 
 		/*---  Apply delay effect ----*/
 		if (delayON)

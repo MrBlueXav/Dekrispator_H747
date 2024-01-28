@@ -88,7 +88,7 @@ typedef struct ResoFilterStruct
 typedef struct
 {
 	uint8_t 	type; 	// filter type : LP, HP, BP...
-	float 		f;		/* actual relative cutoff freq. (/samplerate) */
+	//float 		f;		/* actual relative cutoff freq. (/samplerate) */
 	float		f0; 	/* reference relative cutoff freq. */
 	float 		q;		/* q value calculated from setReso()*/
 	float 		drive;

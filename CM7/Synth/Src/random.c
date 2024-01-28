@@ -40,9 +40,9 @@ uint8_t MIDIrandVal(void)
 /**************
 * Probabilistically generates triggers
 
- \param prob (1 always returns true, 0 always false)
+ \param : prob (1 always returns 1.0, 0 always 0.0)
 
- \return given a probability 0 to 1, returns true or false.
+ \return : given a probability 0 to 1, returns 1.0 or 0.0.
  *****************/
 float mayTrig(float prob)
 {

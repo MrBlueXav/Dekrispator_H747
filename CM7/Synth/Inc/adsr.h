@@ -58,44 +58,44 @@ typedef struct
 
 typedef struct
 {
-	float attackRate_;
-	float decayRate_;
-	float sustainLevel_;
-	float releaseRate_;
+	float attackRate;
+	float decayRate;
+	float sustainLevel;
+	float releaseRate;
 
 } ADSRParams_t;
 
 /* Exported functions --------------------------------------------------------*/
 
-//! Default constructor.
+// Default constructor.
 void ADSR_init(ADSR_t *env);
 
-void ADSR_params_set(const ADSRParams_t *params);
-void ADSR_params_save(ADSRParams_t *params);
+void ADSR_params_set(const ADSRParams_t *params, ADSR_t *env);
 
+void ADSR_params_save(const ADSR_t *env, ADSRParams_t *params);
 
-//! Set target = 1, state = \e ADSR::ATTACK.
+// Set target = 1, state = \e ADSR::ATTACK.
 void ADSR_keyOn(ADSR_t *env);
 
-//! Set target = 0, state = \e ADSR::RELEASE.
+// Set target = 0, state = \e ADSR::RELEASE.
 void ADSR_keyOff(ADSR_t *env);
 
-//! Set the attack rate.
+// Set the attack rate.
 void ADSR_setAttackRate(ADSR_t *env, float rate);
 
-//! Set the decay rate.
+// Set the decay rate.
 void ADSR_setDecayRate(ADSR_t *env, float rate);
 
-//! Set the sustain level.
+// Set the sustain level.
 void ADSR_setSustainLevel(ADSR_t *env, float level);
 
-//! Set the release rate.
+// Set the release rate.
 void ADSR_setReleaseRate(ADSR_t *env, float rate);
 
-//! Set the attack rate based on a time duration.
+// Set the attack rate based on a time duration.
 void ADSR_setAttackTime(ADSR_t *env, float time);
 
-//! Set the decay rate based on a time duration.
+// Set the decay rate based on a time duration.
 void ADSR_setDecayTime(ADSR_t *env, float time);
 
 //! Set the release rate based on a time duration.

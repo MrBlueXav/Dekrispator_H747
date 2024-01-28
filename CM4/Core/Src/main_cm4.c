@@ -35,7 +35,7 @@
 /*---------------------------------------------------------------------------------------------*/
 void BSP_LED_Initialize(void);
 void Welcome_message(void);
-static void Display_DemoDescription(void);
+//static void Display_DemoDescription(void);
 /*---------------------------------------------------------------------------------------------*/
 /**
  * @brief  The application entry point.
@@ -114,6 +114,8 @@ void BSP_LED_Initialize(void)
 void Welcome_message(void)
 {
 
+#if (USE_THE_LCD > 0)
+
 	uint32_t x_size;
 	uint32_t y_size;
 	BSP_LCD_GetXSize(0, &x_size);
@@ -130,13 +132,16 @@ void Welcome_message(void)
 	UTIL_LCD_SetFont(&Font20);
 	UTIL_LCD_DisplayStringAt(0, 45, (uint8_t*) "Copyright (c) Xavier Halgand 2024", CENTER_MODE);
 
-
 	/* Set the LCD Text Color */
 	UTIL_LCD_DrawRect(10, 90, x_size - 20, y_size - 100, UTIL_LCD_COLOR_BLUE);
 	UTIL_LCD_DrawRect(11, 91, x_size - 22, y_size - 102, UTIL_LCD_COLOR_BLUE);
 
 	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_BLACK);
 	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+
+	UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected.", LEFT_MODE);
+
+#endif
 
 	printf("\n");
 	printf("-----------------------------------------\n");
@@ -151,39 +156,39 @@ void Welcome_message(void)
  * @param  None
  * @retval None
  */
-static void Display_DemoDescription(void)
-{
-	char desc[64];
-	uint32_t x_size;
-	uint32_t y_size;
-
-	BSP_LCD_GetXSize(0, &x_size);
-	BSP_LCD_GetYSize(0, &y_size);
-	/* Set LCD Foreground Layer  */
-	UTIL_LCD_SetFont(&UTIL_LCD_DEFAULT_FONT);
-
-	/* Clear the LCD */
-	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-	UTIL_LCD_Clear(UTIL_LCD_COLOR_WHITE);
-
-	/* Set the LCD Text Color */
-	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_DARKBLUE);
-
-	/* Display LCD messages */
-	UTIL_LCD_DisplayStringAt(0, 10, (uint8_t*) "STM32H747I BSP", CENTER_MODE);
-	UTIL_LCD_DisplayStringAt(0, 35, (uint8_t*) "Drivers examples", CENTER_MODE);
-
-	UTIL_LCD_SetFont(&Font12);
-	UTIL_LCD_DisplayStringAt(0, y_size - 20, (uint8_t*) "Copyright (c) Xavier Halgand 2024", CENTER_MODE);
-
-	UTIL_LCD_SetFont(&Font16);
-	BSP_LCD_FillRect(0, 0, y_size / 2 + 15, x_size, 60, UTIL_LCD_COLOR_BLUE);
-	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_WHITE);
-	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
-	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 30, (uint8_t*) "Press Wakeup button to start :", CENTER_MODE);
-
-	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 45, (uint8_t*) desc, CENTER_MODE);
-}
+//static void Display_DemoDescription(void)
+//{
+//	char desc[64];
+//	uint32_t x_size;
+//	uint32_t y_size;
+//
+//	BSP_LCD_GetXSize(0, &x_size);
+//	BSP_LCD_GetYSize(0, &y_size);
+//	/* Set LCD Foreground Layer  */
+//	UTIL_LCD_SetFont(&UTIL_LCD_DEFAULT_FONT);
+//
+//	/* Clear the LCD */
+//	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+//	UTIL_LCD_Clear(UTIL_LCD_COLOR_WHITE);
+//
+//	/* Set the LCD Text Color */
+//	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_DARKBLUE);
+//
+//	/* Display LCD messages */
+//	UTIL_LCD_DisplayStringAt(0, 10, (uint8_t*) "STM32H747I BSP", CENTER_MODE);
+//	UTIL_LCD_DisplayStringAt(0, 35, (uint8_t*) "Drivers examples", CENTER_MODE);
+//
+//	UTIL_LCD_SetFont(&Font12);
+//	UTIL_LCD_DisplayStringAt(0, y_size - 20, (uint8_t*) "Copyright (c) Xavier Halgand 2024", CENTER_MODE);
+//
+//	UTIL_LCD_SetFont(&Font16);
+//	BSP_LCD_FillRect(0, 0, y_size / 2 + 15, x_size, 60, UTIL_LCD_COLOR_BLUE);
+//	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_WHITE);
+//	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
+//	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 30, (uint8_t*) "Press Wakeup button to start :", CENTER_MODE);
+//
+//	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 45, (uint8_t*) desc, CENTER_MODE);
+//}
 
 /**
  * @brief  This function is executed in case of error occurrence.

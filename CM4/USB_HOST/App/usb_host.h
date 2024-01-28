@@ -30,18 +30,17 @@
 #include "stm32h7xx.h"
 #include "stm32h7xx_hal.h"
 
-/* USER CODE BEGIN INCLUDE */
 #include "usbh_midi_XH.h"
-/* USER CODE END INCLUDE */
 
 /** Status of the application. */
 typedef enum {
   APPLICATION_IDLE = 0,
   APPLICATION_START,
   APPLICATION_READY,
-  APPLICATION_DISCONNECT
+  APPLICATION_DISCONNECT,
+  APPLICATION_RUNNING
 
-}ApplicationTypeDef;
+} ApplicationTypeDef;
 
 /* Exported functions -------------------------------------------------------*/
 

@@ -2,7 +2,7 @@
  ******************************************************************************
  * File Name          	: soundGen.h
  * Author				: Xavier Halgand
- * Date               	:
+ * Date               	: 2024
  * Description        	:
  ******************************************************************************
  */
@@ -27,7 +27,9 @@
 #include <stdbool.h>
 
 #include "constants.h"
-#include "oscillators.h"
+#include "osc.h"
+#include "additive_osc.h"
+#include "drift_3osc.h"
 #include "MIDI_application.h"
 #include "math_tools.h"
 #include "random.h"
@@ -44,6 +46,29 @@
 #include "rational_ratios.h"
 
 /*------------------------------------------------------------------------------*/
+typedef enum
+{
+	MORPH_SAW = 0,
+	SPLIT,
+	ACC_SINE,
+	WT_SINE,
+	ADDITIVE,
+	POWER_SINE,
+	BLEPTRIANGLE,
+	BLEPSQUARE,
+	NOISE,
+	CHORD15,
+	CHORD135,
+	CHORD13min5,
+	VOICES3,
+	DRIFTERS,
+	FM2,
+	BLEPSAW,
+	LAST_SOUND
+
+} Timbre_t;
+
+/*------------------------------------------------------------------------------*/
 typedef struct
 {
 	bool desynkatorON_par;
@@ -51,7 +76,7 @@ typedef struct
 	bool delayON_par;
 	bool phaserON_par;
 	bool chorusON_par;
-	int8_t sound_par; //"enum timber sound ;" not compiling !
+	Timbre_t sound_par; //"enum timber sound;" not compiling !
 	int8_t autoSound_par;
 
 	OscillatorParams_t op1_par;
@@ -60,12 +85,19 @@ typedef struct
 	OscillatorParams_t op4_par;
 	OscillatorParams_t oscill2_par;
 	OscillatorParams_t oscill3_par;
-	OscillatorParams_t amp_lfo2_par;
+
+	Add_oscillatorParams_t addosc_par;
+
+	DriftingOscParams_t driftosc_par;
+
+	DrifterParams_t d1_par;
+	DrifterParams_t d2_par;
 
 	OscillatorParams_t vibr_lfo_par;
 	OscillatorParams_t filt_lfo_par;
 	OscillatorParams_t filt2_lfo_par;
 	OscillatorParams_t amp_lfo_par;
+	OscillatorParams_t amp_lfo2_par;
 
 	ADSRParams_t adsr_par;
 	ADSRParams_t adsr2_par;
@@ -141,6 +173,12 @@ void FM_OP4_modInd_set(uint8_t val);
 void AmpLFO_amp_set(uint8_t val);
 void AmpLFO_freq_set(uint8_t val);
 
+/*-------------------------------------------------------*/
+void DriftOsc1_amp_set(uint8_t val);
+void DriftOsc1_minFreq_set(uint8_t val);
+void DriftOsc1_maxFreq_set(uint8_t val);
+void DriftOsc1_centralFreq_set(uint8_t val);
+
 //------------------------------------------------------------------------------------
 void Filter1Freq_set(uint8_t val);
 void Filter1Res_set(uint8_t val);
@@ -201,11 +239,9 @@ void metro_reset_rq(uint8_t val);
 void MagicFX(uint8_t val);
 void MagicPatch(uint8_t val);
 
-void soundGenInit(void);
-void soundGenNewWave(void);
+float waveCompute(Timbre_t sound, float frq);
 void Synth_Init(void);
-
 void make_sound(uint16_t *buf, uint16_t len);
-void OpsRandFreq(void);
+
 
 #endif /* __SOUNDGEN_H */
