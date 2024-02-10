@@ -109,14 +109,14 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 	if (Appli_state == APPLICATION_READY)
 	{
 		BSP_LED_On(LED_GREEN);
-		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller connected !   ", LEFT_MODE);
+		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller connected !      ", LEFT_MODE);
 		Appli_state = APPLICATION_RUNNING;
 	}
 
 	if (Appli_state == APPLICATION_DISCONNECT)
 	{
 		BSP_LED_Off(LED_GREEN);
-		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected.", LEFT_MODE);
+		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected...", LEFT_MODE);
 		Appli_state = APPLICATION_IDLE;
 		USBH_MIDI_Stop(&hUsbHostHS);
 	}

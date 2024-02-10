@@ -30,29 +30,92 @@
 /*--------------------------------------------------------------------------------------------*/
 
 Sequencer_t seq _DTCMRAM_;
+
 NoteGenerator_t noteGen _DTCMRAM_;
 
-void Sequencer_params_set(const SequencerParams_t *params)
+/*--------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------------------------*/
+void sequencer_init(float sample_rate)
 {
+	seq.samplerate = sample_rate;
+	seq.tempo = INIT_TEMPO;
+	seq_steptime_update(&seq);
+	seq.smp_count = 0;
+	seq.step_idx = 0;
+	seq.gateTime = seq.steptime / 2;
 
-}
+	noteGen.transpose = 0;
+	noteGen.automaticON = false;
+	noteGen.glideON = false;
+	noteGen.chRequested = false;
+	noteGen.someNotesMuted = false;
+	noteGen.scaleIndex = 0;
+	noteGen.octaveSpread = 4;
+	noteGen.rootNote = 36;
+	noteGen.currentScale = (uint8_t*) MIDIscale13;
 
-void Sequencer_params_save(SequencerParams_t *params)
-{
-
+	seq_sequence_new();
 }
 
 /*--------------------------------------------------------------------------------------------*/
-void seq_tempo_set(uint8_t val)
+void Sequencer_params_set(const SequencerParams_t *params, Sequencer_t *seq, NoteGenerator_t *ng)
 {
-	seq.tempo = (float) (800.f * val / MIDI_MAX + 20); // unit : bpm
-	seq.steptime = lrintf(seq.samplerate * 60 / seq.tempo);
+	seq->samplerate = params->samplerate;
+	seq->tempo = params->tempo;
+	seq->gateTime = params->gateTime;
+	ng->scaleIndex = params->scaleIndex;
+	ng->currentScale = params->currentScale;
+	ng->octaveSpread = params->octaveSpread;
+	ng->rootNote = params->rootNote;
+	ng->transpose = params->transpose;
+	ng->automaticON = params->automaticON;
+	ng->glideON = params->glideON;
+	ng->chRequested = params->chRequested;
+	ng->someNotesMuted = params->someNotesMuted;
+
+	for (int i = 0; i < NUMBER_STEPS; i++)
+	{
+		seq->track1.note[i] = params->track1.note[i];
+	}
+
+	seq_steptime_update(seq);
+	seq->smp_count = 0;
+	seq->step_idx = 0;
+}
+
+/*--------------------------------------------------------------------------------------------*/
+void Sequencer_params_save(const Sequencer_t *seq, const NoteGenerator_t *ng, SequencerParams_t *params)
+{
+	params->samplerate = seq->samplerate;
+	params->tempo = seq->tempo;
+	params->gateTime = seq->gateTime;
+	params->scaleIndex = ng->scaleIndex;
+	params->currentScale = ng->currentScale;
+	params->octaveSpread = ng->octaveSpread;
+	params->rootNote = ng->rootNote;
+	params->transpose = ng->transpose;
+	params->automaticON = ng->automaticON;
+	params->glideON = ng->glideON;
+	params->chRequested = ng->chRequested;
+	params->someNotesMuted = ng->someNotesMuted;
+	for (int i = 0; i < NUMBER_STEPS; i++)
+	{
+		params->track1.note[i] = seq->track1.note[i];
+	}
+}
+
+/*--------------------------------------------------------------------------------------------*/
+void seq_steptime_update(Sequencer_t *seq)
+{
+	seq->steptime = lrintf(seq->samplerate * 60 / seq->tempo);
 }
 /*-------------------------------------------------------*/
-void seq_gateTime_set(uint8_t val) // val is a number of samples
+void seq_gateTime_set(uint8_t midival)
 {
-	seq.gateTime = seq.steptime * ((0.9f - 0.1f) * val / MIDI_MAX + 0.1f); // from 10% to 90% of each step duration
+	seq.gateTime = seq.steptime * ((0.9f - 0.1f) * midival / MIDI_MAX + 0.1f); // from 10% to 90% of each step duration
 }
+
 /*-------------------------------------------------------*/
 void seq_transpP2(uint8_t val) // one tone up
 {
@@ -286,26 +349,44 @@ void seq_switchMute(uint8_t val)
 		break;
 	}
 }
-/*-------------------------------------------------------*/
-void seq_doubleTempo(void)
+
+/*--------------------------------------------------------------------------------------------*/
+void seq_tempo_set(uint8_t val)
 {
-	//if (noteG.freq <= 5) noteG.freq *= 2;
+	float ratio = (float) (seq.gateTime) / seq.steptime; // keep gate time ratio
+	seq.tempo = (float) (800.f * val / MIDI_MAX + 20); // unit : step bpm
+	seq_steptime_update(&seq);
+	seq.gateTime = lrintf(ratio * seq.steptime);
+}
+
+/*-------------------------------------------------------*/
+void seq_tempo_double(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		seq.tempo = 2 * seq.tempo;
+		seq.chgTempoRequested = true;
+	}
 }
 /*-------------------------------------------------------*/
-void seq_halfTempo(void)
+void seq_tempo_half(uint8_t val)
 {
-	//if (noteG.freq >= .05f) noteG.freq *= 0.5f;
+	if (val == MIDI_MAXi)
+	{
+		seq.tempo = 0.5f * seq.tempo;
+		seq.chgTempoRequested = true;
+	}
 }
 /*-------------------------------------------------------*/
 void seq_incTempo(void)
 {
-	//if (noteG.freq <= 5) noteG.freq += 0.01f;
+
 }
 
 /*-------------------------------------------------------*/
 void seq_decTempo(void)
 {
-	//if (noteG.freq >= .05f) noteG.freq -= 0.01f;
+
 }
 /*-------------------------------------------------------*/
 void seq_incMaxFreq(void)
@@ -314,7 +395,6 @@ void seq_incMaxFreq(void)
 	{
 		noteGen.octaveSpread++;
 		noteGen.chRequested = true;
-		//pitchGenChangePoints();
 	}
 }
 /*-------------------------------------------------------*/
@@ -333,6 +413,14 @@ void seq_freqMax_set(uint8_t val)
 	noteGen.chRequested = true;
 }
 
+/*-------------------------------------------------------*/
+void seq_new_seq(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		noteGen.chRequested = true;
+	}
+}
 /*--------------------------------------------------------------------------------------------*/
 void _ITCMRAM_ seq_sequence_new(void) // make a new sequence of notes following noteGen parameters
 {
@@ -370,7 +458,7 @@ int16_t seq_random_note(void) // returns a random midi note number through the n
 	while (index < 0)
 		index += 12;
 
-	return (index + LOWEST_NOTE) ;
+	return (index + LOWEST_NOTE);
 }
 /*--------------------------------------------------------------------------------------------*/
 void seq_transpose(void)
@@ -388,28 +476,7 @@ void seq_transpose(void)
 	}
 	noteGen.transpose = 0;
 }
-/*--------------------------------------------------------------------------------------------*/
-void sequencer_init(float sample_rate)
-{
-	seq.samplerate = sample_rate;
-	seq.tempo = INIT_TEMPO;
-	seq.steptime = lrintf(seq.samplerate * 60 / seq.tempo);
-	seq.smp_count = 0;
-	seq.step_idx = 0;
-	seq.gateTime = seq.steptime / 2;
 
-	noteGen.transpose = 0;
-	noteGen.automaticON = false;
-	noteGen.glideON = false;
-	noteGen.chRequested = false;
-	noteGen.someNotesMuted = false;
-	noteGen.scaleIndex = 0;
-	noteGen.octaveSpread = 4;
-	noteGen.rootNote = 36;
-	noteGen.currentScale = (uint8_t*) MIDIscale13;
-
-	seq_sequence_new();
-}
 /*--------------------------------------------------------------------------------------------*/
 void _ITCMRAM_ sequencer_process(void) // To be called at each sample treatment
 {
@@ -427,7 +494,6 @@ void _ITCMRAM_ sequencer_process(void) // To be called at each sample treatment
 		seq.step_idx++;
 		if (seq.step_idx >= NUMBER_STEPS)
 			seq.step_idx = 0;
-
 	}
 }
 /*--------------------------------------------------------------------------------------------*/

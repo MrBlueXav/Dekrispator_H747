@@ -11,7 +11,7 @@
 #define RPMSG_CHAN_NAME              "midi_communication"
 
 /* Private variables ---------------------------------------------------------*/
-static uint32_t message = 14;
+static uint32_t message;
 static volatile int message_received;
 static volatile int service_created;
 static volatile midi_package_t received_data;

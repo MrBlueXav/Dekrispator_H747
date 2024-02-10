@@ -29,36 +29,9 @@
 
 /*----------------------------------------------------------------------------*/
 
-
-
 /* Initial Volume level (from 0 (Mute) to 100 (Max)) */
 static uint8_t		volume = VOL;
-
 static bool			sound = true;
-
-/*------------------------------------------------------------------------------
-Callbacks implementation:
-The callbacks prototypes are defined in the stm32f4_discovery_audio_codec.h file
-and their implementation should be done in the user code if they are needed.
-Below some examples of callback implementations.
---------------------------------------------------------*/
-
-
-///**
-// * @brief  Manages the DMA FIFO error interrupt.
-// * @param  None
-// * @retval None
-// */
-//void BSP_AUDIO_OUT_Error_CallBack(void)
-//{
-//	/* Stop the program with an infinite loop */
-//	while (1)
-//	{}
-//
-//	/* Could also generate a system reset to recover from the error */
-//	/* .... */
-//}
-
 
 //--------------------------------- toggle ON/OFF volume ------------------------------------------
 void toggleSound(void)

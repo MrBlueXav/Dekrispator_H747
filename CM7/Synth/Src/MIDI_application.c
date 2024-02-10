@@ -23,19 +23,19 @@ void Do_____nothing(uint8_t val);
 
 /*------------------------------MIDI CC implementation----------------------------------------*/
 
-void (*ControlChangeFunctionsTable[128])(uint8_t val) =
+const void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 {	Do_____nothing, 			/* 0 */
-	VibratoAmp_set,
+	VibratoAmp_set,				/* 1    	"Modulation Wheel" 	*/
 	DelayWet_set,
 	seq_tempo_set,
-	seq_freqMax_set,
+	seq_freqMax_set,			/* 4		"Foot Pedal"		*/
 	seq_scale_set, 				/* 5 */
 	Sound_set,
-	Volume_set,					/* 7 Volume */
+	Volume_set,					/* 7 		"Volume" 			*/
 	Filter1Freq_set,
 	Filter1Res_set,
-	Do_____nothing, 			/* 10 */
-	Do_____nothing,
+	Do_____nothing, 			/* 10 		"Pan"  				*/
+	Do_____nothing,				/* 11		"Expression"  		*/
 	Filter1Drive_set,
 	Volume_set,
 	Delay_time_set,
@@ -55,7 +55,7 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	Chorus_switch,
 	ChorusMode_switch,
 	ChorusFDBsign_switch,		/* 30 */
-	SynthOut_switch,
+	Sequencer_toggle,
 	Do_____nothing,
 	seq_transpM2,
 	seq_transpP2,
@@ -63,9 +63,9 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	seq_transpP7,
 	seq_transpM1,
 	seq_transpP1,
-	Chorus_reset,
-	Delay_time_dec,				/* 40 */
-	Delay_time_inc,
+	seq_new_seq,
+	seq_tempo_half,				/* 40 */
+	seq_tempo_double,
 	seq_gateTime_set,
 	AttTime_set,
 	metro_tempo_set,			// MODIFIED
@@ -88,7 +88,7 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	DriftOsc1_maxFreq_set,
 	DriftOsc1_centralFreq_set,
 	SynthOut_amp_set,
-	Do_____nothing, 			/*  64 Damper pedal */
+	Do_____nothing, 			/*  64 			"Damper pedal" 		*/
 	Filt1LFO_amp_set,			/* 65 */
 	Filt1LFO_freq_set,
 	DemoMode_toggle,
@@ -107,8 +107,8 @@ void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	Do_____nothing,				/* 80 */
 	MagicFX,
 	MagicPatch,
-	Do_____nothing,
-	Do_____nothing,
+	Soundpatch_save,
+	Soundpatch_load,
 	FM_OP1_freq_set,			/* 85 */
 	FM_OP2_freq_set,
 	FM_OP3_freq_set,

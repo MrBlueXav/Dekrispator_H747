@@ -1,6 +1,6 @@
 /*
- * drift_3osc.c
- *
+ * 	drift_3osc.c
+ *	A voice with 3 drifting oscillators
  *  Created on: Jan 27, 2024
  *      Author: Xavier Halgand
  */
@@ -18,6 +18,30 @@ void DriftOsc_init(DriftingOsc_t *osc)
 	Drifter_init(&osc->d2);
 	Drifter_init(&osc->d3);
 	osc->centralFreq = 440.0f;
+}
+
+/*--------------------------------------------------------------------------------------------------------*/
+void DriftOsc_params_set(const DriftingOscParams_t *params, DriftingOsc_t *osc)
+{
+	Oscillator_params_set(&params->op1, &osc->op1);
+	Oscillator_params_set(&params->op2, &osc->op2);
+	Oscillator_params_set(&params->op3, &osc->op3);
+	Drifter_params_set(&params->d1, &osc->d1);
+	Drifter_params_set(&params->d2, &osc->d2);
+	Drifter_params_set(&params->d3, &osc->d3);
+	osc->centralFreq = params->centralFreq;
+}
+
+/*--------------------------------------------------------------------------------------------------------*/
+void DriftOsc_params_save(const DriftingOsc_t *osc, DriftingOscParams_t *params)
+{
+	Oscillator_params_save(&osc->op1, &params->op1);
+	Oscillator_params_save(&osc->op2, &params->op2);
+	Oscillator_params_save(&osc->op3, &params->op3);
+	Drifter_params_save(&osc->d1, &params->d1);
+	Drifter_params_save(&osc->d2, &params->d2);
+	Drifter_params_save(&osc->d3, &params->d3);
+	params->centralFreq = osc->centralFreq;
 }
 
 /*--------------------------------------------------------------------------------------------------------*/

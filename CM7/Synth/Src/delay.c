@@ -47,7 +47,7 @@ void Delay_init(void)
 	fdb = INIT_FEEDB;
 	shift = INIT_DELAY;
 	readpos = delayline;
-	writepos = delayline + INIT_DELAY;
+	writepos = delayline + shift;
 
 }
 /*-------------------------------------------------------------------------------------------*/

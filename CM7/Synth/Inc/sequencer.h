@@ -52,13 +52,14 @@ typedef struct
 /*------------------------------------------------------------------------------*/
 typedef struct
 {
+	float_t samplerate;
 	Track_t track1;
 	float_t tempo; 		// unit : bpm
 	int32_t steptime; 	// unit : # of samples
-	int32_t smp_count;	// sample counter
+	int32_t smp_count;	// sample de-counter
 	int16_t step_idx;	// current step index
 	int32_t gateTime; 	// desired gate on time (in number of samples)
-	float_t samplerate;
+	bool	chgTempoRequested;
 
 } Sequencer_t;
 
@@ -80,6 +81,7 @@ typedef struct
 /*------------------------------------------------------------------------------*/
 typedef struct
 {
+	float_t samplerate;
 	Track_t track1;
 	float_t tempo; 		// unit : bpm
 	int32_t gateTime; 	// desired gate on time (in samples)
@@ -96,14 +98,19 @@ typedef struct
 } SequencerParams_t;
 
 /*--------------   Exported Functions Prototype ---------------------------*/
-
 void sequencer_init(float sample_rate);
-void Sequencer_params_set(const SequencerParams_t *params);
-void Sequencer_params_save(SequencerParams_t *params);
+void Sequencer_params_set(const SequencerParams_t *params, Sequencer_t *seq, NoteGenerator_t *ng);
+void Sequencer_params_save(const Sequencer_t *seq, const NoteGenerator_t *ng, SequencerParams_t *params);
+void seq_steptime_update(Sequencer_t *seq);
 void sequencer_process(void);
 void seq_sequence_new(void);
 
+void seq_new_seq(uint8_t val);
 void seq_tempo_set(uint8_t val);
+void seq_tempo_double(uint8_t val);
+void seq_tempo_half(uint8_t val);
+void seq_incTempo(void);
+void seq_decTempo(void);
 int16_t seq_random_note(void);
 void seq_transpP1(uint8_t val);
 void seq_transpP2(uint8_t val);
@@ -121,10 +128,6 @@ void seq_scale_set(uint8_t val);
 void seq_switchMovingSeq(uint8_t val);
 void seq_switchMute(uint8_t val);
 void seq_switchGlide(uint8_t val);
-void seq_doubleTempo(void);
-void seq_halfTempo(void);
-void seq_incTempo(void);
-void seq_decTempo(void);
 void seq_freqMax_set(uint8_t val);
 
 /* User Callbacks: user has to implement these functions in his code if

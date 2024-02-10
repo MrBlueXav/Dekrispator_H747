@@ -13,6 +13,7 @@
 
 void Oscillator_params_save(const Oscillator_t *op, OscillatorParams_t *params)
 {
+	params->type = op->type;
 	params->amp = op->amp;
 	params->last_amp = op->last_amp;
 	params->freq = op->freq;
@@ -24,6 +25,7 @@ void Oscillator_params_save(const Oscillator_t *op, OscillatorParams_t *params)
 
 void Oscillator_params_set(const OscillatorParams_t *params, Oscillator_t *op)
 {
+	op->type = params->type;
 	op->amp = params->amp;
 	op->last_amp = params->last_amp;
 	op->freq = params->freq;
@@ -75,7 +77,7 @@ void Trim_phase(Oscillator_t *op) // keep oscillator phase in [0, 2pi]
 }
 
 /*----------------------------------------------------------------------------------------------*/
-float_t _ITCMRAM_ OpSampleCompute(Oscillator_t *op, uint8_t type)
+float_t _ITCMRAM_ OpSampleCompute(Oscillator_t *op, OscType_t type)
 {
 	float_t z;
 

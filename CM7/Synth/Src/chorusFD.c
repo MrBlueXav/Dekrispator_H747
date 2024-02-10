@@ -211,7 +211,7 @@ void dec_chorusFeedback(void)
 void ChorusFeedback_set(uint8_t val)
 {
 	float_t fb;
-	fb = 0.95f * val / MIDI_MAX;
+	fb = 0.8f * val / MIDI_MAX;
 	delL.fb = fb;
 	delR.fb = fb;
 }

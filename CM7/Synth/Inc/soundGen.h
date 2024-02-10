@@ -49,8 +49,6 @@
 typedef enum
 {
 	MORPH_SAW = 0,
-	SPLIT,
-	ACC_SINE,
 	WT_SINE,
 	ADDITIVE,
 	POWER_SINE,
@@ -76,7 +74,7 @@ typedef struct
 	bool delayON_par;
 	bool phaserON_par;
 	bool chorusON_par;
-	Timbre_t sound_par; //"enum timber sound;" not compiling !
+	Timbre_t sound_par;
 	int8_t autoSound_par;
 
 	OscillatorParams_t op1_par;
@@ -85,19 +83,23 @@ typedef struct
 	OscillatorParams_t op4_par;
 	OscillatorParams_t oscill2_par;
 	OscillatorParams_t oscill3_par;
+	OscillatorParams_t vibr_lfo_par;
+	OscillatorParams_t filt_lfo_par;
+	OscillatorParams_t filt2_lfo_par;
+	OscillatorParams_t amp_lfo_par;
+	OscillatorParams_t amp_lfo2_par;
 
-	Add_oscillatorParams_t addosc_par;
+	BlepOscillatorParams_t rect_osc1_par;
+	BlepOscillatorParams_t rect_osc2_par;
+	BlepOscillatorParams_t saw_osc_par;
+	BlepOscillatorParams_t tri_osc_par;
 
 	DriftingOscParams_t driftosc_par;
 
 	DrifterParams_t d1_par;
 	DrifterParams_t d2_par;
 
-	OscillatorParams_t vibr_lfo_par;
-	OscillatorParams_t filt_lfo_par;
-	OscillatorParams_t filt2_lfo_par;
-	OscillatorParams_t amp_lfo_par;
-	OscillatorParams_t amp_lfo2_par;
+	Add_oscillatorParams_t addosc_par;
 
 	ADSRParams_t adsr_par;
 	ADSRParams_t adsr2_par;
@@ -105,11 +107,6 @@ typedef struct
 
 	ResonantFilterParams_t filt1_par;
 	ResonantFilterParams_t filt2_par;
-
-	BlepOscillatorParams_t rect_osc1_par;
-	BlepOscillatorParams_t rect_osc2_par;
-	BlepOscillatorParams_t saw_osc_par;
-	BlepOscillatorParams_t tri_osc_par;
 
 	SequencerParams_t seq_par;
 
@@ -136,6 +133,8 @@ void RelTime_set(uint8_t val);
 void ADSRkeyON(void);
 void ADSRkeyOFF(void);
 
+void Soundpatch_save(uint8_t midival);
+void Soundpatch_load(uint8_t midival);
 uint8_t soundNumber_get(void);
 void autoSound_set(int8_t val);
 void RandSound1(uint8_t val);
@@ -242,6 +241,5 @@ void MagicPatch(uint8_t val);
 float waveCompute(Timbre_t sound, float frq);
 void Synth_Init(void);
 void make_sound(uint16_t *buf, uint16_t len);
-
 
 #endif /* __SOUNDGEN_H */

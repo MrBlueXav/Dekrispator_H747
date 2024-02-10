@@ -65,6 +65,8 @@ typedef struct
 
 /*----------------------------------------------------------------------------------*/
 void 	Drifter_init(Drifter_t *d);
+void 	Drifter_params_save(const Drifter_t *d, DrifterParams_t *params);
+void 	Drifter_params_set(const DrifterParams_t *params, Drifter_t *d);
 float 	Drifter_nextSample(Drifter_t *d);
 
 /************************************************************************************/

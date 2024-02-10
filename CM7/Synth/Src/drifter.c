@@ -23,19 +23,41 @@
 *
 */
 
+/*-------------------------------------------------------------------------------------------*/
 #include "drifter.h"
 
 /*-------------------------------------------------------------------------------------------*/
-void Drifter_newSegment(Drifter_t *d) //
+void Drifter_newSegment(Drifter_t *d);
+
+/*-------------------------------------------------------------------------------------------*/
+void Drifter_params_save(const Drifter_t *d, DrifterParams_t *params)
 {
-	d->n = 0;
-	d->initial = d->final;
-	d->minLength = 0.5f * SAMPLERATE / d->fmax ;
-	d->maxLength = 0.5f * SAMPLERATE / d->fmin ;
-	d->length = frand_a_b(d->minLength,d->maxLength);
-	d->final = frand_a_b(-1, 1);
-	d->slope = (d->final - d->initial) / d->length ;
+	params->fmax = d->fmax;
+	params->fmin = d->fmin;
+	params->gain = d->gain;
 }
+
+/*-------------------------------------------------------------------------------------------*/
+void Drifter_params_set(const DrifterParams_t *params, Drifter_t *d)
+{
+	d->fmax = params->fmax;
+	d->fmin = params->fmin;
+	d->gain = params->gain;
+	d->final = 0;
+	Drifter_newSegment(d);
+}
+
+/*---------------------------------------------------------------------------------------------*/
+void Drifter_init(Drifter_t *d)
+{
+	d->final = 0;
+	d->fmax = 4;
+	d->fmin = 2;
+	d->gain = .01f;
+
+	Drifter_newSegment(d);
+}
+
 /*-------------------------------------------------------------------------------------------*/
 float Drifter_nextSample(Drifter_t *d) //
 {
@@ -48,15 +70,16 @@ float Drifter_nextSample(Drifter_t *d) //
 	return d->out;
 }
 
-/*---------------------------------------------------------------------------------------------*/
-void Drifter_init(Drifter_t *d)
+/*-------------------------------------------------------------------------------------------*/
+void Drifter_newSegment(Drifter_t *d) //
 {
-	d->final = 0;
-	d->fmax = 4;
-	d->fmin = 2;
-	d->gain = .01f;
-
-	Drifter_newSegment(d);
+	d->n = 0;
+	d->initial = d->final;
+	d->minLength = 0.5f * SAMPLERATE / d->fmax ;
+	d->maxLength = 0.5f * SAMPLERATE / d->fmin ;
+	d->length = frand_a_b(d->minLength,d->maxLength);
+	d->final = frand_a_b(-1, 1);
+	d->slope = (d->final - d->initial) / d->length ;
 }
 
 /*------------------------------------------END----------------------------------------------*/

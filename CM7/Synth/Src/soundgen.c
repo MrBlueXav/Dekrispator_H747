@@ -26,13 +26,13 @@
 
 #include "soundGen.h"
 
-/*-------------------------------------------------------*/
+/*--------------------------------------------------------------*/
 #define EPSI				.00002f
-/*-------------------------------------------------------*/
+/*--------------------------------------------------------------*/
 
 extern float samplerate;
 
-bool g_sequencerIsOn = true;
+bool g_sequencerIsOn;
 
 extern Sequencer_t seq;
 extern NoteGenerator_t noteGen;
@@ -45,9 +45,10 @@ static Oscillator_t op2;
 static Oscillator_t op3;
 static Oscillator_t op4;
 
-static VCO_blepsaw_t mbSawOsc;
-static VCO_bleprect_t mbRectOsc, mbRectOsc2;
-static VCO_bleptri_t mbTriOsc;
+static BlepOscillator_t mbSawOsc;
+static BlepOscillator_t mbRectOsc;
+static BlepOscillator_t mbTriOsc;
+static BlepOscillator_t mbRectOsc2;
 
 static Add_oscillator_t addosc;
 static DriftingOsc_t driftosc;
@@ -78,9 +79,9 @@ static float vol1 _DTCMRAM_;
 static float vol2 _DTCMRAM_;
 static float vol3 _DTCMRAM_;
 
-static bool desynkatorON = false;
-static bool demoMode = true;
-static bool freeze = false;
+static bool desynkatorON;
+static bool demoModeON;
+static bool freezeON;
 static bool autoFilterON _DTCMRAM_;
 static bool delayON _DTCMRAM_;
 static bool phaserON _DTCMRAM_;
@@ -92,13 +93,17 @@ static int8_t autoSound _DTCMRAM_;
 static float f0 _DTCMRAM_;
 static float vol _DTCMRAM_;
 
+static SynthPatch_t patch;
+
 /*============================================== Main Synth initialization =========================================*/
 
 void Synth_Init(void)
 {
 	samplerate = (float) SAMPLERATE;
 	g_sequencerIsOn = true;
-	vol = 1;
+	demoModeON = true;
+	freezeON = false;
+	vol = 1.0f;
 	sound = MORPH_SAW;
 	autoFilterON = false;
 	autoSound = 0;
@@ -108,15 +113,7 @@ void Synth_Init(void)
 	desynkatorON = false;
 
 	sinetable_init();
-	Delay_init();
-	//drifters_init();
 	sequencer_init(samplerate);
-	ADSR_init(&adsr);
-	Chorus_init();
-	PhaserInit();
-
-	SVF_initialize(&SVFilter1);
-	SVF_initialize(&SVFilter2);
 
 	Osc_init(&op1, 0.8f, 587.f);
 	Osc_init(&op2, 0.8f, 587.f);
@@ -128,16 +125,23 @@ void Synth_Init(void)
 	Drifter_init(&d1);
 	Drifter_init(&d2);
 
-	VCO_blepsaw_Init(&mbSawOsc);
-	VCO_bleprect_Init(&mbRectOsc);
-	VCO_bleprect_Init(&mbRectOsc2);
-	mbRectOsc2.waveform = 0.5f; // more rectangle wave
-	VCO_bleptri_Init(&mbTriOsc);
+	BlepOsc_init(&mbSawOsc, BLEP_SAW);
+	BlepOsc_init(&mbTriOsc, BLEP_TRI);
+	BlepOsc_init(&mbRectOsc, BLEP_RECT);
+
+	SVF_initialize(&SVFilter1);
+	SVF_initialize(&SVFilter2);
 
 	Osc_init(&vibr_lfo, 0.0f, VIBRATO_FREQ);
 	Osc_init(&filt_lfo, 0, 0);
 	Osc_init(&filt2_lfo, 0, 0);
 	Osc_init(&amp_lfo, 0, 0);
+
+	ADSR_init(&adsr);
+
+	Delay_init();
+	PhaserInit();
+	Chorus_init();
 
 	/*---- Desynkator initialization -------*/
 	metro_initBPM(&metro1, 90.0f, samplerate);
@@ -148,51 +152,149 @@ void Synth_Init(void)
 	ADSR_init(&adsr3);
 	Osc_init(&oscill2, 0.8f, 587.f);
 	oscill2.type = MSAW;
+	BlepOsc_init(&mbRectOsc2, BLEP_RECT);
+	mbRectOsc2.waveform = 0.5f; // more rectangle wave
 	Osc_init(&oscill3, 0.8f, 587.f);
 	Osc_init(&amp_lfo2, 0.3f, VIBRATO_FREQ);
 	metro_reset_requested = false;
+}
 
+/*--------------------------------------------------------------------------*/
+void Synth_patch_save(SynthPatch_t *patch)
+{
+	patch->desynkatorON_par = desynkatorON;
+	patch->autoFilterON_par = autoFilterON;
+	patch->delayON_par = delayON;
+	patch->phaserON_par = phaserON;
+	patch->chorusON_par = chorusON;
+	patch->sound_par = sound;
+	patch->autoSound_par = autoSound;
+
+	Oscillator_params_save(&op1, &patch->op1_par);
+	Oscillator_params_save(&op2, &patch->op2_par);
+	Oscillator_params_save(&op3, &patch->op3_par);
+	Oscillator_params_save(&op4, &patch->op4_par);
+	Oscillator_params_save(&oscill2, &patch->oscill2_par);
+	Oscillator_params_save(&oscill3, &patch->oscill3_par);
+	Oscillator_params_save(&amp_lfo2, &patch->amp_lfo2_par);
+	Oscillator_params_save(&amp_lfo, &patch->amp_lfo_par);
+	Oscillator_params_save(&vibr_lfo, &patch->vibr_lfo_par);
+	Oscillator_params_save(&filt_lfo, &patch->filt_lfo_par);
+	Oscillator_params_save(&filt2_lfo, &patch->filt2_lfo_par);
+
+	BlepOsc_params_save(&mbSawOsc, &patch->saw_osc_par);
+	BlepOsc_params_save(&mbTriOsc, &patch->tri_osc_par);
+	BlepOsc_params_save(&mbRectOsc, &patch->rect_osc1_par);
+	BlepOsc_params_save(&mbRectOsc2, &patch->rect_osc2_par);
+
+	DriftOsc_params_save(&driftosc, &patch->driftosc_par);
+
+	Drifter_params_save(&d1, &patch->d1_par);
+	Drifter_params_save(&d2, &patch->d2_par);
+
+	AddOsc_params_save(&addosc, &patch->addosc_par);
+
+	ADSR_params_save(&adsr, &patch->adsr_par);
+	ADSR_params_save(&adsr2, &patch->adsr2_par);
+	ADSR_params_save(&adsr3, &patch->adsr3_par);
+
+	ResonantFilter_params_save(&SVFilter1, &patch->filt1_par);
+	ResonantFilter_params_save(&SVFilter2, &patch->filt2_par);
+
+	Sequencer_params_save(&seq, &noteGen, &patch->seq_par);
+
+	Metro_params_save(&metro1, &patch->metro1_par);
+	Metro_params_save(&metro2, &patch->metro2_par);
+	Metro_params_save(&metro3, &patch->metro3_par);
+	patch->proba1_par = proba1;
+	patch->proba2_par = proba2;
+	patch->proba3_par = proba3;
+
+	Phaser_params_save(&patch->phaser_par);
+	Delay_params_save(&patch->delay_par);
+	Chorus_params_save(&patch->chorus_par);
+}
+
+/*--------------------------------------------------------------------------*/
+void Synth_patch_load(const SynthPatch_t *patch)
+{
+	g_sequencerIsOn = true;
+	demoModeON = false;
+
+	desynkatorON = patch->desynkatorON_par;
+	autoFilterON = patch->autoFilterON_par;
+	delayON = patch->delayON_par;
+	phaserON = patch->phaserON_par;
+	chorusON = patch->chorusON_par;
+	sound = patch->sound_par;
+	autoSound = patch->autoSound_par;
+
+	Oscillator_params_set(&patch->op1_par, &op1);
+	Oscillator_params_set(&patch->op2_par, &op2);
+	Oscillator_params_set(&patch->op3_par, &op3);
+	Oscillator_params_set(&patch->op4_par, &op4);
+	Oscillator_params_set(&patch->oscill2_par, &oscill2);
+	Oscillator_params_set(&patch->oscill3_par, &oscill3);
+	Oscillator_params_set(&patch->amp_lfo2_par, &amp_lfo2);
+	Oscillator_params_set(&patch->amp_lfo_par, &amp_lfo);
+	Oscillator_params_set(&patch->vibr_lfo_par, &vibr_lfo);
+	Oscillator_params_set(&patch->filt_lfo_par, &filt_lfo);
+	Oscillator_params_set(&patch->filt2_lfo_par, &filt2_lfo);
+
+	BlepOsc_params_set(&patch->saw_osc_par, &mbSawOsc);
+	BlepOsc_params_set(&patch->tri_osc_par, &mbTriOsc);
+	BlepOsc_params_set(&patch->rect_osc1_par, &mbRectOsc);
+	BlepOsc_params_set(&patch->rect_osc2_par, &mbRectOsc2);
+
+	DriftOsc_params_set(&patch->driftosc_par, &driftosc);
+
+	Drifter_params_set(&patch->d1_par, &d1);
+	Drifter_params_set(&patch->d2_par, &d2);
+
+	AddOsc_params_set(&patch->addosc_par, &addosc);
+
+	ADSR_params_set(&patch->adsr_par, &adsr);
+	ADSR_params_set(&patch->adsr2_par, &adsr2);
+	ADSR_params_set(&patch->adsr3_par, &adsr3);
+
+	ResonantFilter_params_set(&patch->filt1_par, &SVFilter1);
+	ResonantFilter_params_set(&patch->filt2_par, &SVFilter2);
+
+	Sequencer_params_set(&patch->seq_par, &seq, &noteGen);
+
+	Metro_params_set(&patch->metro1_par, &metro1);
+	Metro_params_set(&patch->metro2_par, &metro2);
+	Metro_params_set(&patch->metro3_par, &metro3);
+	proba1 = patch->proba1_par;
+	proba2 = patch->proba2_par;
+	proba3 = patch->proba3_par;
+
+	Phaser_params_set(&patch->phaser_par);
+	Delay_params_set(&patch->delay_par);
+	Chorus_params_set(&patch->chorus_par);
 }
 
 /*=============================================   MIDI and control functions   ===================================================*/
 
-/*************************************** ADSR functions **************************************/
-void AttTime_set(uint8_t val)
-{
-	ADSR_setAttackTime(&adsr, val / MIDI_MAX + 0.0001f);
-}
-
-/*---------------------------------------------------------*/
-void DecTime_set(uint8_t val)
-{
-	ADSR_setDecayTime(&adsr, .2 * val / MIDI_MAX + 0.0001f);
-}
-
-/*---------------------------------------------------------*/
-void SustLevel_set(uint8_t val)
-{
-	ADSR_setSustainLevel(&adsr, val / MIDI_MAX);
-}
-
-/*---------------------------------------------------------*/
-void RelTime_set(uint8_t val)
-{
-	ADSR_setReleaseTime(&adsr, .5f * val / MIDI_MAX + 0.0001f);
-}
-
-/*---------------------------------------------------------*/
-void ADSRkeyON(void)
-{
-	ADSR_keyOn(&adsr);
-}
-
-/*---------------------------------------------------------*/
-void ADSRkeyOFF(void)
-{
-	ADSR_keyOff(&adsr);
-}
-
 /******************************************  Sound functions   *******************************/
+
+void Soundpatch_save(uint8_t midival)
+{
+	if (midival == MIDI_MAXi)
+	{
+		Synth_patch_save(&patch);
+	}
+}
+
+/*-------------------------------------------------------*/
+void Soundpatch_load(uint8_t midival)
+{
+	if (midival == MIDI_MAXi)
+	{
+		Synth_patch_load(&patch);
+	}
+}
+/*-------------------------------------------------------*/
 void nextSound(void)
 {
 	if (sound < LAST_SOUND)
@@ -245,19 +347,51 @@ uint8_t soundNumber_get(void)
 {
 	return sound;
 }
-/*---------------------------------------------------------*/
-void Parameter_fine_tune(uint8_t val)
-{
 
+/*************************************** ADSR functions **************************************/
+void AttTime_set(uint8_t val)
+{
+	ADSR_setAttackTime(&adsr, val / MIDI_MAX + 0.0001f);
 }
+
+/*---------------------------------------------------------*/
+void DecTime_set(uint8_t val)
+{
+	ADSR_setDecayTime(&adsr, .2 * val / MIDI_MAX + 0.0001f);
+}
+
+/*---------------------------------------------------------*/
+void SustLevel_set(uint8_t val)
+{
+	ADSR_setSustainLevel(&adsr, val / MIDI_MAX);
+}
+
+/*---------------------------------------------------------*/
+void RelTime_set(uint8_t val)
+{
+	ADSR_setReleaseTime(&adsr, .5f * val / MIDI_MAX + 0.0001f);
+}
+
+/*---------------------------------------------------------*/
+void ADSRkeyON(void)
+{
+	ADSR_keyOn(&adsr);
+}
+
+/*---------------------------------------------------------*/
+void ADSRkeyOFF(void)
+{
+	ADSR_keyOff(&adsr);
+}
+
 /*---------------------------------------------------------*/
 void DemoMode_toggle(uint8_t val)
 {
 	if (val == MIDI_MAXi)
 	{
-		demoMode = !demoMode;
+		demoModeON = !demoModeON;
 	}
-	if (demoMode)
+	if (demoModeON)
 		desynkatorON = false;
 }
 
@@ -269,23 +403,13 @@ void Desynkator_toggle(uint8_t val)
 		desynkatorON = !desynkatorON;
 	}
 }
-/*---------------------------------------------------------*/
-void Sequencer_toggle(uint8_t val)
-{ // run or stop sequencer
-	if (val == MIDI_MAXi)
-	{
-		g_sequencerIsOn = !g_sequencerIsOn;
-		if (!g_sequencerIsOn)
-			ADSR_keyOff(&adsr);
-		Reset_notes_On();
-	}
-}
+
 /*---------------------------------------------------------*/
 void Freeze_toggle(uint8_t val)
 {
 	if (val == MIDI_MAXi)
 	{
-		freeze = !freeze;
+		freezeON = !freezeON;
 	}
 }
 /*---------------------------------------------------------*/
@@ -293,9 +417,8 @@ void Synth_reset(uint8_t val)
 {
 	if (val == MIDI_MAXi)
 	{
-		demoMode = false;
-		freeze = false;
 		Synth_Init();
+		demoModeON = false;
 	}
 }
 
@@ -488,6 +611,13 @@ void SynthOut_amp_set(uint8_t val)
 	op1.amp = amp;
 	op2.amp = amp;
 	op3.amp = amp;
+	op4.amp = amp;
+	addosc.amp = amp;
+	driftosc.op1.amp = amp;
+	driftosc.op2.amp = amp;
+	driftosc.op3.amp = amp;
+	oscill2.amp = amp;
+	oscill3.amp = amp;
 	mbSawOsc.amp = amp;
 	mbRectOsc.amp = amp;
 	mbRectOsc2.amp = amp;
@@ -840,16 +970,38 @@ void MagicPatch(uint8_t val) /* Create a new sound with random sound parameters 
 
 /***************************************** Sequencer functions ***************************************************/
 
+void Sequencer_toggle(uint8_t val)
+{ // run or stop sequencer
+	if (val == MIDI_MAXi)
+	{
+		g_sequencerIsOn = !g_sequencerIsOn;
+		if (!g_sequencerIsOn)
+			ADSR_keyOff(&adsr);
+		Reset_notes_On();
+	}
+}
+
+/*------------------------------------------------------------------------------------------------------*/
 void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called by sequencer_process()
 {
 	if ((noteGen.automaticON || noteGen.chRequested))
 	{
 		seq_sequence_new();
-		noteGen.chRequested = false;
 		AddOsc_gen_newWaveform(&addosc);
+		noteGen.chRequested = false;
 	}
 
-	if ((noteGen.someNotesMuted) && (rintf(frand_a_b(0.4f, 1)) == 0))
+	if (seq.chgTempoRequested)
+	{
+		float ratio = (float) (seq.gateTime) / seq.steptime;
+		; // keep gate time ratio
+		seq_steptime_update(&seq);
+		seq.gateTime = roundf(ratio * seq.steptime);
+		seq.chgTempoRequested = false;
+
+	}
+
+	if ((noteGen.someNotesMuted) && (!mayTrig(proba1)))
 		ADSR_keyOff(&adsr);
 	else
 		ADSR_keyOn(&adsr);
@@ -889,28 +1041,26 @@ void _ITCMRAM_ sequencer_newStep_action(void) // User callback function called b
 	if (autoSound == 2)
 	{
 		sound = rand() % LAST_SOUND;
-		if ((sound == CHORD13min5) || (sound == CHORD135))
+		if ((sound == CHORD13min5) || (sound == CHORD135)) // avoided sounds
 			sound = VOICES3;
 		if (sound == ADDITIVE)
 			AddOsc_gen_newWaveform(&addosc);
 	}
 
-	f0 = notesFreq[seq.track1.note[seq.step_idx]]; // Main "melody" frequency
+	f0 = notesFreq[seq.track1.note[seq.step_idx]]; // Main "melody" frequency for this step
 	vol = frand_a_b(0.4f, .8f); // slightly random volume for each note
 }
 
 /*---------------------------------------------------------------------------------------*/
-
 void sequencer_newSequence_action(void) // User callback function called by sequencer_process()
 {
 	/* A new sequence begins ... */
-	if ((demoMode == true) && (freeze == false))
+	if ((demoModeON == true) && (freezeON == false))
 	{
 		MagicPatch(MIDI_MAXi);
 		MagicFX(MIDI_MAXi);
 	}
 }
-
 
 /*==========================================================================================================================*/
 float _ITCMRAM_ waveCompute(Timbre_t sound, float frq)
@@ -923,29 +1073,7 @@ float _ITCMRAM_ waveCompute(Timbre_t sound, float frq)
 	switch (sound)
 	{
 	case MORPH_SAW:
-
 		y = 0.8f * OpSampleCompute(&op1, MSAW);
-		break;
-
-	case SPLIT:
-	{
-		if (frq < 200)
-		{
-			y = OpSampleCompute(&op1, SQSAW);
-		}
-		else if (frq < 600)
-		{
-			y = OpSampleCompute(&op1, SAW);
-		}
-		else
-		{
-			y = OpSampleCompute(&op1, TRI);
-		}
-	}
-		break;
-
-	case ACC_SINE:
-		y = 0.8 * OpSampleCompute(&op1, ACCSIN);
 		break;
 
 	case POWER_SINE:
@@ -954,19 +1082,17 @@ float _ITCMRAM_ waveCompute(Timbre_t sound, float frq)
 
 	case BLEPTRIANGLE:
 		mbTriOsc.freq = frq;
-		y = VCO_bleptri_SampleCompute(&mbTriOsc);
+		y = BlepOsc_sampleCompute(&mbTriOsc);
 		break;
 
 	case BLEPSQUARE:
 		mbRectOsc.freq = frq;
-		y = VCO_bleprect_SampleCompute(&mbRectOsc);
+		y = BlepOsc_sampleCompute(&mbRectOsc);
 		break;
 
 	case BLEPSAW:
-	{
 		mbSawOsc.freq = frq;
-		y = VCO_blepsaw_SampleCompute(&mbSawOsc);
-	}
+		y = BlepOsc_sampleCompute(&mbSawOsc);
 		break;
 
 	case WT_SINE:
@@ -983,35 +1109,31 @@ float _ITCMRAM_ waveCompute(Timbre_t sound, float frq)
 		break; // noise !
 
 	case CHORD15:
-	{	// fundamental + fifth : 1 5
+		// fundamental + fifth : 1 5
 		OpSetFreq(&op2, frq * 1.50f);
 		y = 0.5f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW));
-	}
 		break;
 
 	case CHORD135:
-	{	// major chord : 1 3maj 5
+		// major chord : 1 3maj 5
 		OpSetFreq(&op2, frq * 1.26f);
 		OpSetFreq(&op3, frq * 1.5f);
 		y = 0.33f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW) + OpSampleCompute(&op3, MSAW));
-	}
 		break;
 
 	case CHORD13min5:
-	{	// minor chord : 1 3min 5
+		// minor chord : 1 3min 5
 		OpSetFreq(&op2, frq * 1.1892f);
 		OpSetFreq(&op3, frq * 1.5f);
 		y = 0.33f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW) + OpSampleCompute(&op3, MSAW));
-	}
 		break;
 
 	case VOICES3:
-	{ // 3 slightly detuned oscillators with drifters
+		// 3 slightly detuned oscillators with drifters
 
 		OpSetFreq(&op2, frq * (1 + Drifter_nextSample(&d1)));
 		OpSetFreq(&op3, frq * (1 + Drifter_nextSample(&d2)));
 		y = 0.33f * (OpSampleCompute(&op1, MSAW) + OpSampleCompute(&op2, MSAW) + OpSampleCompute(&op3, MSAW));
-	}
 		break;
 
 	case DRIFTERS:
@@ -1155,13 +1277,12 @@ void _ITCMRAM_ make_sound(uint16_t *buf, uint16_t length) // To be used with the
 			f1 = f01 * (1 + OpSampleCompute(&vibr_lfo, WTSIN));
 			OpSetFreq(&oscill2, f02);
 			mbRectOsc2.freq = f03;
-			//OpSetFreq(&oscill3, f03);
 
 			/*--- Generate waveform ---*/
 
 			y1 = waveCompute(sound, f1);
 			y2 = OpSampleCompute(&oscill2, MSAW);
-			y3 = VCO_bleprect_SampleCompute(&mbRectOsc2);
+			y3 = BlepOsc_sampleCompute(&mbRectOsc2);
 
 			/*--- Apply envelop and tremolo ---*/
 

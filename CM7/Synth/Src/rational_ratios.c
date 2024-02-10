@@ -1,6 +1,6 @@
 /*
- * rational_ratios.c
- *
+ * 		rational_ratios.c
+ *	Rational numbers table from 1/8 to 8 in ascending order.
  *  Created on: Dec 30, 2023
  *      Author: Xavier Halgand
  */
@@ -12,7 +12,7 @@
 
 #define RATIOS_NUMB 53
 
-/*---------------------------------------------------------------------------------------*/
+/*---------------------------- Rational numbers table from 1/8 to 8 in ascending order -----------------------------------------------*/
 
 const float rational_ratios[RATIOS_NUMB] = {
 		1.0/8, 1.0/6, 1.0/5, 1.0/4, 1.0/3, 3.0/8, 2.0/5, 1.0/2, 		/* <= 0.5  */

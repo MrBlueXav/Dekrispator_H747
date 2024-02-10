@@ -9,15 +9,27 @@
 #include "additive_osc.h"
 
 /*--------------------------------------------------------------------------------------*/
-void 	AddOsc_params_set(const Add_oscillatorParams_t *params, Add_oscillator_t *osc)
+void AddOsc_params_set(const Add_oscillatorParams_t *params, Add_oscillator_t *osc)
 {
-
+	osc->amp = params->amp;
+	osc->last_amp = params->last_amp;
+	osc->freq = params->freq;
+	for (uint8_t k = 0; k < PARTIALS_NUMBER + 1; k++)
+	{
+		osc->a[k] = params->a[k];
+	}
 }
 
 /*--------------------------------------------------------------------------------------*/
-void 	AddOsc_params_save(const Add_oscillator_t *osc, Add_oscillatorParams_t *params)
+void AddOsc_params_save(const Add_oscillator_t *osc, Add_oscillatorParams_t *params)
 {
-
+	params->amp = osc->amp;
+	params->last_amp = osc->last_amp;
+	params->freq = osc->freq;
+	for (uint8_t k = 0; k < PARTIALS_NUMBER + 1; k++)
+	{
+		params->a[k] = osc->a[k];
+	}
 }
 
 /*--------------------------------------------------------------------------------------*/
@@ -27,11 +39,10 @@ void AddOsc_init(Add_oscillator_t *osc, float amp, float freq)
 	osc->last_amp = amp;
 	osc->freq = freq;
 	osc->out = 0;
-
 }
 
 /*--------------------------------------------------------------------------------------*/
-void	AddOsc_freq_set(Add_oscillator_t *osc, float freq)
+void AddOsc_freq_set(Add_oscillator_t *osc, float freq)
 {
 	osc->freq = freq;
 }
@@ -52,6 +63,7 @@ void AddOsc_gen_newWaveform(Add_oscillator_t *osc) // create a new random wavefo
 	}
 	osc->a[0] = 1.f / osc->a[0];
 }
+
 /*-------------------------------------------------------------------------------------*/
 float AddOsc_SampleCompute(Add_oscillator_t *osc) // additive sine generator
 {
@@ -73,3 +85,4 @@ float AddOsc_SampleCompute(Add_oscillator_t *osc) // additive sine generator
 
 	return osc->out;
 }
+/***************************************************** EOF ******************************************/

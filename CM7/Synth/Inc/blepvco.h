@@ -1,12 +1,10 @@
 /**
  ******************************************************************************
  * File Name          	: blepvco.h
- * Author				: Xavier Halgand
- * Date               	:
- * Description        	:
+ * Author				: Sean Bolton,   Xavier Halgand
+ * Date               	: 2004-2005    2024
  ******************************************************************************
  */
-
 
 /* blepvco - minBLEP-based, hard-sync-capable LADSPA VCOs.
  *
@@ -31,55 +29,76 @@
  * MA 02111-1307, USA.
  */
 
+//----------------------------------------------------------------------------------------------------------
 #ifndef _BLEPVCO_H
 #define _BLEPVCO_H
 
+//----------------------------------------------------------------------------------------------------------
 #include <stdbool.h>
 #include "minblep_tables.h"
 #include "constants.h"
 
 //----------------------------------------------------------------------------------------------------------
-
-enum { FILLEN = 256 };
+enum
+{
+	FILLEN = 256
+};
 
 //----------------------------------------------------------------------------------------------------------
+typedef enum
+{
+	BLEP_TRI, BLEP_SAW, BLEP_RECT
 
-void place_step_dd(float *buffer, int index, float phase, float w, float scale);
-void place_slope_dd(float *buffer, int index, float phase, float w, float slope_delta);
+} BlepType_t;
 
 //----------------------------------------------------------------------------------------------------------
 typedef struct
 {
-	float	amp;
-	float	last_amp;
-	float 	freq;
-	float	waveform;	// duty cycle, must be in [-1, 1]
+	BlepType_t type;
+	float amp;
+	float last_amp;
+	float freq;
+	float waveform;	// duty cycle, must be in [-1, 1]
 
-} BlepOscillatorParams_t ;
+} BlepOscillatorParams_t;
+
 //----------------------------------------------------------------------------------------------------------
-void BlepOsc_params_set(const BlepOscillatorParams_t *params);
-void BlepOsc_params_save(BlepOscillatorParams_t *params);
+typedef struct
+{
+	BlepType_t type;
+	float amp;
+	float last_amp;
+	float freq;
+	float waveform;		// duty cycle, must be in [-1, 1], not used by SAW
+	float syncin;
+	float syncout;
+	float _p, _w, _z;
+	float _b, _x; 		// not used by SAW
+	float _f[FILLEN + LONGEST_DD_PULSE_LENGTH];
+	int _j, _k;
+	bool _init;
+	float out;
+
+} BlepOscillator_t;
+
 //----------------------------------------------------------------------------------------------------------
 
 //class VCO_blepsaw
 
 typedef struct
 {
-	float	out;
-	float	amp;
-	float	last_amp;
-	float 	freq;
-	float	syncin;
-	float	syncout;
-	float   _p, _w, _z;
-	float   _f [FILLEN + STEP_DD_PULSE_LENGTH];
-	int     _j;
-	bool	_init;
+	float out;
+	float amp;
+	float last_amp;
+	float freq;
+	float syncin;
+	float syncout;
+	float _p, _w, _z;
+	float _f[FILLEN + STEP_DD_PULSE_LENGTH];
+	int _j;
+	bool _init;
 
 } VCO_blepsaw_t;
-
-void VCO_blepsaw_Init(VCO_blepsaw_t *vco);
-float VCO_blepsaw_SampleCompute(VCO_blepsaw_t *vco);
 
 //----------------------------------------------------------------------------------------------------------
 
@@ -87,22 +106,19 @@ float VCO_blepsaw_SampleCompute(VCO_blepsaw_t *vco);
 
 typedef struct
 {
-	float	out;
-	float	amp;
-	float	last_amp;
-	float 	freq;
-	float	waveform;	// duty cycle, must be in [-1, 1]
-	float	syncin;
-	float	syncout;
-	float   _p, _w, _b, _x, _z;
-	float   _f [FILLEN + STEP_DD_PULSE_LENGTH];
-	int     _j, _k;
-	bool	_init;
+	float out;
+	float amp;
+	float last_amp;
+	float freq;
+	float waveform;	// duty cycle, must be in [-1, 1]
+	float syncin;
+	float syncout;
+	float _p, _w, _b, _x, _z;
+	float _f[FILLEN + STEP_DD_PULSE_LENGTH];
+	int _j, _k;
+	bool _init;
 
-} VCO_bleprect_t ;
-
-void VCO_bleprect_Init(VCO_bleprect_t *vco);
-float VCO_bleprect_SampleCompute(VCO_bleprect_t *vco);
+} VCO_bleprect_t;
 
 //----------------------------------------------------------------------------------------------------------
 
@@ -110,21 +126,35 @@ float VCO_bleprect_SampleCompute(VCO_bleprect_t *vco);
 
 typedef struct
 {
-	float	out;
-	float	amp;
-	float	last_amp;
-	float 	freq;
-	float	waveform;	// duty cycle, must be in [-1, 1]
-	float	syncin;
-	float	syncout;
-	float   _p, _w, _b, _z;
-	float   _f [FILLEN + LONGEST_DD_PULSE_LENGTH];
-	int     _j, _k;
-	bool	_init;
+	float out;
+	float amp;
+	float last_amp;
+	float freq;
+	float waveform;	// duty cycle, must be in [-1, 1]
+	float syncin;
+	float syncout;
+	float _p, _w, _b, _z;
+	float _f[FILLEN + LONGEST_DD_PULSE_LENGTH];
+	int _j, _k;
+	bool _init;
 
-} VCO_bleptri_t ;
+} VCO_bleptri_t;
 
-void VCO_bleptri_Init(VCO_bleptri_t *vco);
-float VCO_bleptri_SampleCompute(VCO_bleptri_t *vco);
+//--------------------------------- New interface ! -----------------------------------------------------------
+void 	BlepOsc_init(BlepOscillator_t *osc, BlepType_t type);
+float 	BlepOsc_sampleCompute(BlepOscillator_t *osc);
+void 	BlepOsc_params_set(const BlepOscillatorParams_t *params, BlepOscillator_t *blep);
+void 	BlepOsc_params_save(const BlepOscillator_t *blep, BlepOscillatorParams_t *params);
+//----------------------------------------------------------------------------------------------
+void 	VCO_blepsaw_Init(VCO_blepsaw_t *vco);
+float	VCO_blepsaw_SampleCompute(VCO_blepsaw_t *vco);
+void 	VCO_bleprect_Init(VCO_bleprect_t *vco);
+float 	VCO_bleprect_SampleCompute(VCO_bleprect_t *vco);
+void 	VCO_bleptri_Init(VCO_bleptri_t *vco);
+float	VCO_bleptri_SampleCompute(VCO_bleptri_t *vco);
 
+
+//----------------------------------------------------------------------------------------------------------
 #endif /* _BLEPVCO_H */
+
+/********************************************************************************************************************/

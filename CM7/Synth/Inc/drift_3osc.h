@@ -40,6 +40,8 @@ typedef struct
 
 /*--------------------------------------------------------------------------------------------------------*/
 void 	DriftOsc_init (DriftingOsc_t *osc);
+void 	DriftOsc_params_save(const DriftingOsc_t *osc, DriftingOscParams_t *params);
+void 	DriftOsc_params_set(const DriftingOscParams_t *params, DriftingOsc_t *osc);
 void 	DriftOsc_freq_set(DriftingOsc_t *osc, float freq);
 float 	DriftOsc_sample_compute (DriftingOsc_t *osc);
 void 	DriftOsc_centralFreq_set(DriftingOsc_t *osc, uint8_t);
