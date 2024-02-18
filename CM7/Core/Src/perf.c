@@ -78,10 +78,8 @@ void cyc_count_print(void) // put this just after the function to measure
 	if ((ticktime - oldtime) > 1000) // send report every second
 	{
 		perf.average = perf.sum / perf.count;
-		//int n = sprintf (string_message, "Coucou !!!");
-		//string_sendToCM4(&string_message[0], n);
-		//string_sendToCM4(*M7_DWT_CYCCNT);
-		string_sendToCM4((uint32_t)roundf(perf.average));
+		send_integer_to_CM4((uint32_t)roundf(perf.average));
+		//send_string_to_CM4("Ceci est un message !\n");
 		oldtime = ticktime;
 		perf.sum = 0.0f;
 		perf.count = 0;

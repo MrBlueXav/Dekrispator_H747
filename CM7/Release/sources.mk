@@ -24,6 +24,7 @@ OBJCOPY_BIN :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Binn \
 Common/Src \
 Core/Src \
 Core/Startup \

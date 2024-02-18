@@ -45,7 +45,7 @@ _Min_Stack_Size = 0x800; /* required amount of stack */
 MEMORY
 {
 FLASH (rx)	    		: ORIGIN = 0x08000000, LENGTH = 1024K
-/* DTCMRAM (xrw)   	   		: ORIGIN = 0x20000000, LENGTH = 128K */
+DTCMRAM (rw)   	   		: ORIGIN = 0x20000000, LENGTH = 128K 
 RAM (xrw)   	   		: ORIGIN = 0x24000000, LENGTH = 512K
 ITCMRAM (xrw)      		: ORIGIN = 0x00000000, LENGTH = 64K
 OPENAMP_RSC_TAB (xrw) 	: ORIGIN = 0x38000000, LENGTH = 1K
@@ -166,6 +166,18 @@ SECTIONS
      . = ABSOLUTE(0x38000000);
      *(.resource_table)  
   } >OPENAMP_RSC_TAB  AT > FLASH
+  
+  
+  /* DTCMRAM section */  
+  .dtcmramblockBss (NOLOAD) :
+  {
+    . = ALIGN(4);
+    _BeginDTCMRamBss = .;
+    KEEP(*(.DTCMRAM_section_bss))
+    . = ALIGN(4);
+    _EndDTCMRamBss = .;
+
+  } >DTCMRAM
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

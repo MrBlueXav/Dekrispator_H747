@@ -15,7 +15,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "main.h"
+
 #include "constants.h"
 #include "random.h"
 #include "adsr.h"
@@ -24,7 +24,6 @@
 #include "notesTables.h"
 #include "drifter.h"
 #include "soundGen.h"
-#include "audio_conf.h"
 #include "midi_types.h"
 
 /* Exported functions ------------------------------------------------------- */

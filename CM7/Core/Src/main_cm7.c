@@ -80,6 +80,7 @@ int main(void)
 		Error_Handler();
 	}
 
+	/*  OPENAMP initialization */
 	openamp_cm7_init();
 
 	/* Initialize all configured peripherals */

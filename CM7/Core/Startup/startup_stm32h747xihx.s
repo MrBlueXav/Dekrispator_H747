@@ -93,6 +93,17 @@ LoopFillZerobss:
   cmp r2, r4
   bcc FillZerobss
 
+/*---------------------DTCMRAM BSS section initialization--------------------------*/
+ ldr r0, =_BeginDTCMRamBss
+ ldr r1, =_EndDTCMRamBss
+ ldr r2, =0
+
+ b 2f
+1:  str r2, [r0], #4
+2:  cmp r0, r1
+    blo 1b
+/*----------------------------END of DTCMRAM BSS section init ----------------------*/
+
 /* Call static constructors */
     bl __libc_init_array
 /* Call the application's entry point.*/

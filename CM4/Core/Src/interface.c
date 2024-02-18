@@ -8,7 +8,7 @@
 #include "interface.h"
 
 /*------------------------ Private macro ---------------------------------------------------------------------------*/
-#define RPMSG_SERVICE_NAME 		"midi_communication"
+#define RPMSG_SERVICE_NAME 		"M4_M7_communication"
 #define RX_BUFF_SIZE 			64 /* USB MIDI buffer : max received data 64 bytes */
 #define CYC_MAX					(((float)AUDIO_BUFFER_SIZE / 8.0f) * ((float)FREQ_CM7 / (float)SAMPLERATE))
 
@@ -18,7 +18,7 @@ extern USBH_HandleTypeDef hUsbHostHS;
 
 /*------------------------------------------------------------------------------------------------------------------*/
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv);
-void ProcessReceivedMidiDatas(void);
+void Process_ReceivedMidiDatas(void);
 void midipacket_print(midi_package_t pack);
 
 /* -----------------------------------------------------------------------------------------------------------------*/
@@ -29,8 +29,7 @@ static uint8_t MIDI_RX_Buffer[RX_BUFF_SIZE]; // MIDI reception buffer
 static uint32_t oldtick, newtick;
 static volatile int message_received;
 static volatile uint32_t received_number;
-//static volatile char 		*received_data_p;
-static volatile size_t received_data_len;
+static int received_data_len;
 static struct rpmsg_endpoint rp_endpoint;
 static char string_message[100];
 
@@ -56,9 +55,35 @@ void openamp_init(void)
 
 static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t len, uint32_t src, void *priv)
 {
-	received_number = *((uint32_t*) data);
-	received_data_len = len;
+	//received_number = *((uint32_t*) data);
+	//received_data_len = len;
 	message_received = 1;
+	uint8_t cmd = binn_object_uint8(data, "cmd");
+
+	switch (cmd)
+	{
+
+	case 'P': /* save patch */
+		SynthPatch_t *patch = binn_object_blob(data, "patch", &received_data_len);
+		break;
+
+	case 'S': /* print string */
+		char *strg = binn_object_str(data, "string");
+		printf(strg);
+		break;
+
+	case 'X':
+		uint32_t received_number = binn_object_uint32(data, "number");
+		printf("Nombre de cycles moyen de CM7 = %lu \n", received_number);
+		uint32_t occupation_cm7 = (uint32_t) roundf((100 * (float) received_number / CYC_MAX));
+		printf("Taux d'occupation moyen CM7 = %lu %% \n", occupation_cm7);
+
+		sprintf(string_message, "Average CPU load (M7) = %lu %%   ", occupation_cm7);
+		UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
+		break;
+
+	}
+
 	return 0;
 }
 /*----------------------------------------------------------------------------------------------------------------*/
@@ -78,22 +103,8 @@ void midipacket_sendToCM7(midi_package_t packet)
 void Application_Process(void) // called in main() loop (main_cm4.c)
 {
 	/* Check for CM7 messages (openamp) */
-	if (message_received == 0)
-	{
-		OPENAMP_check_for_message();
-	}
-	if (message_received)
-	{
-		//printf("Message de CM7 : %s \n", received_data_p);
-		printf("Nombre de cycles moyen de CM7 = %lu \n", received_number);
-		uint32_t occupation_cm7 = (uint32_t) roundf((100 * (float) received_number / CYC_MAX));
-		printf("Taux d'occupation moyen CM7 = %lu %% \n", occupation_cm7);
 
-		sprintf(string_message, "Average CPU load (M7) = %lu %%   ", occupation_cm7);
-		UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
-
-		message_received = 0;
-	}
+	OPENAMP_check_for_message();
 
 	if (Appli_state == APPLICATION_RUNNING) /* Check for MIDI messages (if USB MIDI controller connected) */
 	{
@@ -131,12 +142,12 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 void USBH_MIDI_ReceiveCallback(USBH_HandleTypeDef *phost)
 {
 	BSP_LED_On(LED_BLUE);
-	ProcessReceivedMidiDatas();
+	Process_ReceivedMidiDatas();
 	BSP_LED_Off(LED_BLUE);
 }
 
 /*-----------------------------------------------------------------------------*/
-void ProcessReceivedMidiDatas(void)
+void Process_ReceivedMidiDatas(void)
 {
 	uint16_t numberOfPackets;
 	uint8_t *ptr = MIDI_RX_Buffer;
@@ -218,6 +229,10 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 		printf(", velocity= %d", data2);
 		printf("\n");
 		break;
+
+	default:
+		printf("Other MIDI packet : %X, %X, %d, %d   \n", pack.cin_cable, pack.evnt0, pack.evnt1, pack.evnt2);
+
 //
 //	case midi_SystemExclusive: // 0xF0
 //		// Messages larger than usbMIDI's internal buffer are truncated.
@@ -282,9 +297,5 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 //		printf("System Reset // 0xFF");
 //		printf("\n");
 //		break;
-
-	default:
-		printf("Other MIDI packet : %X, %X, %d, %d   \n", pack.cin_cable, pack.evnt0, pack.evnt1, pack.evnt2);
-
 	}
 }

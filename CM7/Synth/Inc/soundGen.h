@@ -26,6 +26,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
+#include "binn.h"
+
 #include "constants.h"
 #include "osc.h"
 #include "additive_osc.h"

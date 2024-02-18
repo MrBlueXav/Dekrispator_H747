@@ -6,9 +6,10 @@
  */
 
 #include "openamp_interface.h"
+#include "main.h"
 
 /* Private macro -------------------------------------------------------------*/
-#define RPMSG_CHAN_NAME              "midi_communication"
+#define RPMSG_CHAN_NAME              "M4_M7_communication"
 
 /* Private variables ---------------------------------------------------------*/
 static uint32_t message;
@@ -82,13 +83,52 @@ void openamp_cm7_init(void)
 		Error_Handler();
 	}
 }
+
 /*-------------------------------------------------------------------------------------*/
-void string_sendToCM4(uint32_t number)
+void send_message_to_CM4(binn *obj)
 {
 	int32_t status = 0;
-	status = OPENAMP_send(&rp_endpoint, &number, sizeof(number));
+	status = OPENAMP_send(&rp_endpoint, binn_ptr(obj), binn_size(obj));
 	if (status < 0)
 	{
 		Error_Handler();
 	}
 }
+
+/*-------------------------------------------------------------------------------------*/
+void send_integer_to_CM4(uint32_t number)
+{
+	binn *obj;
+
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'X'); // command 'X' = send number of cpu cycles
+	binn_object_set_uint32(obj, "number", number);
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+
+/*-------------------------------------------------------------------------------------*/
+void send_patch_to_CM4(SynthPatch_t *patch)
+{
+	binn *obj;
+
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'P'); // command 'P' = "save patch"
+	binn_object_set_blob(obj, "patch", patch, sizeof(*patch));
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+
+/*-------------------------------------------------------------------------------------*/
+void send_string_to_CM4(char *str)
+{
+	binn *obj;
+
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'S'); // command 'X' = send number of cpu cycles
+	binn_object_set_str(obj, "string", str);
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+
+/*-------------------------------------------------------------------------------------*/

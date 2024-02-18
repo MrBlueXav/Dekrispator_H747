@@ -25,6 +25,7 @@
  */
 
 #include "soundGen.h"
+#include "openamp_interface.h"
 
 /*--------------------------------------------------------------*/
 #define EPSI				.00002f
@@ -40,37 +41,38 @@ extern int8_t currentNote;
 extern int8_t velocity;
 
 /*--------------------------------------------------------------*/
-static Oscillator_t op1;
-static Oscillator_t op2;
-static Oscillator_t op3;
-static Oscillator_t op4;
+static Oscillator_t op1 _DTCMRAM_;
+static Oscillator_t op2 _DTCMRAM_;
+static Oscillator_t op3 _DTCMRAM_;
+static Oscillator_t op4 _DTCMRAM_;
 
-static BlepOscillator_t mbSawOsc;
-static BlepOscillator_t mbRectOsc;
-static BlepOscillator_t mbTriOsc;
-static BlepOscillator_t mbRectOsc2;
+static BlepOscillator_t mbSawOsc _DTCMRAM_;
+static BlepOscillator_t mbRectOsc _DTCMRAM_;
+static BlepOscillator_t mbTriOsc _DTCMRAM_;
+static BlepOscillator_t mbRectOsc2 _DTCMRAM_;
 
-static Add_oscillator_t addosc;
-static DriftingOsc_t driftosc;
-static Drifter_t d1, d2;
+static Add_oscillator_t addosc _DTCMRAM_;
+static DriftingOsc_t driftosc _DTCMRAM_;
+static Drifter_t d1 _DTCMRAM_;
+static Drifter_t d2 _DTCMRAM_;
 
-static ADSR_t adsr;
-static ResonantFilter SVFilter1;
-static ResonantFilter SVFilter2;
+static ADSR_t adsr _DTCMRAM_;
+static ResonantFilter SVFilter1 _DTCMRAM_;
+static ResonantFilter SVFilter2 _DTCMRAM_;
 
 static Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
 static float proba1, proba2, proba3;
 static bool metro_reset_requested;
 static ADSR_t adsr2 _DTCMRAM_;
 static ADSR_t adsr3 _DTCMRAM_;
-static Oscillator_t oscill2;
-static Oscillator_t oscill3;
-static Oscillator_t amp_lfo2;
+static Oscillator_t oscill2 _DTCMRAM_;
+static Oscillator_t oscill3 _DTCMRAM_;
+static Oscillator_t amp_lfo2 _DTCMRAM_;
 
-static Oscillator_t vibr_lfo;
-static Oscillator_t filt_lfo;
-static Oscillator_t filt2_lfo;
-static Oscillator_t amp_lfo;
+static Oscillator_t vibr_lfo _DTCMRAM_;
+static Oscillator_t filt_lfo _DTCMRAM_;
+static Oscillator_t filt2_lfo _DTCMRAM_;
+static Oscillator_t amp_lfo _DTCMRAM_;
 
 static float f01 _DTCMRAM_;
 static float f02 _DTCMRAM_;
@@ -93,13 +95,14 @@ static int8_t autoSound _DTCMRAM_;
 static float f0 _DTCMRAM_;
 static float vol _DTCMRAM_;
 
-static SynthPatch_t patch;
+static SynthPatch_t mypatch;
 
 /*============================================== Main Synth initialization =========================================*/
 
 void Synth_Init(void)
 {
 	samplerate = (float) SAMPLERATE;
+
 	g_sequencerIsOn = true;
 	demoModeON = true;
 	freezeON = false;
@@ -213,6 +216,8 @@ void Synth_patch_save(SynthPatch_t *patch)
 	Phaser_params_save(&patch->phaser_par);
 	Delay_params_save(&patch->delay_par);
 	Chorus_params_save(&patch->chorus_par);
+
+	send_patch_to_CM4(patch);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -282,7 +287,7 @@ void Soundpatch_save(uint8_t midival)
 {
 	if (midival == MIDI_MAXi)
 	{
-		Synth_patch_save(&patch);
+		Synth_patch_save(&mypatch);
 	}
 }
 
@@ -291,7 +296,7 @@ void Soundpatch_load(uint8_t midival)
 {
 	if (midival == MIDI_MAXi)
 	{
-		Synth_patch_load(&patch);
+		Synth_patch_load(&mypatch);
 	}
 }
 /*-------------------------------------------------------*/

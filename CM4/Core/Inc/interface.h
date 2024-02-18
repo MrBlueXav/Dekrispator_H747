@@ -18,6 +18,8 @@
 #include "stm32_lcd.h"
 #include "openamp.h"
 #include "constants.h"
+#include "binn.h"
+#include "soundGen.h"
 
 /*-----------------------------------------------------------------------------------------------------------------*/
 

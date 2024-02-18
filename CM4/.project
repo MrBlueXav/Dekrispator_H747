@@ -30,6 +30,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>Binn</name>
+			<type>2</type>
+			<locationURI>$%7Bcopy_PARENT%7D/Binn</locationURI>
+		</link>
+		<link>
 			<name>Common</name>
 			<type>2</type>
 			<locationURI>copy_PARENT/Common</locationURI>

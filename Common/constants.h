@@ -31,10 +31,10 @@
 
 //#define _CCM_					__attribute__((section(".ccmram"))) // for use of CCM RAM (64kB)
 //#define _DTCM_				__attribute__((section(".dtcm_vars")))
-//#define _DTCMRAM_				__attribute__((section(".DTCMRAM_section")))
+#define _DTCMRAM_				__attribute__((section(".DTCMRAM_section_bss")))
 //#define _ITCMRAM_				__attribute__((section(".itcm_text")))
 #define	_ITCMRAM_
-#define _DTCMRAM_
+//#define _DTCMRAM_
 
 #define _CCM_
 #define _DTCM_
