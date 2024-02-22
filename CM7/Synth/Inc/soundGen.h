@@ -69,7 +69,7 @@ typedef enum
 } Timbre_t;
 
 /*------------------------------------------------------------------------------*/
-typedef struct
+typedef struct /* Maximum patch size is currently 1024 bytes ! */
 {
 	uint16_t memory_location; // in 0.... LAST_PATCH
 

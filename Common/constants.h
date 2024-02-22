@@ -17,7 +17,7 @@
 
 #define SAMPLERATE              48000 // Don't modify !
 
-#define LAST_PATCH				31	//Number - 1  of patches that can be stored in QSPI Flash
+#define LAST_PATCH				63	//Number - 1  of patches that can be stored in QSPI Flash
 
 #define Ts						(1.f/SAMPLERATE)  // sample period
 #define _2PI                    6.283185307f
@@ -43,7 +43,7 @@
 #define _CCM_
 #define _DTCM_
 /******************************************************************************************************************/
-#define MESS_BUFF_SIZE						1024
+#define MAX_PATCH_SIZE						1024
 /* Align X to 4 bytes */
 #define MEM_ALIGN(x)                        (((x) + 0x00000003) & ~(0x00000003))
 
@@ -53,14 +53,14 @@
 
 /* Buffer from CM4 to CM7 */
 #define BUFF_CM4_TO_CM7_ADDR                MEM_ALIGN(SHD_RAM_START_ADDR)
-#define BUFF_CM4_TO_CM7_LEN                 MEM_ALIGN(MESS_BUFF_SIZE)
+#define BUFF_CM4_TO_CM7_LEN                 MEM_ALIGN(MAX_PATCH_SIZE)
 //#define BUFFDATA_CM4_TO_CM7_ADDR            MEM_ALIGN(BUFF_CM4_TO_CM7_ADDR + BUFF_CM4_TO_CM7_LEN)
 //#define BUFFDATA_CM4_TO_CM7_LEN             MEM_ALIGN(0x00000400)
 
 /* Buffer from CM7 to CM4 */
 //#define BUFF_CM7_TO_CM4_ADDR                MEM_ALIGN(BUFFDATA_CM4_TO_CM7_ADDR + BUFFDATA_CM4_TO_CM7_LEN)
 #define BUFF_CM7_TO_CM4_ADDR                MEM_ALIGN(BUFF_CM4_TO_CM7_ADDR + BUFF_CM4_TO_CM7_LEN)
-#define BUFF_CM7_TO_CM4_LEN                 MEM_ALIGN(MESS_BUFF_SIZE)
+#define BUFF_CM7_TO_CM4_LEN                 MEM_ALIGN(MAX_PATCH_SIZE)
 //#define BUFFDATA_CM7_TO_CM4_ADDR            MEM_ALIGN(BUFF_CM7_TO_CM4_ADDR + BUFF_CM7_TO_CM4_LEN)
 //#define BUFFDATA_CM7_TO_CM4_LEN             MEM_ALIGN(0x00000400)
 
