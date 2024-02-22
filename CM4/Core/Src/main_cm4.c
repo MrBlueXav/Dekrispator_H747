@@ -69,6 +69,10 @@ int main(void)
 	MX_USART1_UART_Init();
 	BSP_LED_Initialize();
 
+	/* CM7_SEV_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(CM7_SEV_IRQn, 10, 0);
+	HAL_NVIC_EnableIRQ(CM7_SEV_IRQn);
+
 #if (USE_THE_LCD > 0)
 
 	/* Initialize the LCD */
@@ -83,8 +87,8 @@ int main(void)
 #endif
 
 	MX_USB_HOST_Init();
-	QSPI_demo();
-	HAL_Delay(1000);
+	QSPI_init();
+	HAL_Delay(3000);
 	Welcome_message();
 
 	while (1)
@@ -189,7 +193,6 @@ void Welcome_message(void)
 //
 //	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 45, (uint8_t*) desc, CENTER_MODE);
 //}
-
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None

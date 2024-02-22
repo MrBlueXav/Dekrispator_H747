@@ -38,7 +38,7 @@ ENTRY(Reset_Handler)
 _estack = 0x10048000;    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0x1000;      /* required amount of heap  */
-_Min_Stack_Size = 0x800; /* required amount of stack */
+_Min_Stack_Size = 0x1000; /* required amount of stack */
 
 /* Specify the memory areas */
 MEMORY
@@ -46,7 +46,7 @@ MEMORY
 FLASH (rx)      : ORIGIN = 0x08100000, LENGTH = 1024K
 RAM (xrw)      : ORIGIN = 0x10000000, LENGTH = 288K
 OPENAMP_RSC_TAB (xrw) 	: ORIGIN = 0x38000000, LENGTH = 1K
-OPEN_AMP_SHMEM (xrw) 	: ORIGIN = 0x38000400, LENGTH = 63K
+OPEN_AMP_SHMEM (xrw) 	: ORIGIN = 0x38000400, LENGTH = 47K /* was 63K */
 }
  __OPENAMP_region_start__  = ORIGIN(OPEN_AMP_SHMEM);
  __OPENAMP_region_end__ = ORIGIN(OPEN_AMP_SHMEM) + LENGTH(OPEN_AMP_SHMEM);

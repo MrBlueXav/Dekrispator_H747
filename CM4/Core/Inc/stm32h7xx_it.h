@@ -67,6 +67,8 @@ void DMA2D_IRQHandler(void);
 void MDMA_IRQHandler(void);
 void BSP_LCD_LTDC_IRQHandler(void);
 void BSP_LCD_LTDC_ER_IRQHandler(void);
+void CM7_SEV_IRQHandler(void);
+
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

@@ -60,9 +60,9 @@ static ADSR_t adsr _DTCMRAM_;
 static ResonantFilter SVFilter1 _DTCMRAM_;
 static ResonantFilter SVFilter2 _DTCMRAM_;
 
-static Metro_t metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
-static float proba1, proba2, proba3;
-static bool metro_reset_requested;
+static Metro_t _DTCMRAM_ metro1, metro2, metro3; /* 3 metronomes which tempi are in rational ratios  */
+static float _DTCMRAM_ proba1, proba2, proba3;
+static bool metro_reset_requested _DTCMRAM_;
 static ADSR_t adsr2 _DTCMRAM_;
 static ADSR_t adsr3 _DTCMRAM_;
 static Oscillator_t oscill2 _DTCMRAM_;
@@ -81,9 +81,9 @@ static float vol1 _DTCMRAM_;
 static float vol2 _DTCMRAM_;
 static float vol3 _DTCMRAM_;
 
-static bool desynkatorON;
-static bool demoModeON;
-static bool freezeON;
+static bool desynkatorON _DTCMRAM_;
+static bool demoModeON _DTCMRAM_;
+static bool freezeON _DTCMRAM_;
 static bool autoFilterON _DTCMRAM_;
 static bool delayON _DTCMRAM_;
 static bool phaserON _DTCMRAM_;
@@ -95,7 +95,13 @@ static int8_t autoSound _DTCMRAM_;
 static float f0 _DTCMRAM_;
 static float vol _DTCMRAM_;
 
-static SynthPatch_t mypatch;
+//static SynthPatch_t mypatch;
+//static SynthPatch_t initpatch;
+//static uint16_t currentPatchMemory;
+static PatchMemoryCtl_t patchMemoryCtl;
+
+/*--------------------------------------------------------------*/
+void Synth_patch_save(SynthPatch_t *patch);
 
 /*============================================== Main Synth initialization =========================================*/
 
@@ -160,10 +166,16 @@ void Synth_Init(void)
 	Osc_init(&oscill3, 0.8f, 587.f);
 	Osc_init(&amp_lfo2, 0.3f, VIBRATO_FREQ);
 	metro_reset_requested = false;
+
+	Synth_patch_save(&patchMemoryCtl.initpatch);
+	patchMemoryCtl.currentPatchMemory = 0;
+	patchMemoryCtl.mypatch.memory_location = 0;
+	patchMemoryCtl.initpatch.memory_location = 0;
+	patchMemoryCtl.validation = false;
 }
 
 /*--------------------------------------------------------------------------*/
-void Synth_patch_save(SynthPatch_t *patch)
+void Synth_patch_save(SynthPatch_t *patch) // save current synth settings in *patch structure.
 {
 	patch->desynkatorON_par = desynkatorON;
 	patch->autoFilterON_par = autoFilterON;
@@ -216,12 +228,10 @@ void Synth_patch_save(SynthPatch_t *patch)
 	Phaser_params_save(&patch->phaser_par);
 	Delay_params_save(&patch->delay_par);
 	Chorus_params_save(&patch->chorus_par);
-
-	send_patch_to_CM4(patch);
 }
 
 /*--------------------------------------------------------------------------*/
-void Synth_patch_load(const SynthPatch_t *patch)
+void Synth_patch_load(const SynthPatch_t *patch) // Load "patch" settings to synth.
 {
 	g_sequencerIsOn = true;
 	demoModeON = false;
@@ -287,7 +297,9 @@ void Soundpatch_save(uint8_t midival)
 {
 	if (midival == MIDI_MAXi)
 	{
-		Synth_patch_save(&mypatch);
+		patchMemoryCtl.mypatch.memory_location = patchMemoryCtl.currentPatchMemory;
+		Synth_patch_save(&patchMemoryCtl.mypatch);
+		send_patch_to_CM4(&patchMemoryCtl.mypatch);
 	}
 }
 
@@ -296,10 +308,65 @@ void Soundpatch_load(uint8_t midival)
 {
 	if (midival == MIDI_MAXi)
 	{
-		Synth_patch_load(&mypatch);
+		send_patch_request_to_CM4(patchMemoryCtl.currentPatchMemory);
 	}
 }
-/*-------------------------------------------------------*/
+
+/*---------------------------------------------------------*/
+void Memory_erase(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		patchMemoryCtl.validation = true;
+		//send_string_to_CM4("Erase patch memory ?\n");
+		send_erase_request_to_CM4();
+	}
+}
+
+/*---------------------------------------------------------*/
+void Memory_valid(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		if (patchMemoryCtl.validation == true)
+		{
+			send_erase_to_CM4(&patchMemoryCtl.initpatch);
+			patchMemoryCtl.validation = false;
+		}
+	}
+}
+
+/*---------------------------------------------------------*/
+void Memory_dec(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		if (patchMemoryCtl.currentPatchMemory > 0)
+			(patchMemoryCtl.currentPatchMemory)--;
+		else
+			patchMemoryCtl.currentPatchMemory = LAST_PATCH;
+
+		patchMemoryCtl.mypatch.memory_location = patchMemoryCtl.currentPatchMemory;
+		send_patch_location_to_CM4(patchMemoryCtl.currentPatchMemory);
+	}
+}
+
+/*---------------------------------------------------------*/
+void Memory_inc(uint8_t val)
+{
+	if (val == MIDI_MAXi)
+	{
+		if (patchMemoryCtl.currentPatchMemory < LAST_PATCH)
+			(patchMemoryCtl.currentPatchMemory)++;
+		else
+			patchMemoryCtl.currentPatchMemory = 0;
+
+		patchMemoryCtl.mypatch.memory_location = patchMemoryCtl.currentPatchMemory;
+		send_patch_location_to_CM4(patchMemoryCtl.currentPatchMemory);
+	}
+}
+
+/*---------------------------------------------------------*/
 void nextSound(void)
 {
 	if (sound < LAST_SOUND)
@@ -356,7 +423,7 @@ uint8_t soundNumber_get(void)
 /*************************************** ADSR functions **************************************/
 void AttTime_set(uint8_t val)
 {
-	ADSR_setAttackTime(&adsr, val / MIDI_MAX + 0.0001f);
+	ADSR_setAttackTime(&adsr, 0.5f * val / MIDI_MAX);
 }
 
 /*---------------------------------------------------------*/
@@ -424,6 +491,7 @@ void Synth_reset(uint8_t val)
 	{
 		Synth_Init();
 		demoModeON = false;
+		send_SEV_to_CM4();
 	}
 }
 
@@ -526,6 +594,7 @@ void toggleVibrato(void)
 void VibratoAmp_set(uint8_t val)
 {
 	vibr_lfo.amp = MAX_VIBRATO_AMP / MIDI_MAX * val;
+	//send_string_to_CM4("Setting vibrato amplitude !\n");
 }
 /*-------------------------------------------------------*/
 void VibratoFreq_set(uint8_t val)

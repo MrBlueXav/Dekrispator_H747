@@ -7,6 +7,7 @@
 
 #include "openamp_interface.h"
 #include "main.h"
+#include "soundGen.h"
 
 /* Private macro -------------------------------------------------------------*/
 #define RPMSG_CHAN_NAME              "M4_M7_communication"
@@ -17,6 +18,12 @@ static volatile int message_received;
 static volatile int service_created;
 static volatile midi_package_t received_data;
 static struct rpmsg_endpoint rp_endpoint;
+static binn *obj;
+static volatile bool SEV_received;
+
+/* message buffers variables in SRAM4 ----------------------------------------*/
+volatile uint8_t *buf_cm4_to_cm7 = (void*) BUFF_CM4_TO_CM7_ADDR;
+volatile uint8_t *buf_cm7_to_cm4 = (void*) BUFF_CM7_TO_CM4_ADDR;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -38,7 +45,7 @@ void service_destroy_cb(struct rpmsg_endpoint *ept)
 /*-----------------------------------------------------------------------------------------------------------------*/
 void new_service_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest)
 {
-	/* create a endpoint for rmpsg communication */
+	/* create a endpoint for rpmsg communication */
 	OPENAMP_create_endpoint(&rp_endpoint, name, dest, rpmsg_recv_callback, service_destroy_cb);
 	service_created = 1;
 }
@@ -46,6 +53,15 @@ void new_service_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest)
 /*-----------------------------------------------------------------------------------------------------------------*/
 void Process_message(void) // called in main() loop (in main_cm7.c)
 {
+
+	if (SEV_received == true)
+	{
+		//printf("SEV signal from CM7 received !\n");
+		//printf((char*) buf_cm7_to_cm4);
+		Synth_patch_load((SynthPatch_t*) buf_cm4_to_cm7);
+		SEV_received = false;
+	}
+
 	if (message_received == 0 && service_created == 1)
 	{
 		OPENAMP_check_for_message();
@@ -60,6 +76,8 @@ void Process_message(void) // called in main() loop (in main_cm7.c)
 /*-----------------------------------------------------------------------------------------------------------------*/
 void openamp_cm7_init(void)
 {
+	SEV_received = false;
+
 	/* Initialize the mailbox use notify the other core on new message */
 	MAILBOX_Init();
 
@@ -82,6 +100,8 @@ void openamp_cm7_init(void)
 	{
 		Error_Handler();
 	}
+
+	SEV_received = false;
 }
 
 /*-------------------------------------------------------------------------------------*/
@@ -98,8 +118,6 @@ void send_message_to_CM4(binn *obj)
 /*-------------------------------------------------------------------------------------*/
 void send_integer_to_CM4(uint32_t number)
 {
-	binn *obj;
-
 	obj = binn_object();
 	binn_object_set_uint8(obj, "cmd", 'X'); // command 'X' = send number of cpu cycles
 	binn_object_set_uint32(obj, "number", number);
@@ -110,11 +128,11 @@ void send_integer_to_CM4(uint32_t number)
 /*-------------------------------------------------------------------------------------*/
 void send_patch_to_CM4(SynthPatch_t *patch)
 {
-	binn *obj;
-
+	memcpy((void*) buf_cm7_to_cm4, patch, sizeof(*patch));
+	asm("sev");
 	obj = binn_object();
 	binn_object_set_uint8(obj, "cmd", 'P'); // command 'P' = "save patch"
-	binn_object_set_blob(obj, "patch", patch, sizeof(*patch));
+	//binn_object_set_blob(obj, "patch", patch, sizeof(*patch));
 	send_message_to_CM4(obj);
 	binn_free(obj);
 }
@@ -122,13 +140,61 @@ void send_patch_to_CM4(SynthPatch_t *patch)
 /*-------------------------------------------------------------------------------------*/
 void send_string_to_CM4(char *str)
 {
-	binn *obj;
-
 	obj = binn_object();
-	binn_object_set_uint8(obj, "cmd", 'S'); // command 'X' = send number of cpu cycles
+	binn_object_set_uint8(obj, "cmd", 'S'); // command 'S' = send string
 	binn_object_set_str(obj, "string", str);
 	send_message_to_CM4(obj);
 	binn_free(obj);
 }
 
 /*-------------------------------------------------------------------------------------*/
+void send_erase_request_to_CM4(void)
+{
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'R'); // command 'R' = send QSPI Flash erase request
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+/*-------------------------------------------------------------------------------------*/
+void send_erase_to_CM4(SynthPatch_t *patch) // erase qspi flash and fill it with init patch
+{
+	memcpy((void*) buf_cm7_to_cm4, patch, sizeof(*patch));
+	asm("sev");
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'E'); // command 'E' = "erase qspi flash with init patch"
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+
+/*-------------------------------------------------------------------------------------*/
+void send_patch_location_to_CM4(uint16_t loc)
+{
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'L'); // command 'L' = send current patch memory location
+	binn_object_set_uint16(obj, "location", loc);
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+
+/*-------------------------------------------------------------------------------------*/
+void send_patch_request_to_CM4(uint16_t loc)
+{
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'D'); // command 'D' = send patch download request
+	binn_object_set_uint16(obj, "location", loc);
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+
+/*-------------------------------------------------------------------------------------*/
+void send_SEV_to_CM4(void)
+{
+	//strcpy((char *)buf_cm7_to_cm4, "Coucou c'est moi le CM7 !\n");
+	//asm("sev");
+}
+
+/*----------------------------------------------------------------------------------------------------------------*/
+void CM4_SEV_signal(void)
+{
+	SEV_received = true;
+}

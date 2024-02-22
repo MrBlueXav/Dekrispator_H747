@@ -100,13 +100,13 @@ const void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	metro1_proba_set,
 	metro2_proba_set,
 	metro3_proba_set,
-	Do_____nothing,
-	Do_____nothing,				/* 75 */
+	Memory_dec,
+	Memory_inc,				/* 75 */
 	RandSound1,
 	RandSound2,
 	Desynkator_toggle,
 	metro_reset_rq,
-	Do_____nothing,				/* 80 */
+	Memory_valid,				/* 80 */
 	MagicFX,
 	MagicPatch,
 	Soundpatch_save,
@@ -124,7 +124,7 @@ const void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	FM_OP2_modInd_set,			/* 95 */
 	FM_OP3_modInd_set,
 	FM_OP4_modInd_set,
-	Do_____nothing,
+	Memory_erase,
 	Do_____nothing,
 	Do_____nothing,				/* 100 */
 	Do_____nothing,

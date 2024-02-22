@@ -9,22 +9,11 @@
 
 /*-----------------------------------------------------------------------------------------------------------------*/
 
-#include <stdint.h>
-#include <math.h>
-
-#include "usbh_midi_XH.h"
-#include "usb_host.h"
-#include "stm32h747i_discovery.h"
-#include "stm32_lcd.h"
-#include "openamp.h"
-#include "constants.h"
-#include "binn.h"
-#include "soundGen.h"
-
-/*-----------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------- Exported functions  ------------------------------------------------------------*/
 
 void openamp_init(void);
 void Application_Process(void);
+void CM7_SEV_signal(void);
 
 /*-----------------------------------------------------------------------------------------------------------------*/
 

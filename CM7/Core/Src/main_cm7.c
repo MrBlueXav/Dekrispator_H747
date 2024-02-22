@@ -80,6 +80,10 @@ int main(void)
 		Error_Handler();
 	}
 
+	/* CM4_SEV_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(CM4_SEV_IRQn, 10, 0);
+	HAL_NVIC_EnableIRQ(CM4_SEV_IRQn);
+
 	/*  OPENAMP initialization */
 	openamp_cm7_init();
 

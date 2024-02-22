@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32h7xx_it.h"
+#include "openamp_interface.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -224,4 +225,12 @@ void AUDIO_OUT_SAIx_DMAx_IRQHandler(void)
   BSP_AUDIO_OUT_IRQHandler(0);
 }
 
+
+/**
+  * @brief This function handles CM4 send event interrupt for CM4.
+  */
+void CM4_SEV_IRQHandler(void)
+{
+	CM4_SEV_signal();
+}
 /* USER CODE END 1 */

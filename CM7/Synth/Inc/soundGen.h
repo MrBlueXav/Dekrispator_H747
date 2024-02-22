@@ -26,7 +26,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
 #include "binn.h"
 
 #include "constants.h"
@@ -72,6 +71,8 @@ typedef enum
 /*------------------------------------------------------------------------------*/
 typedef struct
 {
+	uint16_t memory_location; // in 0.... LAST_PATCH
+
 	bool desynkatorON_par;
 	bool autoFilterON_par;
 	bool delayON_par;
@@ -126,6 +127,15 @@ typedef struct
 
 } SynthPatch_t;
 
+typedef struct
+{
+	SynthPatch_t mypatch;
+	SynthPatch_t initpatch;
+	uint16_t currentPatchMemory;
+	bool validation;
+
+} PatchMemoryCtl_t;
+
 /* Exported functions ------------------------------------------------------- */
 
 void setGateTime(uint8_t val);
@@ -136,8 +146,14 @@ void RelTime_set(uint8_t val);
 void ADSRkeyON(void);
 void ADSRkeyOFF(void);
 
+void Synth_patch_load(const SynthPatch_t *patch);
 void Soundpatch_save(uint8_t midival);
 void Soundpatch_load(uint8_t midival);
+void Memory_erase(uint8_t val);
+void Memory_valid(uint8_t val);
+void Memory_inc(uint8_t val);
+void Memory_dec(uint8_t val);
+
 uint8_t soundNumber_get(void);
 void autoSound_set(int8_t val);
 void RandSound1(uint8_t val);

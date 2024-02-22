@@ -24,7 +24,7 @@
 #include "stm32_lcd.h"
 
 
-void QSPI_demo (void);
+void QSPI_init (void);
 
 
 

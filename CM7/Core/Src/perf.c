@@ -10,15 +10,20 @@
 
 //****************************************************************************
 #include "perf.h"
+#include <stdio.h>
+#include "stm32h7xx_hal.h"
+#include "openamp_interface.h"
+#include "constants.h"
 
 //****************************************************************************
 
-struct Performance
+typedef struct
 {
 	float sum;
 	uint32_t count;
 	float average;
-};
+
+} Performance_t;
 
 //****************************************************************************
 
@@ -33,10 +38,8 @@ static volatile unsigned int *M7_ITM_TER = (volatile unsigned int*) 0xE0000E00;
 //****************************************************************************
 
 static int Debug_ITMDebug = 0;
-static uint32_t ticktime, oldtime;
-//static char string_message[100];
-static struct Performance perf =
-{ 0.0f, 0, 0.0f };
+static uint32_t _DTCMRAM_ ticktime, oldtime;
+static Performance_t perf _DTCMRAM_;
 
 //****************************************************************************
 void EnableTiming(void) // Initialization

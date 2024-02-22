@@ -23,6 +23,7 @@
 #include "stm32h747i_discovery.h"
 #include "stm32h747i_discovery_lcd.h"
 #include "stm32h747i_discovery_sdram.h"
+#include "interface.h"
 //#include "stm32h747i_discovery_conf.h"
 //#include "stm32h747i_discovery_sd.h"
 //#include "stm32h747i_discovery_ts.h"
@@ -298,5 +299,11 @@ void HSEM2_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-
+/**
+  * @brief This function handles CM7 send event interrupt for CM4.
+  */
+void CM7_SEV_IRQHandler(void)
+{
+	CM7_SEV_signal();
+}
 /* USER CODE END 1 */
