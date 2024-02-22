@@ -17,7 +17,7 @@
 
 #define SAMPLERATE              48000 // Don't modify !
 
-#define LAST_PATCH				63	//Number - 1  of patches that can be stored in QSPI Flash
+#define LAST_PATCH				31	//Number - 1  of patches that can be stored in QSPI Flash
 
 #define Ts						(1.f/SAMPLERATE)  // sample period
 #define _2PI                    6.283185307f

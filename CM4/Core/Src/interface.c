@@ -25,6 +25,7 @@
 #define RX_BUFF_SIZE 			64 /* USB MIDI buffer : max received data 64 bytes */
 #define CYC_MAX					(((float)AUDIO_BUFFER_SIZE / 8.0f) * ((float)FREQ_CM7 / (float)SAMPLERATE))
 #define SUBSECTOR_SIZE			8192 /* for QSPI Flash */
+#define MAX_PATCH_SIZE			1024
 
 /*------------------------------------------------------------------------------------------------------------------*/
 extern ApplicationTypeDef Appli_state;
@@ -77,8 +78,8 @@ void openamp_init(void)
 	{
 		Error_Handler();
 	}
-	memset((void*) buf_cm4_to_cm7, 0x00, MESS_BUFF_SIZE);
-	memset((void*) buf_cm7_to_cm4, 0x00, MESS_BUFF_SIZE);
+	memset((void*) buf_cm4_to_cm7, 0x00, MAX_PATCH_SIZE);
+	memset((void*) buf_cm7_to_cm4, 0x00, MAX_PATCH_SIZE);
 	message_received = 0;
 
 }
@@ -107,7 +108,7 @@ int32_t write_patch_to_memory(SynthPatch_t *patch)
 		return BSP_ERROR_COMPONENT_FAILURE;
 	}
 
-	uint32_t patchAddress = (patch->memory_location % 8) * MESS_BUFF_SIZE; /* Find relative address of patch in the sector */
+	uint32_t patchAddress = (patch->memory_location % 8) * MAX_PATCH_SIZE; /* Find relative address of patch in the sector */
 	memcpy(&sector8Kbuffer[patchAddress], patch, sizeof(*patch)); /* copy patch to buffer */
 
 	if (BSP_QSPI_EraseBlock(0, sectorAddress, BSP_QSPI_ERASE_8K) != BSP_ERROR_NONE) /* erase sector */
@@ -134,7 +135,7 @@ void write_initPatch_to_sector8Kbuffer(SynthPatch_t *patch)
 	uint32_t patchAddress;
 	for (int j = 0; j < 8; j++)
 	{
-		patchAddress = j * MESS_BUFF_SIZE; /* Find relative address of patch in the sector */
+		patchAddress = j * MAX_PATCH_SIZE; /* Find relative address of patch in the sector */
 		memcpy(&sector8Kbuffer[patchAddress], patch, sizeof(*patch)); /* copy patch to buffer */
 	}
 }
@@ -180,7 +181,7 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 
 		case 'D': /* request for loading a patch */
 			loc = binn_object_uint16(messageBuffer, "location");
-			uint32_t patchAddress = 0x2000 + MESS_BUFF_SIZE * loc; /* Find address of memory in which patch will be read */
+			uint32_t patchAddress = 0x2000 + MAX_PATCH_SIZE * loc; /* Find address of memory in which patch will be read */
 
 			if (BSP_QSPI_Read(0, (uint8_t*)buf_cm4_to_cm7, patchAddress, sizeof(*patch)) != BSP_ERROR_NONE) /* read this patch to buffer */
 			{

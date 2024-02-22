@@ -20,12 +20,15 @@ https://polymerickblue.bandcamp.com/track/desynkator-iii
 
 # General features :
 
+* Patch memory in QSPI Flash (save/load/erase all) : 32 locations currently
 * M4 core (at 200 MHz) manages MIDI USB Host function (stable with my old Korg NanoKontrol !) sends debug infos on UART or LCD. Use CN1 to connect your midi device.
-* M7 core (at 400 MHz) computes sound. Samplerate is 48kHz.
-* Each core communicates through OPENAMP infrastructure. (M4 core just sends midi packets to M7 core.)
+* M7 core (at 400 MHz) computes sound.      
+* Samplerate is 48kHz and audio samples are 16bits large      
+* CPU load is displayed (CM7 only)
+* Each core communicates through openAMP infrastructure and shared memory.    
 * MIDI Control Changes definitions are in a table of functions "ControlChangeFunctionsTable[128]" in MIDI_application.c file.
 * AUDIO_BUFFER_SIZE is defined in audio_play.h file.
-* Basic LCD use at the moment.
+* Very basic LCD use at the moment.
 * LED information :
 	* The orange LED reflects the CPU usage : when it's dim CPU gets overloaded.  
 	* The red LED lights on when a system error occurs.  
@@ -38,7 +41,8 @@ https://polymerickblue.bandcamp.com/track/desynkator-iii
 	      - Word Length = 8 Bits     
 	      - Stop Bit = 1      
 	      - Parity = None      
-	      - Flow control = None      
+	      - Flow control = None   
+* Frameworks used : openAMP and Binn for objects transmission between cores.       
 
 I encountered endless issues to make this project work and suffered a lot... ;-)) I hope some people will find it useful and could use it as an audio synth platform !  
 It was first a STM32CubeMX project (the only way I found to reach that point) but can't be regenerated now, be careful ! I left the .ioc file for info only.  
@@ -71,7 +75,7 @@ Makefiles are in /Release folder.
  	
 ----
 
-**Special thanks** : Sean Bolton, Perry R. Cook and Gary P. Scavone, Gabriel Rivas, Ross Bencina, Julian Schmidt, GaryA, Thorsten Klose, erwincoumans, ElectroSmith/DaisySP, ST
+**Special thanks** : Sean Bolton, Perry R. Cook and Gary P. Scavone, Gabriel Rivas, Ross Bencina, Julian Schmidt, GaryA, Thorsten Klose, erwincoumans, ElectroSmith/DaisySP, ST, openAMP, Binn
 
 ---- 
 
