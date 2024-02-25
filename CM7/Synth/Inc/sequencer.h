@@ -29,14 +29,9 @@
 #define __SEQUENCER_H
 
 /*----------------------------------------------------------------------------*/
-
-#include <stdint.h>
 #include <math.h>
+#include <stdint.h>
 #include <stdbool.h>
-
-#include "constants.h"
-#include "random.h"
-#include "notesTables.h"
 
 /*-----------------------------------------------------------------------------*/
 
@@ -54,11 +49,12 @@ typedef struct
 {
 	float_t samplerate;
 	Track_t track1;
-	float_t tempo; 		// unit : bpm
-	int32_t steptime; 	// unit : # of samples
-	int32_t smp_count;	// sample de-counter
-	int16_t step_idx;	// current step index
-	int32_t gateTime; 	// desired gate on time (in number of samples)
+	float_t tempo; 			// unit : bpm
+	uint8_t length_index;	// index for number of steps of loop
+	int32_t steptime; 		// unit : # of samples
+	int32_t smp_count;		// sample de-counter
+	int16_t step_idx;		// current step index
+	int32_t gateTime; 		// desired gate on time (in number of samples) ≤ steptime
 	bool	chgTempoRequested;
 
 } Sequencer_t;
@@ -83,15 +79,16 @@ typedef struct
 {
 	float_t samplerate;
 	Track_t track1;
-	float_t tempo; 		// unit : bpm
-	int32_t gateTime; 	// desired gate on time (in samples)
+	float_t tempo; 			// unit : bpm
+	uint8_t length_index;	// index for number of steps of loop
+	int32_t gateTime; 		// desired gate on time (in samples)
 	int16_t scaleIndex;
 	uint8_t *currentScale;
 	int16_t octaveSpread;
 	int16_t rootNote;
 	int16_t transpose;
-	bool automaticON;	// random notes ?
-	bool glideON;		// glissando between notes ?
+	bool automaticON;		// random notes ?
+	bool glideON;			// glissando between notes ?
 	bool chRequested;
 	bool someNotesMuted;
 
@@ -106,12 +103,16 @@ void sequencer_process(void);
 void seq_sequence_new(void);
 
 void seq_new_seq(uint8_t val);
+
 void seq_tempo_set(uint8_t val);
 void seq_tempo_double(uint8_t val);
 void seq_tempo_half(uint8_t val);
-void seq_incTempo(void);
-void seq_decTempo(void);
+
+void seq_length_dec(uint8_t val);
+void seq_length_inc(uint8_t val);
+
 int16_t seq_random_note(void);
+
 void seq_transpP1(uint8_t val);
 void seq_transpP2(uint8_t val);
 void seq_transpP7(uint8_t val);
@@ -122,9 +123,12 @@ void seq_transpose(void);
 void seq_transpUp(void); // one tone up
 void seq_transpDown(void); // one tone down
 void seq_transp(int8_t s, uint8_t val);
+
 void seq_gateTime_set(uint8_t val);
+
 void seq_chooseScale(int16_t idx);
 void seq_scale_set(uint8_t val);
+
 void seq_switchMovingSeq(uint8_t val);
 void seq_switchMute(uint8_t val);
 void seq_switchGlide(uint8_t val);

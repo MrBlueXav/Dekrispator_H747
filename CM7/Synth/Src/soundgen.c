@@ -553,10 +553,10 @@ void toggleFilter(void)
 /*-------------------------------------------------------*/
 void Filter_Random_switch(uint8_t val)
 {
-	if (val > 63)
-		autoFilterON = true;
-	else
-		autoFilterON = false;
+	if (val == MIDI_MAXi)
+	{
+		autoFilterON = !autoFilterON;
+	}
 }
 
 /*************************************** LFOs functions **************************************/
@@ -712,14 +712,13 @@ void Delay_toggle(void)
 /*-------------------------------------------------------*/
 void Delay_switch(uint8_t val)
 {
-
-	if (val > 63)
-		delayON = true;
-	else
+	if (val == MIDI_MAXi)
 	{
-		delayON = false;
-		Delay_clean();
+		delayON = !delayON;
+		if (delayON)
+			Delay_clean();
 	}
+
 }
 
 /******************************************** Chorus functions *******************************/
@@ -733,21 +732,19 @@ void Chorus_toggle(void)
 /*-------------------------------------------------------*/
 void Chorus_switch(uint8_t val)
 {
-
-	if (val > 63)
-		chorusON = true;
-	else
-		chorusON = false;
+	if (val == MIDI_MAXi)
+	{
+		chorusON = !chorusON;
+	}
 }
 
 /******************************************** Phaser functions *******************************/
 void Phaser_switch(uint8_t val)
 {
-
-	if (val > 63)
-		phaserON = true;
-	else
-		phaserON = false;
+	if (val == MIDI_MAXi)
+	{
+		phaserON = !phaserON;
+	}
 }
 
 /****************************************** Oscillators functions ****************************/

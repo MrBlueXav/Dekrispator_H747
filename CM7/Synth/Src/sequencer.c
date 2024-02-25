@@ -26,20 +26,27 @@
 /*********************************************************************************************/
 
 #include "sequencer.h"
+#include "constants.h"
+#include "random.h"
+#include "notesTables.h"
 
 /*--------------------------------------------------------------------------------------------*/
-
 Sequencer_t seq _DTCMRAM_;
-
 NoteGenerator_t noteGen _DTCMRAM_;
 
 /*--------------------------------------------------------------------------------------------*/
+#define NUMBER_OF_LENGTHS 10
+#define INDEX_FOR_16_STEPS 5
+
+static const uint8_t LENGTHS[] =
+{ 3, 4, 6, 8, 12, 16, 5, 7, 11, 15 }; // 10 predefined loop lengths
 
 /*--------------------------------------------------------------------------------------------*/
 void sequencer_init(float sample_rate)
 {
 	seq.samplerate = sample_rate;
 	seq.tempo = INIT_TEMPO;
+	seq.length_index = INDEX_FOR_16_STEPS;
 	seq_steptime_update(&seq);
 	seq.smp_count = 0;
 	seq.step_idx = 0;
@@ -63,6 +70,7 @@ void Sequencer_params_set(const SequencerParams_t *params, Sequencer_t *seq, Not
 {
 	seq->samplerate = params->samplerate;
 	seq->tempo = params->tempo;
+	seq->length_index = params->length_index;
 	seq->gateTime = params->gateTime;
 	ng->scaleIndex = params->scaleIndex;
 	ng->currentScale = params->currentScale;
@@ -74,7 +82,7 @@ void Sequencer_params_set(const SequencerParams_t *params, Sequencer_t *seq, Not
 	ng->chRequested = params->chRequested;
 	ng->someNotesMuted = params->someNotesMuted;
 
-	for (int i = 0; i < NUMBER_STEPS; i++)
+	for (uint8_t i = 0; i < NUMBER_STEPS; i++)
 	{
 		seq->track1.note[i] = params->track1.note[i];
 	}
@@ -89,6 +97,7 @@ void Sequencer_params_save(const Sequencer_t *seq, const NoteGenerator_t *ng, Se
 {
 	params->samplerate = seq->samplerate;
 	params->tempo = seq->tempo;
+	params->length_index = seq->length_index;
 	params->gateTime = seq->gateTime;
 	params->scaleIndex = ng->scaleIndex;
 	params->currentScale = ng->currentScale;
@@ -99,7 +108,7 @@ void Sequencer_params_save(const Sequencer_t *seq, const NoteGenerator_t *ng, Se
 	params->glideON = ng->glideON;
 	params->chRequested = ng->chRequested;
 	params->someNotesMuted = ng->someNotesMuted;
-	for (int i = 0; i < NUMBER_STEPS; i++)
+	for (uint8_t i = 0; i < NUMBER_STEPS; i++)
 	{
 		params->track1.note[i] = seq->track1.note[i];
 	}
@@ -302,10 +311,10 @@ void seq_automatic_or_manual(void)
 /*-------------------------------------------------------*/
 void seq_switchMovingSeq(uint8_t val)
 {
-	if (val > 63)
-		noteGen.automaticON = true;
-	else
-		noteGen.automaticON = false;
+	if (val == MIDI_MAXi)
+	{
+		noteGen.automaticON = !noteGen.automaticON;
+	}
 }
 /*-------------------------------------------------------*/
 void seq_toggleGlide(void)
@@ -339,14 +348,9 @@ void seq_muteSomeNotes(void)
 /*-------------------------------------------------------*/
 void seq_switchMute(uint8_t val)
 {
-	switch (val)
+	if (val == MIDI_MAXi)
 	{
-	case MIDI_MAXi:
-		noteGen.someNotesMuted = true;
-		break;
-	case 0:
-		noteGen.someNotesMuted = false;
-		break;
+		noteGen.someNotesMuted = !noteGen.someNotesMuted;
 	}
 }
 
@@ -378,15 +382,23 @@ void seq_tempo_half(uint8_t val)
 	}
 }
 /*-------------------------------------------------------*/
-void seq_incTempo(void)
+void seq_length_dec(uint8_t val)
 {
-
+	if (val == MIDI_MAXi)
+	{
+		if (seq.length_index > 0)
+			seq.length_index--;
+	}
 }
 
 /*-------------------------------------------------------*/
-void seq_decTempo(void)
+void seq_length_inc(uint8_t val)
 {
-
+	if (val == MIDI_MAXi)
+	{
+		if (seq.length_index < (NUMBER_OF_LENGTHS - 1))
+			seq.length_index++;
+	}
 }
 /*-------------------------------------------------------*/
 void seq_incMaxFreq(void)
@@ -492,7 +504,7 @@ void _ITCMRAM_ sequencer_process(void) // To be called at each sample treatment
 
 		seq.smp_count = seq.steptime; // reload the counter
 		seq.step_idx++;
-		if (seq.step_idx >= NUMBER_STEPS)
+		if (seq.step_idx >= LENGTHS[seq.length_index])
 			seq.step_idx = 0;
 	}
 }

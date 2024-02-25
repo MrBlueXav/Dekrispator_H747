@@ -4,12 +4,12 @@
 ----
 
 Hello ! I'm happy (maybe proud ;-)) to share this project with you.  
-It's once again the **Dekrispator** infamous synth ported on a powerful dual core mcu development board : *Discovery Kit STM32H747I-DISCO* from STMicroelectronics.  
-There's a new instrument called **Desynkator** which is like three metronomic sound generators synchronized in rational ratios tempi. It shares the same controls and FX as Dekrispator. CC78 enables toggling between the two instruments.  
+It's a new improved **Dekrispator** synth ported on a more powerful dual core mcu development board : *Discovery Kit STM32H747I-DISCO* from STMicroelectronics.  
+There's also a new instrument called **Desynkator** which is like three metronomic sound generators synchronized in rational ratios tempi. It shares the same controls and FX as Dekrispator. CC78 enables toggling between the two instruments.  
 It's an expensive board but I had the opportunity to get one for free, so I could work on a version which would clearly separate USB and audio with the two embedded cores.  
 Of course, at that cost (about 100€), we can wonder if a raspberry Pi would be a better option (less hassle with hardware configuration) but it's another universe !
 
-More info on this synth here (project started in 2012) : https://github.com/MrBlueXav/Dekrispator_v2/tree/dekrispatorV3
+More info on this synth here (project started in 2012 on STM32F407 MCU) : https://github.com/MrBlueXav/Dekrispator_v2/tree/dekrispatorV3
 
 Sound examples for Desynkator :   
 https://polymerickblue.bandcamp.com/track/desynkator-i  
@@ -53,15 +53,14 @@ Makefiles are in /Release folder.
 
 ## Dekrispator features :
 
-* monophonic
+* monophonic  
 * sound generators :  
 	* oscillators with very low aliased analog waveforms with superb minBLEP oscillators (thanks to Sean Bolton)  
 	* 4 operators basic FM generator  
 	* multisaw (several saws with individual "drifters")  
 	* 10 sine additive generator  
 	* noise  
- * 16 step random sequencer
- * several scales to choose from
+ * 16 step random sequencer with variable length, transpositions, various scales    
  * 2 parallel filters LP/BP/HP with LFOs
  * Effects : 
 	* vibrato  

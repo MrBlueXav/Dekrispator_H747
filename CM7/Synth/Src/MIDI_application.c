@@ -55,8 +55,8 @@ const void (*ControlChangeFunctionsTable[128])(uint8_t val) =
 	seq_switchMovingSeq,
 	Filter_Random_switch,
 	Chorus_switch,
-	ChorusMode_switch,
-	ChorusFDBsign_switch,		/* 30 */
+	seq_length_dec,
+	seq_length_inc,		/* 30 */
 	Sequencer_toggle,
 	Do_____nothing,
 	seq_transpM2,

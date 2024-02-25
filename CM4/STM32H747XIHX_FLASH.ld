@@ -43,10 +43,11 @@ _Min_Stack_Size = 0x1000; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)      : ORIGIN = 0x08100000, LENGTH = 1024K
-RAM (xrw)      : ORIGIN = 0x10000000, LENGTH = 288K
-OPENAMP_RSC_TAB (xrw) 	: ORIGIN = 0x38000000, LENGTH = 1K
-OPEN_AMP_SHMEM (xrw) 	: ORIGIN = 0x38000400, LENGTH = 47K /* was 63K */
+FLASH (rx)				: ORIGIN = 0x08100000, LENGTH = 1024K
+RAM (xrw)				: ORIGIN = 0x10000000, LENGTH = 288K
+OPENAMP_RSC_TAB (xrw) 	: ORIGIN = 0x38000000, LENGTH = 1K	/* in SRAM4 */
+OPEN_AMP_SHMEM (xrw) 	: ORIGIN = 0x38000400, LENGTH = 47K /* in SRAM4, was 63K */
+SHARED_RAM				: ORIGIN = 0x3800C000, LENGTH = 16K	/* in SRAM4 */
 }
  __OPENAMP_region_start__  = ORIGIN(OPEN_AMP_SHMEM);
  __OPENAMP_region_end__ = ORIGIN(OPEN_AMP_SHMEM) + LENGTH(OPEN_AMP_SHMEM);

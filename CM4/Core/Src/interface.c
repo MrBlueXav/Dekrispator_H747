@@ -21,11 +21,14 @@
 #include "stm32h747i_discovery_qspi.h"
 
 /*------------------------ Private macro ---------------------------------------------------------------------------*/
-#define RPMSG_SERVICE_NAME 		"M4_M7_communication"
-#define RX_BUFF_SIZE 			64 /* USB MIDI buffer : max received data 64 bytes */
-#define CYC_MAX					(((float)AUDIO_BUFFER_SIZE / 8.0f) * ((float)FREQ_CM7 / (float)SAMPLERATE))
-#define SUBSECTOR_SIZE			8192 /* for QSPI Flash */
-#define MAX_PATCH_SIZE			1024
+#define RPMSG_SERVICE_NAME 			"M4_M7_communication"
+#define RX_BUFF_SIZE 				64 /* USB MIDI buffer : max received data 64 bytes */
+#define CYC_MAX						(((float)AUDIO_BUFFER_SIZE / 8.0f) * ((float)FREQ_CM7 / (float)SAMPLERATE))
+
+/*--------- for QSPI Flash --------------------*/
+#define SUBSECTOR_SIZE				8192
+#define MAX_PATCH_SIZE				1024
+#define PATCH_MEMORY_START_ADDRESS	0x2000
 
 /*------------------------------------------------------------------------------------------------------------------*/
 extern ApplicationTypeDef Appli_state;
@@ -55,7 +58,7 @@ static uint8_t messageBuffer[1024];
 static volatile bool SEV_received;
 //volatile char sharedBuffer[100];
 
-/* message buffers variables */
+/* message buffers variables in SRAM4 */
 volatile uint8_t *buf_cm4_to_cm7 = (void*) BUFF_CM4_TO_CM7_ADDR;
 volatile uint8_t *buf_cm7_to_cm4 = (void*) BUFF_CM7_TO_CM4_ADDR;
 
@@ -78,6 +81,8 @@ void openamp_init(void)
 	{
 		Error_Handler();
 	}
+
+	/* Clear message buffers */
 	memset((void*) buf_cm4_to_cm7, 0x00, MAX_PATCH_SIZE);
 	memset((void*) buf_cm7_to_cm4, 0x00, MAX_PATCH_SIZE);
 	message_received = 0;
@@ -100,9 +105,10 @@ void CM7_SEV_signal(void)
 /*----------------------------------------------------------------------------------------------------------------*/
 int32_t write_patch_to_memory(SynthPatch_t *patch)
 {
-	uint32_t sectorAddress = 0x2000 * (1 + (patch->memory_location) / 8); /* Find address of sector in which patch will be written */
+	//uint32_t sectorAddress = PATCH_MEMORY_START_ADDRESS * (1 + (patch->memory_location) / 8); /* Find address of 8k sector in which patch will be written */
+	uint32_t sectorAddress = PATCH_MEMORY_START_ADDRESS + SUBSECTOR_SIZE * ((patch->memory_location) / 8); /* Find address of 8k sector in which patch will be written */
 
-	if (BSP_QSPI_Read(0, sector8Kbuffer, sectorAddress, SUBSECTOR_SIZE) != BSP_ERROR_NONE) /* read this sector to buffer */
+	if (BSP_QSPI_Read(0, sector8Kbuffer, sectorAddress, SUBSECTOR_SIZE) != BSP_ERROR_NONE) /* read this 8k sector to buffer before erasing */
 	{
 		printf("Read error !\n");
 		return BSP_ERROR_COMPONENT_FAILURE;
@@ -126,28 +132,17 @@ int32_t write_patch_to_memory(SynthPatch_t *patch)
 }
 
 /*----------------------------------------------------------------------------------------------------------------*/
-void write_initPatch_to_sector8Kbuffer(SynthPatch_t *patch)
+void write_initPatch_to_sector8Kbuffer(SynthPatch_t *patch) /* Fill sector8Kbuffer with 8 init patches  */
 {
-	for (int i = 0; i < SUBSECTOR_SIZE; i++)
+	for (int i = 0; i < SUBSECTOR_SIZE; i++) /* erase sector buffer */
 	{
 		sector8Kbuffer[i] = 0;
 	}
 	uint32_t patchAddress;
-	for (int j = 0; j < 8; j++)
+	for (int j = 0; j < 8; j++) /* 8 patches per buffer */
 	{
 		patchAddress = j * MAX_PATCH_SIZE; /* Find relative address of patch in the sector */
 		memcpy(&sector8Kbuffer[patchAddress], patch, sizeof(*patch)); /* copy patch to buffer */
-	}
-}
-
-/*----------------------------------------------------------------------------------------------------------------*/
-void midipacket_sendToCM7(midi_package_t packet)
-{
-	int32_t status = 0;
-	status = OPENAMP_send(&rp_endpoint, &packet, sizeof(packet));
-	if (status < 0)
-	{
-		Error_Handler();
 	}
 }
 
@@ -155,10 +150,9 @@ void midipacket_sendToCM7(midi_package_t packet)
 void Application_Process(void) // called in main() loop (main_cm4.c)
 {
 
-	if (SEV_received)
+	if (SEV_received) /* a patch has been written by CM7 in the shared buffer */
 	{
 		printf("SEV signal from CM7 received !\n");
-		//printf((char*) buf_cm7_to_cm4);
 		patch = (SynthPatch_t*) buf_cm7_to_cm4;
 		SEV_received = false;
 	}
@@ -181,7 +175,7 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 
 		case 'D': /* request for loading a patch */
 			loc = binn_object_uint16(messageBuffer, "location");
-			uint32_t patchAddress = 0x2000 + MAX_PATCH_SIZE * loc; /* Find address of memory in which patch will be read */
+			uint32_t patchAddress = PATCH_MEMORY_START_ADDRESS + MAX_PATCH_SIZE * loc; /* Find address of memory in which patch will be read */
 
 			if (BSP_QSPI_Read(0, (uint8_t*)buf_cm4_to_cm7, patchAddress, sizeof(*patch)) != BSP_ERROR_NONE) /* read this patch to buffer */
 			{
@@ -190,8 +184,8 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 			}
 			else
 			{
-				asm("sev"); /* inform CM7 that patch is ready in buf_cm4_to_cm7 buffer */
-				printf("Patch # %u loaded !\n", loc);
+				asm("sev"); /* inform CM7 that patch is ready in shared "buf_cm4_to_cm7" buffer */
+				printf("Patch # %u loaded !\n", loc); /* hope it's been loaded ! */
 			}
 			break;
 
@@ -227,7 +221,7 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 
 				for (int i = 0; i < 4; i++)
 				{
-					sectorAddress = 0x2000 * (1 + i);
+					sectorAddress = PATCH_MEMORY_START_ADDRESS + SUBSECTOR_SIZE * i;
 					if (BSP_QSPI_Write(0, sector8Kbuffer, sectorAddress, SUBSECTOR_SIZE) != BSP_ERROR_NONE)/* write buffer with 8 init patches to qspi flash */
 					{
 						printf("Write error !\n");
@@ -248,9 +242,10 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 
 		case 'X': /* print CPU M7 load */
 			uint32_t received_number = binn_object_uint32(messageBuffer, "number");
-			//printf("Nombre de cycles moyen de CM7 = %lu \n", received_number);
 			uint32_t occupation_cm7 = (uint32_t) roundf((100 * (float) received_number / CYC_MAX));
-			printf("Taux d'occupation moyen CM7 = %lu %% \n", occupation_cm7);
+
+			//printf("Nombre de cycles moyen de CM7 = %lu \n", received_number);
+			//printf("Taux d'occupation moyen CM7 = %lu %% \n", occupation_cm7);
 
 			sprintf(string_message, "Average CPU load (M7) = %lu %%   ", occupation_cm7);
 			UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
@@ -302,6 +297,17 @@ void USBH_MIDI_ReceiveCallback(USBH_HandleTypeDef *phost)
 	BSP_LED_On(LED_BLUE);
 	Process_ReceivedMidiDatas();
 	BSP_LED_Off(LED_BLUE);
+}
+
+/*----------------------------------------------------------------------------------------------------------------*/
+void midipacket_sendToCM7(midi_package_t packet)
+{
+	int32_t status = 0;
+	status = OPENAMP_send(&rp_endpoint, &packet, sizeof(packet));
+	if (status < 0)
+	{
+		Error_Handler();
+	}
 }
 
 /*-----------------------------------------------------------------------------*/
@@ -390,7 +396,11 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 	default:
 		printf("Other MIDI packet : %X, %X, %d, %d   \n", pack.cin_cable, pack.evnt0, pack.evnt1, pack.evnt2);
 
-//
+	}
+}
+
+
+//**************************************************************************
 //	case midi_SystemExclusive: // 0xF0
 //		// Messages larger than usbMIDI's internal buffer are truncated.
 //		// To receive large messages, you *must* use the 3-input function
@@ -454,5 +464,4 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 //		printf("System Reset // 0xFF");
 //		printf("\n");
 //		break;
-	}
-}
+//*************************************************************

@@ -193,6 +193,8 @@ void Welcome_message(void)
 //
 //	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 45, (uint8_t*) desc, CENTER_MODE);
 //}
+
+
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None

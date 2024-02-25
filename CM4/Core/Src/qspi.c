@@ -1,39 +1,18 @@
 /**
  ******************************************************************************
- * @file    BSP/CM7/Src/qspi.c
- * @author  MCD Application Team
- * @brief   This example code shows how to use the QSPI Driver
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2018 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file
- * in the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- *
+ * @file    qspi.c
+ * @author  Xavier Halgand & MCD Application Team
+ * @brief   QSPI initialization
  ******************************************************************************
  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "qspi.h"
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-
 /* Private function prototypes -----------------------------------------------*/
 static void QSPI_SetHint(void);
 
 /* Private functions ---------------------------------------------------------*/
-/**
- * @brief  QSPI Demo
- * @param  None
- * @retval None
- */
 void QSPI_init(void)
 {
 	/* QSPI info structure */
@@ -76,12 +55,12 @@ void QSPI_init(void)
 				|| (pQSPI_Info.ProgPageSize != 0x100) || (pQSPI_Info.EraseSectorsNumber != 0x4000)
 				|| (pQSPI_Info.ProgPagesNumber != 0x80000))
 		{
-			UTIL_LCD_DisplayStringAt(20, 115, (uint8_t*) "QSPI GET INFO : FAILED.", LEFT_MODE);
+			UTIL_LCD_DisplayStringAt(20, 140, (uint8_t*) "QSPI GET INFO : FAILED.", LEFT_MODE);
 			//UTIL_LCD_DisplayStringAt(20, 130, (uint8_t*) "QSPI Test Aborted.", LEFT_MODE);
 		}
 		else
 		{
-			UTIL_LCD_DisplayStringAt(20, 115, (uint8_t*) "QSPI GET INFO : OK.   ", LEFT_MODE);
+			UTIL_LCD_DisplayStringAt(20, 140, (uint8_t*) "QSPI GET INFO : OK.   ", LEFT_MODE);
 		}
 	}
 
@@ -107,7 +86,7 @@ static void QSPI_SetHint(void)
 	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
 	UTIL_LCD_SetFont(&Font24);
 	UTIL_LCD_DisplayStringAt(0, 0, (uint8_t*) "QSPI test", CENTER_MODE);
-	UTIL_LCD_SetFont(&Font12);
+	//UTIL_LCD_SetFont(&Font12);
 
 	/* Set the LCD Text Color */
 	UTIL_LCD_DrawRect(10, 90, x_size - 20, y_size - 100, UTIL_LCD_COLOR_BLUE);
