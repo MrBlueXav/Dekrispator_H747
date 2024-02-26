@@ -31,6 +31,7 @@
 #define MIDI_MID_i				64		// integer mid value
 
 #define USE_THE_LCD				1
+#define BACKGRND_ADDR			((uint32_t *)0x97E80000) /* address in QSPI Flash for background image  : 0x90000000 + 128MB - 1.5MB */
 
 /*****************************************************************************************************************/
 //#define _CCM_					__attribute__((section(".ccmram"))) // for use of CCM RAM (64kB)

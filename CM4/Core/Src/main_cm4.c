@@ -36,6 +36,7 @@
 void BSP_LED_Initialize(void);
 void Welcome_message(void);
 //static void Display_DemoDescription(void);
+
 /*---------------------------------------------------------------------------------------------*/
 /**
  * @brief  The application entry point.
@@ -87,9 +88,27 @@ int main(void)
 #endif
 
 	MX_USB_HOST_Init();
+	QSPI_SetHint();
 	QSPI_init();
 	HAL_Delay(3000);
 	Welcome_message();
+
+	//BSP_QSPI_EnableMemoryMappedMode(0);
+	if (BSP_QSPI_EnableMemoryMappedMode(0) != BSP_ERROR_NONE)
+	{
+		printf("QSPI Memory Mapped Mode : FAILED\n");
+	}
+	else
+	{
+		printf("QSPI Memory Mapped Mode : OK\n     ");
+		BSP_LCD_DrawBitmap(0, 0, 0, (uint8_t*) BACKGRND_ADDR);
+	}
+	QSPI_ReInit();
+//	HAL_Delay(100);
+//	while (BSP_QSPI_GetStatus(0) != BSP_ERROR_NONE)
+//	{
+//		;
+//	}
 
 	while (1)
 	{
@@ -193,8 +212,6 @@ void Welcome_message(void)
 //
 //	UTIL_LCD_DisplayStringAt(0, y_size / 2 + 45, (uint8_t*) desc, CENTER_MODE);
 //}
-
-
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None

@@ -28,7 +28,7 @@
 /*--------- for QSPI Flash --------------------*/
 #define SUBSECTOR_SIZE				8192
 #define MAX_PATCH_SIZE				1024
-#define PATCH_MEMORY_START_ADDRESS	0x2000
+#define PATCH_MEMORY_START_ADDRESS	0x0
 
 /*------------------------------------------------------------------------------------------------------------------*/
 extern ApplicationTypeDef Appli_state;
@@ -208,11 +208,13 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 			break;
 
 		case 'R' : /* request for erase memory */
-			printf("Do you want to erase all memory ?\n");
+			printf("Erase all patches ?\n");
+			UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "Erase all patches ?", LEFT_MODE);
 			break;
 
 		case 'E': /* erase memory */
-			if (BSP_QSPI_EraseChip(0) == BSP_ERROR_NONE)
+			UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "                        ", LEFT_MODE);
+			if (BSP_QSPI_EraseBlock(0, PATCH_MEMORY_START_ADDRESS, BSP_QSPI_ERASE_128K) == BSP_ERROR_NONE)
 			{
 				printf("Memory erased ! \n");
 				//patch = binn_object_blob(messageBuffer, "patch", &received_data_len);
@@ -247,8 +249,11 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 			//printf("Nombre de cycles moyen de CM7 = %lu \n", received_number);
 			//printf("Taux d'occupation moyen CM7 = %lu %% \n", occupation_cm7);
 
-			sprintf(string_message, "Average CPU load (M7) = %lu %%   ", occupation_cm7);
-			UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
+			//sprintf(string_message, "Average CPU load (M7) = %lu%%   ", occupation_cm7);
+			//UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
+
+			sprintf(string_message, "%lu%%", occupation_cm7);
+			UTIL_LCD_DisplayStringAt(702, 60, (uint8_t*) string_message, LEFT_MODE);
 			break;
 
 		default:
@@ -273,14 +278,16 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 	if (Appli_state == APPLICATION_READY)
 	{
 		BSP_LED_On(LED_GREEN);
-		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller connected !      ", LEFT_MODE);
+		//UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller connected !      ", LEFT_MODE);
+		UTIL_LCD_DisplayStringAt(610, 58, (uint8_t*) "X", LEFT_MODE);
 		Appli_state = APPLICATION_RUNNING;
 	}
 
 	if (Appli_state == APPLICATION_DISCONNECT)
 	{
 		BSP_LED_Off(LED_GREEN);
-		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected...", LEFT_MODE);
+		//UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected...", LEFT_MODE);
+		UTIL_LCD_DisplayStringAt(610, 58, (uint8_t*) "-", LEFT_MODE);
 		Appli_state = APPLICATION_IDLE;
 		USBH_MIDI_Stop(&hUsbHostHS);
 	}

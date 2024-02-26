@@ -9,19 +9,17 @@
 /* Includes ------------------------------------------------------------------*/
 #include "qspi.h"
 
-/* Private function prototypes -----------------------------------------------*/
-static void QSPI_SetHint(void);
+/*----------------------------------------------------------------------------*/
+extern QSPI_HandleTypeDef hqspi;
 
-/* Private functions ---------------------------------------------------------*/
+/*  functions ----------------------------------------------------------------*/
 void QSPI_init(void)
 {
 	/* QSPI info structure */
 	BSP_QSPI_Info_t pQSPI_Info;
 	uint8_t status;
 
-	QSPI_SetHint();
-
-	/*##-1- Configure the QSPI device ##########################################*/
+	/*##-1- Configure the QSPI device ########################################*/
 	/* QSPI device configuration */
 	BSP_QSPI_Init_t init;
 	init.InterfaceMode = MT25TL01G_QPI_MODE;
@@ -31,13 +29,14 @@ void QSPI_init(void)
 
 	if (status != BSP_ERROR_NONE)
 	{
-		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "QSPI Initialization : FAILED.", LEFT_MODE);
+		//UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "QSPI Initialization : FAILED.", LEFT_MODE);
+		printf("QSPI Initialization : FAILED\n");
 	}
 
 	else
 	{
-		UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "QSPI Initialization : OK.", LEFT_MODE);
-
+		//UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "QSPI Initialization : OK.", LEFT_MODE);
+		printf("QSPI Initialization : OK\n");
 
 		/*##-2- Read & check the QSPI info #######################################*/
 		/* Initialize the structure */
@@ -55,23 +54,45 @@ void QSPI_init(void)
 				|| (pQSPI_Info.ProgPageSize != 0x100) || (pQSPI_Info.EraseSectorsNumber != 0x4000)
 				|| (pQSPI_Info.ProgPagesNumber != 0x80000))
 		{
-			UTIL_LCD_DisplayStringAt(20, 140, (uint8_t*) "QSPI GET INFO : FAILED.", LEFT_MODE);
+			//UTIL_LCD_DisplayStringAt(20, 140, (uint8_t*) "QSPI GET INFO : FAILED.", LEFT_MODE);
 			//UTIL_LCD_DisplayStringAt(20, 130, (uint8_t*) "QSPI Test Aborted.", LEFT_MODE);
+			printf("QSPI GET INFO : FAILED\n");
 		}
 		else
 		{
-			UTIL_LCD_DisplayStringAt(20, 140, (uint8_t*) "QSPI GET INFO : OK.   ", LEFT_MODE);
+			//UTIL_LCD_DisplayStringAt(20, 140, (uint8_t*) "QSPI GET INFO : OK.   ", LEFT_MODE);
+			printf("QSPI GET INFO : OK\n");
 		}
 	}
 
 }
+
+/*-----------------------------------------------------------------------------------------------------------*/
+void QSPI_ReInit(void)
+{
+	/* Clear busy bit */
+	HAL_QSPI_Abort(&hqspi);/* WARNING: Do not make any other memory-mapped access (even using debugger) *//* Go back to indirect mode */
+	if (BSP_QSPI_DisableMemoryMappedMode(0) != BSP_ERROR_NONE)
+	{
+		printf("QSPI Disable Memory Mapped Mode : FAILED\n");
+	}
+	else
+	{
+		printf("QSPI Disable Memory Mapped Mode : OK\n     ");
+	}
+	BSP_QSPI_DeInit(0);
+	QSPI_init();
+
+}
+
+/*-----------------------------------------------------------------------------------------------------------*/
 
 /**
  * @brief  Display QSPI Demo Hint
  * @param  None
  * @retval None
  */
-static void QSPI_SetHint(void)
+void QSPI_SetHint(void)
 {
 	uint32_t x_size;
 	uint32_t y_size;

@@ -25,6 +25,8 @@
 
 
 void QSPI_init (void);
+void QSPI_ReInit(void);
+void QSPI_SetHint(void);
 
 
 
