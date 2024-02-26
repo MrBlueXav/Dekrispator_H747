@@ -17,8 +17,6 @@
 
 #define SAMPLERATE              48000 // Don't modify !
 
-#define LAST_PATCH				31	//Number - 1  of patches that can be stored in QSPI Flash
-
 #define Ts						(1.f/SAMPLERATE)  // sample period
 #define _2PI                    6.283185307f
 #define _PI                    	3.14159265f
@@ -43,10 +41,13 @@
 
 #define _CCM_
 #define _DTCM_
+
 /******************************************************************************************************************/
-#define MAX_PATCH_SIZE						1024
+#define MAX_PATCH_SIZE			1024	/* Don't modify */
+#define LAST_PATCH				31	//Number - 1  of patches that can be stored in QSPI Flash, maximum is 127.
+
 /* Align X to 4 bytes */
-#define MEM_ALIGN(x)                        (((x) + 0x00000003) & ~(0x00000003))
+#define MEM_ALIGN(x)			(((x) + 0x00000003) & ~(0x00000003))
 
 /* Shared RAM between 2 cores is SRAM4 in D3 domain */
 #define SHD_RAM_START_ADDR                  0x3800C000 /* last 16K of SRAM4 */

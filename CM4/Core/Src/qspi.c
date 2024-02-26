@@ -71,7 +71,9 @@ void QSPI_init(void)
 void QSPI_ReInit(void)
 {
 	/* Clear busy bit */
-	HAL_QSPI_Abort(&hqspi);/* WARNING: Do not make any other memory-mapped access (even using debugger) *//* Go back to indirect mode */
+	HAL_QSPI_Abort(&hqspi);/* WARNING: Do not make any other memory-mapped access (even using debugger) */
+
+	/* Go back to indirect mode */
 	if (BSP_QSPI_DisableMemoryMappedMode(0) != BSP_ERROR_NONE)
 	{
 		printf("QSPI Disable Memory Mapped Mode : FAILED\n");

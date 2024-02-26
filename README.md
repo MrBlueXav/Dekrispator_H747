@@ -3,7 +3,7 @@
 
 ----
 
-Hello ! I'm happy (maybe proud ;-)) to share this project with you.  
+Hello ! I'm happy (maybe even proud ;-)) to share this project with you.  
 It's a new improved **Dekrispator** synth ported on a more powerful dual core mcu development board : *Discovery Kit STM32H747I-DISCO* from STMicroelectronics.  
 There's also a new instrument called **Desynkator** which is like three metronomic sound generators synchronized in rational ratios tempi. It shares the same controls and FX as Dekrispator. CC78 enables toggling between the two instruments.  
 It's an expensive board but I had the opportunity to get one for free, so I could work on a version which would clearly separate USB and audio with the two embedded cores.  
@@ -30,7 +30,7 @@ https://polymerickblue.bandcamp.com/track/desynkator-iii
 * AUDIO_BUFFER_SIZE is defined in audio_play.h file.
 * Very basic LCD use at the moment.
 * LED information :
-	* The orange LED reflects the CPU usage : when it's dim CPU gets overloaded.  
+	* The orange LED reflects the CPU usage : when it's weak CM7 CPU gets overloaded.  
 	* The red LED lights on when a system error occurs.  
 	* The green LED indicates a midi usb device is connected and recognized.  
 	* The blue LED indicates midi activity.  

@@ -92,23 +92,7 @@ int main(void)
 	QSPI_init();
 	HAL_Delay(3000);
 	Welcome_message();
-
-	//BSP_QSPI_EnableMemoryMappedMode(0);
-	if (BSP_QSPI_EnableMemoryMappedMode(0) != BSP_ERROR_NONE)
-	{
-		printf("QSPI Memory Mapped Mode : FAILED\n");
-	}
-	else
-	{
-		printf("QSPI Memory Mapped Mode : OK\n     ");
-		BSP_LCD_DrawBitmap(0, 0, 0, (uint8_t*) BACKGRND_ADDR);
-	}
 	QSPI_ReInit();
-//	HAL_Delay(100);
-//	while (BSP_QSPI_GetStatus(0) != BSP_ERROR_NONE)
-//	{
-//		;
-//	}
 
 	while (1)
 	{
@@ -139,30 +123,40 @@ void Welcome_message(void)
 
 #if (USE_THE_LCD > 0)
 
-	uint32_t x_size;
-	uint32_t y_size;
-	BSP_LCD_GetXSize(0, &x_size);
-	BSP_LCD_GetYSize(0, &y_size);
-	/* Clear the LCD */
-	UTIL_LCD_Clear(UTIL_LCD_COLOR_WHITE);
+	if (BSP_QSPI_EnableMemoryMappedMode(0) != BSP_ERROR_NONE)
+	{
+		printf("QSPI Memory Mapped Mode : FAILED\n");
+	}
+	else
+	{
+		printf("QSPI Memory Mapped Mode : OK\n     ");
+		BSP_LCD_DrawBitmap(0, 0, 0, (uint8_t*) BACKGRND_ADDR); /* Display main screen on LCD */
+	}
 
-	/* Set LCD Demo description */
-	UTIL_LCD_FillRect(0, 0, x_size, 80, UTIL_LCD_COLOR_BLUE);
-	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_WHITE);
-	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
-	UTIL_LCD_SetFont(&Font24);
-	UTIL_LCD_DisplayStringAt(0, 10, (uint8_t*) "DEKRISPATOR H747", CENTER_MODE);
+//	uint32_t x_size;
+//	uint32_t y_size;
+//	BSP_LCD_GetXSize(0, &x_size);
+//	BSP_LCD_GetYSize(0, &y_size);
+//	/* Clear the LCD */
+//	UTIL_LCD_Clear(UTIL_LCD_COLOR_WHITE);
+//
+//	/* Set LCD Demo description */
+//	UTIL_LCD_FillRect(0, 0, x_size, 80, UTIL_LCD_COLOR_BLUE);
+//	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_WHITE);
+//	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
+//	UTIL_LCD_SetFont(&Font24);
+//	UTIL_LCD_DisplayStringAt(0, 10, (uint8_t*) "DEKRISPATOR H747", CENTER_MODE);
 	UTIL_LCD_SetFont(&Font20);
-	UTIL_LCD_DisplayStringAt(0, 45, (uint8_t*) "Copyright (c) Xavier Halgand 2024", CENTER_MODE);
-
-	/* Set the LCD Text Color */
-	UTIL_LCD_DrawRect(10, 90, x_size - 20, y_size - 100, UTIL_LCD_COLOR_BLUE);
-	UTIL_LCD_DrawRect(11, 91, x_size - 22, y_size - 102, UTIL_LCD_COLOR_BLUE);
-
+//	UTIL_LCD_DisplayStringAt(0, 45, (uint8_t*) "Copyright (c) Xavier Halgand 2024", CENTER_MODE);
+//
+//	/* Set the LCD Text Color */
+//	UTIL_LCD_DrawRect(10, 90, x_size - 20, y_size - 100, UTIL_LCD_COLOR_BLUE);
+//	UTIL_LCD_DrawRect(11, 91, x_size - 22, y_size - 102, UTIL_LCD_COLOR_BLUE);
+//
 	UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_BLACK);
 	UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-
-	UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected.", LEFT_MODE);
+//
+//	UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected.", LEFT_MODE);
 
 #endif
 

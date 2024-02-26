@@ -47,6 +47,7 @@ HSEM_TypeDef *HSEM_DEBUG = HSEM;
 /*-------------------------------------- Private variables ---------------------------------------------------------*/
 static uint8_t MIDI_RX_Buffer[RX_BUFF_SIZE]; // MIDI reception buffer
 static uint32_t oldtick, newtick;
+static uint32_t oldtick2, newtick2;
 static volatile int message_received;
 //static volatile uint32_t received_number;
 static struct rpmsg_endpoint rp_endpoint;
@@ -177,21 +178,26 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 			loc = binn_object_uint16(messageBuffer, "location");
 			uint32_t patchAddress = PATCH_MEMORY_START_ADDRESS + MAX_PATCH_SIZE * loc; /* Find address of memory in which patch will be read */
 
-			if (BSP_QSPI_Read(0, (uint8_t*)buf_cm4_to_cm7, patchAddress, sizeof(*patch)) != BSP_ERROR_NONE) /* read this patch to buffer */
+			if (BSP_QSPI_Read(0, (uint8_t*) buf_cm4_to_cm7, patchAddress, sizeof(*patch)) != BSP_ERROR_NONE) /* read this patch to buffer */
 			{
 				printf("Read error !\n");
 				//return BSP_ERROR_COMPONENT_FAILURE;
 			}
 			else
 			{
-				asm("sev"); /* inform CM7 that patch is ready in shared "buf_cm4_to_cm7" buffer */
+				asm("sev");
+				/* inform CM7 that patch is ready in shared "buf_cm4_to_cm7" buffer */
 				printf("Patch # %u loaded !\n", loc); /* hope it's been loaded ! */
+				sprintf(string_message, "Patch # %u loaded !           ", loc);
+				UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) string_message, LEFT_MODE);
 			}
 			break;
 
 		case 'L': /* print current patch location */
 			loc = binn_object_uint16(messageBuffer, "location");
 			printf("Current patch location : %u\n", loc);
+			sprintf(string_message, "%u ", loc);
+			UTIL_LCD_DisplayStringAt(704, 428, (uint8_t*) string_message, LEFT_MODE);
 			break;
 
 		case 'P': /* save patch */
@@ -202,21 +208,24 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 				if (write_patch_to_memory(patch) == BSP_ERROR_NONE)
 				{
 					printf("Patch saved in memory # %u !\n", patch->memory_location);
+					sprintf(string_message, "Patch saved in memory # %u !  ", patch->memory_location);
+					UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) string_message, LEFT_MODE);
 					printf("Size of patch is : %d bytes.\n", sizeof(*patch));
 				}
 			}
 			break;
 
-		case 'R' : /* request for erase memory */
+		case 'R': /* request for erase memory */
 			printf("Erase all patches ?\n");
-			UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "Erase all patches ?", LEFT_MODE);
+			UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "Erase all patches ?           ", LEFT_MODE);
 			break;
 
 		case 'E': /* erase memory */
 			UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "                        ", LEFT_MODE);
 			if (BSP_QSPI_EraseBlock(0, PATCH_MEMORY_START_ADDRESS, BSP_QSPI_ERASE_128K) == BSP_ERROR_NONE)
 			{
-				printf("Memory erased ! \n");
+				printf("All patches erased ! \n");
+				UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "All patches erased !          ", LEFT_MODE);
 				//patch = binn_object_blob(messageBuffer, "patch", &received_data_len);
 				printf("Size of Init patch is : %d bytes.\n", sizeof(*patch));
 				write_initPatch_to_sector8Kbuffer(patch);
@@ -290,6 +299,13 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 		UTIL_LCD_DisplayStringAt(610, 58, (uint8_t*) "-", LEFT_MODE);
 		Appli_state = APPLICATION_IDLE;
 		USBH_MIDI_Stop(&hUsbHostHS);
+	}
+
+	newtick2 = HAL_GetTick();
+	if ((newtick2 - oldtick2) >= 2000)
+	{
+		printf("CM4 is still alive ! \n");
+		oldtick2 = newtick2;
 	}
 }
 
@@ -405,7 +421,6 @@ void midipacket_print(midi_package_t pack) //cf. Teensy-MIDI-monitor
 
 	}
 }
-
 
 //**************************************************************************
 //	case midi_SystemExclusive: // 0xF0
