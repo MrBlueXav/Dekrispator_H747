@@ -317,9 +317,17 @@ void Memory_erase(uint8_t val)
 {
 	if (val == MIDI_MAXi)
 	{
-		patchMemoryCtl.validation = true;
-		//send_string_to_CM4("Erase patch memory ?\n");
-		send_erase_request_to_CM4();
+		if (patchMemoryCtl.validation == false)
+		{
+			patchMemoryCtl.validation = true;
+			//send_string_to_CM4("Erase patch memory ?\n");
+			send_erase_request_to_CM4();
+		}
+		else
+		{
+			patchMemoryCtl.validation = false;
+			send_clear_message_to_CM4();
+		}
 	}
 }
 
@@ -330,7 +338,7 @@ void Memory_valid(uint8_t val)
 	{
 		if (patchMemoryCtl.validation == true)
 		{
-			send_erase_to_CM4(&patchMemoryCtl.initpatch);
+			send_erase_all_patches_to_CM4(&patchMemoryCtl.initpatch);
 			patchMemoryCtl.validation = false;
 		}
 	}

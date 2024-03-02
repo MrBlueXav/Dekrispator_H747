@@ -27,7 +27,7 @@
 
 /*--------- for QSPI Flash --------------------*/
 #define SUBSECTOR_SIZE				8192
-#define MAX_PATCH_SIZE				1024
+#define MAX_PATCH_SIZE				1024 /* also defined in constants.h */
 #define PATCH_MEMORY_START_ADDRESS	0x0
 
 /*------------------------------------------------------------------------------------------------------------------*/
@@ -97,6 +97,11 @@ static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t le
 	return 0;
 }
 
+/*----------------------------------------------------------------------------------------------------------------*/
+void refresh_screen_infos(void)
+{
+
+}
 /*----------------------------------------------------------------------------------------------------------------*/
 void CM7_SEV_signal(void)
 {
@@ -263,6 +268,14 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 
 			sprintf(string_message, "%lu%%", occupation_cm7);
 			UTIL_LCD_DisplayStringAt(702, 60, (uint8_t*) string_message, LEFT_MODE);
+			break;
+
+		case 'C':
+			refresh_screen_infos();
+			break;
+
+		case 'B': // clear message
+			UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "                              ", LEFT_MODE);
 			break;
 
 		default:

@@ -156,7 +156,7 @@ void send_erase_request_to_CM4(void)
 	binn_free(obj);
 }
 /*-------------------------------------------------------------------------------------*/
-void send_erase_to_CM4(SynthPatch_t *patch) // erase qspi flash and fill it with init patch
+void send_erase_all_patches_to_CM4(SynthPatch_t *patch) // erase qspi flash and fill it with init patch
 {
 	memcpy((void*) buf_cm7_to_cm4, patch, sizeof(*patch));
 	asm("sev");
@@ -182,6 +182,24 @@ void send_patch_request_to_CM4(uint16_t loc)
 	obj = binn_object();
 	binn_object_set_uint8(obj, "cmd", 'D'); // command 'D' = send patch download request
 	binn_object_set_uint16(obj, "location", loc);
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+
+/*-------------------------------------------------------------------------------------*/
+void send_clear_message_to_CM4(void)
+{
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'B');
+	send_message_to_CM4(obj);
+	binn_free(obj);
+}
+/*-------------------------------------------------------------------------------------*/
+void send_screen_infos_to_CM4()
+{
+	obj = binn_object();
+	binn_object_set_uint8(obj, "cmd", 'C');
+
 	send_message_to_CM4(obj);
 	binn_free(obj);
 }
