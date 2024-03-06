@@ -3,6 +3,9 @@
 
 ----
 
+![alt text](./misc/dekrispatorH747.jpg)
+
+
 Hello ! I'm happy (maybe even proud ;-)) to share this project with you.  
 It's a new improved **Dekrispator** synth ported on a more powerful dual core mcu development board : *Discovery Kit STM32H747I-DISCO* from STMicroelectronics.  
 There's also a new instrument called **Desynkator** which is like three metronomic sound generators synchronized in rational ratios tempi with adjustable probabilities. It shares the same controls and FX as Dekrispator. CC78 enables toggling between the two instruments.  
@@ -51,7 +54,7 @@ It was first a STM32CubeMX project (the only way I found to reach that point) bu
 
 You should be able to import the project in STM32CubeIDE, I think all necessary files are in the repository.  
 There are also makefiles in /Release/ folder.   
-The background image (Dekrispator-screen.bin file) should be written in QSPI Flash device with STM32CubeProgrammer application at address *0x97E8 0000* which is 1.5MB before end of memory.
+The background image for LCD (QSPI_Flash/Dekrispator-screen.bin file) should be written in QSPI Flash device with STM32CubeProgrammer application at address *0x97E8 0000* which is 1.5MB before end of memory.
 Be sure to power your board with good PSU (> 1.5 A ?) especially with use of a midi controller, I had USB unstabilities because of unsufficient power in my PC plugs!
 
 ----
