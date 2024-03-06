@@ -175,6 +175,30 @@ void Synth_Init(void)
 }
 
 /*--------------------------------------------------------------------------*/
+void get_datas_for_screen(volatile ScreenDatas_t *datas)
+{
+	datas->desynkatorON_par = desynkatorON && !demoModeON;
+	datas->dekrispatorON_par = demoModeON && !desynkatorON; // demoModeOn
+	datas->synthOn_par = !desynkatorON && !demoModeON;
+
+	datas->autoFilterON_par = autoFilterON;
+	datas->delayON_par = delayON;
+	datas->phaserON_par = phaserON;
+	datas->chorusON_par = chorusON;
+
+	datas->memory_loc_par = patchMemoryCtl.currentPatchMemory;
+	datas->sound_par = sound;
+	datas->sequencerIsOn_par = g_sequencerIsOn;
+	datas->tempo_par = seq.tempo;
+	datas->seq_length_par = seq_length_get();
+	datas->holes_par = noteGen.someNotesMuted;
+	datas->move_par = noteGen.automaticON;
+
+	//datas->usb_midi_par;
+	//datas->cpu_cycles_par;
+}
+
+/*--------------------------------------------------------------------------*/
 void Synth_patch_save(SynthPatch_t *patch) // save current synth settings in *patch structure.
 {
 	patch->desynkatorON_par = desynkatorON;
@@ -469,10 +493,11 @@ void DemoMode_toggle(uint8_t val)
 {
 	if (val == MIDI_MAXi)
 	{
-		demoModeON = !demoModeON;
-	}
-	if (demoModeON)
+		demoModeON = true;
 		desynkatorON = false;
+		freezeON = false;
+	}
+
 }
 
 /*---------------------------------------------------------*/
@@ -480,7 +505,9 @@ void Desynkator_toggle(uint8_t val)
 {
 	if (val == MIDI_MAXi)
 	{
-		desynkatorON = !desynkatorON;
+		desynkatorON = true;
+		demoModeON = false;
+
 	}
 }
 
@@ -491,6 +518,10 @@ void Freeze_toggle(uint8_t val)
 	{
 		freezeON = !freezeON;
 	}
+	if (freezeON && demoModeON)
+	{
+		demoModeON = false;
+	}
 }
 /*---------------------------------------------------------*/
 void Synth_reset(uint8_t val)
@@ -499,7 +530,7 @@ void Synth_reset(uint8_t val)
 	{
 		Synth_Init();
 		demoModeON = false;
-		send_SEV_to_CM4();
+		desynkatorON = false;
 	}
 }
 

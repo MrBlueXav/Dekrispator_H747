@@ -20,10 +20,12 @@ static volatile midi_package_t received_data;
 static struct rpmsg_endpoint rp_endpoint;
 static binn *obj;
 static volatile bool SEV_received;
+static volatile uint32_t _DTCMRAM_ ticktime, oldtime;
 
 /* message buffers variables in SRAM4 ----------------------------------------*/
 volatile uint8_t *buf_cm4_to_cm7 = (void*) BUFF_CM4_TO_CM7_ADDR;
 volatile uint8_t *buf_cm7_to_cm4 = (void*) BUFF_CM7_TO_CM4_ADDR;
+volatile ScreenDatas_t *scr_datas = (void*) BUFF2_CM7_TO_CM4_ADDR;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -51,32 +53,10 @@ void new_service_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest)
 }
 
 /*-----------------------------------------------------------------------------------------------------------------*/
-void Process_message(void) // called in main() loop (in main_cm7.c)
-{
-
-	if (SEV_received == true)
-	{
-		//printf("SEV signal from CM7 received !\n");
-		//printf((char*) buf_cm7_to_cm4);
-		Synth_patch_load((SynthPatch_t*) buf_cm4_to_cm7);
-		SEV_received = false;
-	}
-
-	if (message_received == 0 && service_created == 1)
-	{
-		OPENAMP_check_for_message();
-	}
-	if (message_received)
-	{
-		ProcessReceivedMidiDatas(received_data);
-		message_received = 0;
-	}
-}
-
-/*-----------------------------------------------------------------------------------------------------------------*/
 void openamp_cm7_init(void)
 {
 	SEV_received = false;
+	oldtime = 0;
 
 	/* Initialize the mailbox use notify the other core on new message */
 	MAILBOX_Init();
@@ -195,24 +175,48 @@ void send_clear_message_to_CM4(void)
 	binn_free(obj);
 }
 /*-------------------------------------------------------------------------------------*/
-void send_screen_infos_to_CM4()
+void send_screen_infos_to_CM4(void)
 {
+	get_datas_for_screen(scr_datas);
 	obj = binn_object();
 	binn_object_set_uint8(obj, "cmd", 'C');
-
 	send_message_to_CM4(obj);
 	binn_free(obj);
-}
-
-/*-------------------------------------------------------------------------------------*/
-void send_SEV_to_CM4(void)
-{
-	//strcpy((char *)buf_cm7_to_cm4, "Coucou c'est moi le CM7 !\n");
-	//asm("sev");
 }
 
 /*----------------------------------------------------------------------------------------------------------------*/
 void CM4_SEV_signal(void)
 {
 	SEV_received = true;
+}
+
+/*-----------------------------------------------------------------------------------------------------------------*/
+void Process_messages(void) // called in main() loop (in main_cm7.c)
+{
+
+	if (SEV_received == true)
+	{
+		//printf("SEV signal from CM7 received !\n");
+		//printf((char*) buf_cm7_to_cm4);
+		Synth_patch_load((SynthPatch_t*) buf_cm4_to_cm7);
+		SEV_received = false;
+	}
+
+	if (message_received == 0 && service_created == 1)
+	{
+		OPENAMP_check_for_message();
+	}
+
+	if (message_received)
+	{
+		ProcessReceivedMidiDatas(received_data);
+		message_received = 0;
+	}
+
+	ticktime = HAL_GetTick();
+	if ((ticktime - oldtime) > 500) // refresh screen every 0.5 second maximum
+	{
+		oldtime = ticktime;
+		send_screen_infos_to_CM4();
+	}
 }

@@ -127,6 +127,7 @@ typedef struct /* Maximum patch size is currently 1024 bytes ! */
 
 } SynthPatch_t;
 
+/*------------------------------------------------------------------------------*/
 typedef struct
 {
 	SynthPatch_t mypatch;
@@ -136,7 +137,34 @@ typedef struct
 
 } PatchMemoryCtl_t;
 
+/*------------------------------------------------------------------------------*/
+typedef struct
+{
+	bool desynkatorON_par;
+	bool dekrispatorON_par; // demoModeOn
+	bool synthOn_par;
+
+	bool autoFilterON_par;
+	bool delayON_par;
+	bool phaserON_par;
+	bool chorusON_par;
+
+	uint16_t memory_loc_par;
+	Timbre_t sound_par;
+	bool sequencerIsOn_par;
+	float tempo_par;
+	uint8_t seq_length_par;
+	bool holes_par;
+	bool move_par;
+
+	bool usb_midi_par;
+	uint32_t cpu_cycles_par;
+
+} ScreenDatas_t;
+
 /* Exported functions ------------------------------------------------------- */
+
+void get_datas_for_screen(volatile ScreenDatas_t *datas);
 
 void setGateTime(uint8_t val);
 void AttTime_set(uint8_t val);

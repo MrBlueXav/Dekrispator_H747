@@ -90,7 +90,7 @@ int main(void)
 	MX_USB_HOST_Init();
 	QSPI_SetHint();
 	QSPI_init();
-	HAL_Delay(3000);
+	//HAL_Delay(3000);
 	Welcome_message();
 	QSPI_ReInit();
 

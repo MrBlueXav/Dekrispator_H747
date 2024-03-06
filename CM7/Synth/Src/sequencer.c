@@ -381,6 +381,13 @@ void seq_tempo_half(uint8_t val)
 		seq.chgTempoRequested = true;
 	}
 }
+
+/*-------------------------------------------------------*/
+uint8_t seq_length_get(void)
+{
+	return LENGTHS[seq.length_index];
+}
+
 /*-------------------------------------------------------*/
 void seq_length_dec(uint8_t val)
 {

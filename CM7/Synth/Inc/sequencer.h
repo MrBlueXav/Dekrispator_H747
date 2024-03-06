@@ -108,6 +108,7 @@ void seq_tempo_set(uint8_t val);
 void seq_tempo_double(uint8_t val);
 void seq_tempo_half(uint8_t val);
 
+uint8_t seq_length_get(void);
 void seq_length_dec(uint8_t val);
 void seq_length_inc(uint8_t val);
 

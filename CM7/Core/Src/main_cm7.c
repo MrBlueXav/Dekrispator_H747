@@ -97,7 +97,7 @@ int main(void)
 
 	while (1)
 	{
-		Process_message(); 	// in openamp_interface.c
+		Process_messages(); 	// in openamp_interface.c
 		AUDIO_Process();	// in audio_play.c
 	}
 }

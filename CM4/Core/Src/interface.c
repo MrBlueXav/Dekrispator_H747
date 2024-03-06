@@ -47,7 +47,7 @@ HSEM_TypeDef *HSEM_DEBUG = HSEM;
 /*-------------------------------------- Private variables ---------------------------------------------------------*/
 static uint8_t MIDI_RX_Buffer[RX_BUFF_SIZE]; // MIDI reception buffer
 static uint32_t oldtick, newtick;
-static uint32_t oldtick2, newtick2;
+//static uint32_t oldtick2, newtick2;
 static volatile int message_received;
 //static volatile uint32_t received_number;
 static struct rpmsg_endpoint rp_endpoint;
@@ -57,11 +57,11 @@ static SynthPatch_t *patch;
 static char *strg;
 static uint8_t messageBuffer[1024];
 static volatile bool SEV_received;
-//volatile char sharedBuffer[100];
 
 /* message buffers variables in SRAM4 */
 volatile uint8_t *buf_cm4_to_cm7 = (void*) BUFF_CM4_TO_CM7_ADDR;
 volatile uint8_t *buf_cm7_to_cm4 = (void*) BUFF_CM7_TO_CM4_ADDR;
+volatile ScreenDatas_t *scr_datas = (void*) BUFF2_CM7_TO_CM4_ADDR;
 
 /*------------------------------------------------------------------------------------------------------------------*/
 void openamp_init(void)
@@ -86,6 +86,7 @@ void openamp_init(void)
 	/* Clear message buffers */
 	memset((void*) buf_cm4_to_cm7, 0x00, MAX_PATCH_SIZE);
 	memset((void*) buf_cm7_to_cm4, 0x00, MAX_PATCH_SIZE);
+	memset((void*) scr_datas, 0x00, MAX_BUFF2_SIZE);
 	message_received = 0;
 
 }
@@ -98,8 +99,73 @@ static int rpmsg_recv_callback(struct rpmsg_endpoint *ept, void *data, size_t le
 }
 
 /*----------------------------------------------------------------------------------------------------------------*/
-void refresh_screen_infos(void)
+void refresh_screen_infos(volatile ScreenDatas_t *datas)
 {
+	UTIL_LCD_SetFont(&Font12);
+
+	if (datas->desynkatorON_par)
+		UTIL_LCD_DisplayStringAt(123, 203, (uint8_t*) "x", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(123, 203, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->dekrispatorON_par)
+		UTIL_LCD_DisplayStringAt(123, 167, (uint8_t*) "x", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(123, 167, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->synthOn_par)
+		UTIL_LCD_DisplayStringAt(123, 238, (uint8_t*) "x", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(123, 238, (uint8_t*) " ", LEFT_MODE);
+
+	UTIL_LCD_SetFont(&Font20);
+
+	if (datas->delayON_par)
+		UTIL_LCD_DisplayStringAt(63, 58, (uint8_t*) "X", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(63, 58, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->phaserON_par)
+		UTIL_LCD_DisplayStringAt(142, 58, (uint8_t*) "X", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(142, 58, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->chorusON_par)
+		UTIL_LCD_DisplayStringAt(223, 58, (uint8_t*) "X", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(223, 58, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->autoFilterON_par)
+		UTIL_LCD_DisplayStringAt(303, 58, (uint8_t*) "X", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(303, 58, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->sequencerIsOn_par)
+		UTIL_LCD_DisplayStringAt(56, 428, (uint8_t*) "X", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(56, 428, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->holes_par)
+		UTIL_LCD_DisplayStringAt(273, 428, (uint8_t*) "X", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(273, 428, (uint8_t*) " ", LEFT_MODE);
+
+	if (datas->move_par)
+		UTIL_LCD_DisplayStringAt(346, 428, (uint8_t*) "X", LEFT_MODE);
+	else
+		UTIL_LCD_DisplayStringAt(346, 428, (uint8_t*) " ", LEFT_MODE);
+
+	sprintf(string_message, "%3u", (uint16_t) roundf(datas->tempo_par));
+	UTIL_LCD_DisplayStringAt(113, 428, (uint8_t*) string_message, LEFT_MODE);
+
+	sprintf(string_message, "%2u", datas->seq_length_par);
+	UTIL_LCD_DisplayStringAt(191, 428, (uint8_t*) string_message, LEFT_MODE);
+
+	sprintf(string_message, "%2u", datas->sound_par);
+	UTIL_LCD_DisplayStringAt(600, 428, (uint8_t*) string_message, LEFT_MODE);
+
+	sprintf(string_message, "%2u", 1 + datas->memory_loc_par);
+	UTIL_LCD_DisplayStringAt(704, 428, (uint8_t*) string_message, LEFT_MODE);
 
 }
 /*----------------------------------------------------------------------------------------------------------------*/
@@ -138,7 +204,7 @@ int32_t write_patch_to_memory(SynthPatch_t *patch)
 }
 
 /*----------------------------------------------------------------------------------------------------------------*/
-void write_initPatch_to_sector8Kbuffer(SynthPatch_t *patch) /* Fill sector8Kbuffer with 8 init patches  */
+void write_initPatch_to_sector8Kbuffer(SynthPatch_t *patch) /* Fill sector8Kbuffer with 8 times the same patch  */
 {
 	for (int i = 0; i < SUBSECTOR_SIZE; i++) /* erase sector buffer */
 	{
@@ -192,16 +258,16 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 			{
 				asm("sev");
 				/* inform CM7 that patch is ready in shared "buf_cm4_to_cm7" buffer */
-				printf("Patch # %u loaded !\n", loc); /* hope it's been loaded ! */
-				sprintf(string_message, "Patch # %u loaded !           ", loc);
+				printf("Patch # %u loaded !\n", loc + 1); /* hope it's been loaded ! */
+				sprintf(string_message, "Patch # %u loaded !           ", loc + 1);
 				UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) string_message, LEFT_MODE);
 			}
 			break;
 
 		case 'L': /* print current patch location */
 			loc = binn_object_uint16(messageBuffer, "location");
-			printf("Current patch location : %u\n", loc);
-			sprintf(string_message, "%u ", loc);
+			printf("Current patch location : %u\n", loc + 1);
+			sprintf(string_message, "%2u", loc + 1);
 			UTIL_LCD_DisplayStringAt(704, 428, (uint8_t*) string_message, LEFT_MODE);
 			break;
 
@@ -212,8 +278,8 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 			{
 				if (write_patch_to_memory(patch) == BSP_ERROR_NONE)
 				{
-					printf("Patch saved in memory # %u !\n", patch->memory_location);
-					sprintf(string_message, "Patch saved in memory # %u !  ", patch->memory_location);
+					printf("Patch saved in memory # %u !\n", 1 + patch->memory_location);
+					sprintf(string_message, "Patch saved in memory # %u !  ", 1 + patch->memory_location);
 					UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) string_message, LEFT_MODE);
 					printf("Size of patch is : %d bytes.\n", sizeof(*patch));
 				}
@@ -232,7 +298,7 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 				printf("All patches erased ! \n");
 				UTIL_LCD_DisplayStringAt(201, 297, (uint8_t*) "All patches erased !          ", LEFT_MODE);
 				//patch = binn_object_blob(messageBuffer, "patch", &received_data_len);
-				printf("Size of Init patch is : %d bytes.\n", sizeof(*patch));
+				//printf("Size of Init patch is : %d bytes.\n", sizeof(*patch));
 				write_initPatch_to_sector8Kbuffer(patch);
 
 				for (int i = 0; i < 4; i++)
@@ -266,12 +332,12 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 			//sprintf(string_message, "Average CPU load (M7) = %lu%%   ", occupation_cm7);
 			//UTIL_LCD_DisplayStringAt(20, 220, (uint8_t*) string_message, LEFT_MODE);
 
-			sprintf(string_message, "%lu%%", occupation_cm7);
+			sprintf(string_message, "%2lu%%", occupation_cm7);
 			UTIL_LCD_DisplayStringAt(702, 60, (uint8_t*) string_message, LEFT_MODE);
 			break;
 
 		case 'C':
-			refresh_screen_infos();
+			refresh_screen_infos(scr_datas);
 			break;
 
 		case 'B': // clear message
@@ -284,6 +350,11 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 		}
 
 		message_received = 0;
+	}
+
+	if (Appli_state == APPLICATION_IDLE)
+	{
+		UTIL_LCD_DisplayStringAt(610, 58, (uint8_t*) "-", LEFT_MODE);
 	}
 
 	if (Appli_state == APPLICATION_RUNNING) /* Check for MIDI messages (if USB MIDI controller connected) */
@@ -300,7 +371,6 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 	if (Appli_state == APPLICATION_READY)
 	{
 		BSP_LED_On(LED_GREEN);
-		//UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller connected !      ", LEFT_MODE);
 		UTIL_LCD_DisplayStringAt(610, 58, (uint8_t*) "X", LEFT_MODE);
 		Appli_state = APPLICATION_RUNNING;
 	}
@@ -308,18 +378,17 @@ void Application_Process(void) // called in main() loop (main_cm4.c)
 	if (Appli_state == APPLICATION_DISCONNECT)
 	{
 		BSP_LED_Off(LED_GREEN);
-		//UTIL_LCD_DisplayStringAt(20, 100, (uint8_t*) "MIDI controller not connected...", LEFT_MODE);
 		UTIL_LCD_DisplayStringAt(610, 58, (uint8_t*) "-", LEFT_MODE);
 		Appli_state = APPLICATION_IDLE;
 		USBH_MIDI_Stop(&hUsbHostHS);
 	}
 
-	newtick2 = HAL_GetTick();
-	if ((newtick2 - oldtick2) >= 2000)
-	{
-		printf("CM4 is still alive ! \n");
-		oldtick2 = newtick2;
-	}
+//	newtick2 = HAL_GetTick();
+//	if ((newtick2 - oldtick2) >= 2000)
+//	{
+//		printf("CM4 is still alive ! \n");
+//		oldtick2 = newtick2;
+//	}
 }
 
 /*-----------------------------------------------------------------------------*/

@@ -21,7 +21,7 @@ https://polymerickblue.bandcamp.com/track/desynkator-iii
 # General features :
 
 * Patch memory in QSPI Flash (save/load/erase all) : 32 locations currently
-* M4 core (at 200 MHz) manages MIDI USB Host function (stable with my old Korg NanoKontrol !) sends debug infos on UART or LCD. Use CN1 to connect your midi device.
+* M4 core (at 200 MHz) manages MIDI USB Host function (stable with my old Korg NanoKontrol !) sends debug infos on UART and LCD, manages patch memory. Use CN1 to connect your midi device.
 * M7 core (at 400 MHz) computes sound.      
 * No RTOS
 * Samplerate is 48kHz and audio samples are 16 bits large      
@@ -51,7 +51,8 @@ It was first a STM32CubeMX project (the only way I found to reach that point) bu
 
 You should be able to import the project in STM32CubeIDE, I think all necessary files are in the repository.  
 There are also makefiles in /Release/ folder.   
-The background image (Dekrispator-screen.bin file) should be written in QSPI Flash device with STM32CubeProgrammer application at address 0x97E8 0000 which is 1.5MB before end of memory.
+The background image (Dekrispator-screen.bin file) should be written in QSPI Flash device with STM32CubeProgrammer application at address *0x97E8 0000* which is 1.5MB before end of memory.
+Be sure to power your board with good PSU (> 1.5 A ?) especially with use of a midi controller, I had USB unstabilities because of unsufficient power in my PC plugs!
 
 ----
 
@@ -65,7 +66,8 @@ The background image (Dekrispator-screen.bin file) should be written in QSPI Fla
 	* 10 sine additive generator  
 	* noise  
  * 16 step random sequencer with variable length, transpositions, various scales    
- * 2 parallel filters LP/BP/HP with LFOs
+ * 2 parallel filters LP/BP/HP with LFOs   
+ * 1 ADSR enveloppe
  * Effects : 
 	* vibrato  
 	* tremolo  
